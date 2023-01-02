@@ -1,0 +1,123 @@
+﻿<Window x:Class="PowerBear_Render_WPF_Ver.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:PowerBear_Render_WPF_Ver"
+        mc:Ignorable="d"
+        Title="小熊渲染器" Height="508.6" Width="956">
+    <!--软件整体Grid-->
+    <Grid Background="#FF1F1F1F" x:Name="MainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250px"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <!--自定义Header-->
+        <TabControl Grid.Column="0" Background="#FF2E2E2E" TabStripPlacement="Right">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <ContentPresenter Content="{TemplateBinding Content}">
+                                    <ContentPresenter.LayoutTransform>
+                                        <RotateTransform Angle="90" />
+                                    </ContentPresenter.LayoutTransform>
+                                </ContentPresenter>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Padding" Value="3" />
+                </Style>
+            </TabControl.Resources>
+
+            <!--主体项目-->
+            <TabItem BorderBrush="{x:Null}">
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#FFF0F0F0"/>
+                        <GradientStop Color="#FFBCDF73" Offset="1"/>
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <TabItem.Header>
+                    <TextBlock>渲染</TextBlock>
+                </TabItem.Header>
+                <!--渲染界面-->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Label FontSize="14" Content="渲染参数" Foreground="White" ></Label>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="64*"></ColumnDefinition>
+                                <ColumnDefinition Width="157*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="宽度：" Foreground="White" Grid.ColumnSpan="2" Margin="0,0,115,0"/>
+                            <TextBox Grid.Column="1" Name="RenderWidth" Text="500"/>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="64*"></ColumnDefinition>
+                                <ColumnDefinition Width="157*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label  Foreground="White" Content="高度："></Label>
+                            <TextBox Grid.Column="1" x:Name="RenderHeight"  Text="500"/>
+                        </Grid>
+                        <Button Margin="10 10 10 0" Content="开始渲染" Click="Button_Click"></Button>
+                        <CheckBox x:Name="cbAllowPreview" Margin="10 10 10 0" Content="是否使用画面预览" Foreground="White" IsChecked="True"></CheckBox>
+                        <Label  Margin="10 10 10 0" Content="实时预览间隔（开启预览生效）" Foreground="White"></Label>
+                        <Slider x:Name="slHzPreview" Minimum="16" Maximum="200" Value="30"></Slider>
+                        <Label FontSize="14" Content="摄像机参数" Foreground="White" ></Label>
+                        <Border x:Name="RenderSettingsBackgroundColor" Background="#FFA8C5DD" MouseDown="BackGroundColor_MouseDown">
+                            <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
+                        </Border>
+                    </StackPanel>
+
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="物体" Height="34" Margin="0,0,-2,-2" VerticalAlignment="Bottom">
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#FFF0F0F0"/>
+                        <GradientStop Color="#FFDFAF73" Offset="1"/>
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                </ScrollViewer>
+            </TabItem>
+
+        </TabControl>
+
+        <!--渲染画面布局-->
+        <Grid Grid.Column="1" x:Name="RenderStackPanel" Height="{Binding ElementName=MainGrid, Path=ActualHeight}" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"></RowDefinition>
+                <RowDefinition Height="*" x:Name="RowHeight"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" MinHeight="24">
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                        <GradientStop Color="#FC000000" Offset="0.85"/>
+                        <GradientStop Color="#FF13882A" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <WrapPanel>
+                    <Label Content="渲染参数：" Height="24"  Foreground="White"/>
+                    <Label x:Name="LabelRenderSize" Content="{Binding BitMapSize, Mode=TwoWay}" Height="24"  Foreground="White" MinWidth="100"/>
+                    <Label Content="渲染进度：" Height="24"  Foreground="White"/>
+                    <ProgressBar x:Name="RenderProcess" Height="13" Width="100"></ProgressBar>
+                    <Label Content="当前所用处理器核心：" Height="24"  Foreground="White"/>
+                    <Label Content="1 Core" Height="24"  Foreground="White" Width="100"/>
+                    <Button Margin="5">保存渲染结果</Button>
+                    <Label x:Name="TimeUseLabel" Content="" Foreground="White"></Label>
+                </WrapPanel>
+            </Border>
+            <ScrollViewer Padding="10" Grid.Row="1" HorizontalScrollBarVisibility="Auto" Width="{Binding ElementName=RenderStackPanel,Path=ActualWidth}" >
+                <Image x:Name="MainImage" Width="300" Source="Resources/蟹堡王.png" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                </Image>
+            </ScrollViewer>
+
+        </Grid>
+    </Grid>
+</Window>
