@@ -1,4 +1,5 @@
-﻿using PowerBear_Render_WPF_Ver.Render;
+﻿using PowerBear_Render_WPF_Ver.PbMath;
+using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -113,12 +114,12 @@ namespace PowerBear_Render_WPF_Ver {
             var val = (Tuple<int, int, byte[]>)e.UserState;
             TimeUseLabel.Content = val.Item1.ToString() + " " + val.Item2.ToString() + " " + e.ProgressPercentage.ToString();
 
-            if(GobVar.AllowPreview) {
+            if (GobVar.AllowPreview) {
                 GobVar.wBitmap1 = GobVar.BitmapWrPixels(GobVar.wBitmap1, val.Item3);
                 MainImage.Source = GobVar.wBitmap1;
             }
         }
-
+        // 线程运行完毕回调函数
         public void RunWorkDown(object? sender, RunWorkerCompletedEventArgs e) {
             var wb = (RenderDispter)e.Result;
 
@@ -151,11 +152,13 @@ namespace PowerBear_Render_WPF_Ver {
                 backgroundWorker.RunWorkerAsync(new Tuple<int, int>(int.Parse(RenderWidth.Text), int.Parse(RenderHeight.Text)));
             }
         }
+        //选择颜色值
         private void BackGroundColor_MouseDown(object sender, MouseButtonEventArgs e) {
             System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
             if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 System.Drawing.SolidBrush sb = new System.Drawing.SolidBrush(colorDialog.Color);
                 SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, sb.Color.R, sb.Color.G, sb.Color.B));
+                GobVar._BackColor = new Vector3d(1.0d * sb.Color.R / 255.0d, 1.0d * sb.Color.G / 255.0d, 1.0d * sb.Color.B / 255.0d);
                 this.RenderSettingsBackgroundColor.Background = solidColorBrush;
             }
         }

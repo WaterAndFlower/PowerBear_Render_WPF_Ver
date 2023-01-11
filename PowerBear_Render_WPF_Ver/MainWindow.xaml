@@ -66,10 +66,13 @@
                         <Button Margin="10 10 10 0" Content="开始渲染" Click="Button_Click"></Button>
                         <CheckBox x:Name="cbAllowPreview" Margin="10 10 10 0" Content="是否使用画面预览" Foreground="White" IsChecked="True"></CheckBox>
                         <Label  Margin="10 10 10 0" Content="实时预览间隔（开启预览生效）" Foreground="White"></Label>
-                        <Slider x:Name="slHzPreview" Minimum="16" Maximum="200" Value="30"></Slider>
+                        <Slider x:Name="slHzPreview" Minimum="8" Maximum="200" Value="15"></Slider>
                         <Label FontSize="14" Content="摄像机参数" Foreground="White" ></Label>
-                        <Border x:Name="RenderSettingsBackgroundColor" Background="#FFA8C5DD" MouseDown="BackGroundColor_MouseDown">
+                        <Border x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
                             <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
+                        </Border>
+                        <Border Margin="0 10 0 0">
+                            <xctk:ColorPicker DisplayColorAndName="True"/>
                         </Border>
                     </StackPanel>
 
