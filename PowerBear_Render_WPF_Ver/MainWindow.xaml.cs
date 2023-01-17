@@ -3,7 +3,9 @@ using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -131,6 +133,7 @@ namespace PowerBear_Render_WPF_Ver {
         }
         //开始渲染部分
         private void Button_Click(object sender, RoutedEventArgs e) {
+            GobVar.MSAA_Level = MSAA_Combox.SelectedIndex;
             timertimer.Start();
             GC.Collect();
             //GC.WaitForFullGCComplete();
@@ -160,6 +163,24 @@ namespace PowerBear_Render_WPF_Ver {
                 SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, sb.Color.R, sb.Color.G, sb.Color.B));
                 GobVar._BackColor = new Vector3d(1.0d * sb.Color.R / 255.0d, 1.0d * sb.Color.G / 255.0d, 1.0d * sb.Color.B / 255.0d);
                 this.RenderSettingsBackgroundColor.Background = solidColorBrush;
+            }
+        }
+
+        void SaveWtableBmp(Object sender, RoutedEventArgs e) {
+            String appStartupPath = System.IO.Directory.GetCurrentDirectory() + @"\Out";
+            var saveName = appStartupPath + @"\saveData.png";
+            if (!Directory.Exists(appStartupPath)) { Directory.CreateDirectory(appStartupPath); }
+            using (FileStream stream = new FileStream(saveName, FileMode.Create)) {
+                PngBitmapEncoder pngBitmapEncoder = new PngBitmapEncoder();
+                pngBitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)MainImage.Source));
+                pngBitmapEncoder.Save(stream);
+            }
+            var btnRes = System.Windows.MessageBox.Show(saveName + "\n\n点击YES打开目录", "保存成功", MessageBoxButton.YesNo);
+            if (btnRes.Equals(MessageBoxResult.Yes)) {
+                Process ExplorerWindowProcess = new Process();
+                ExplorerWindowProcess.StartInfo.FileName = "explorer.exe";
+                ExplorerWindowProcess.StartInfo.Arguments = saveName;
+                ExplorerWindowProcess.Start();
             }
         }
     }

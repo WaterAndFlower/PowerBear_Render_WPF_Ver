@@ -14,6 +14,7 @@ namespace PowerBear_Render_WPF_Ver {
         public static bool NeedFlush1 { get; set; } = false;
         public static bool AllowPreview { get; set; } = true; //允许运行过程中预览结果
         public static WriteableBitmap? wBitmap1;
+        public static int MSAA_Level = 0;//0: 关闭 1：4x倍
         //======Render Options======
         public static Vector3d _BackColor = new Vector3d();
         public static void BitmapWrPixels(ref WriteableBitmap bt, Byte[] pixelColorBytes) {

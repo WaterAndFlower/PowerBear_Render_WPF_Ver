@@ -10,7 +10,7 @@
     <!--软件整体Grid-->
     <Grid Background="#FF1F1F1F" x:Name="MainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250px"></ColumnDefinition>
+            <ColumnDefinition Width="270px"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <!--自定义Header-->
@@ -67,6 +67,16 @@
                         <CheckBox x:Name="cbAllowPreview" Margin="10 10 10 0" Content="是否使用画面预览" Foreground="White" IsChecked="True"></CheckBox>
                         <Label  Margin="10 10 10 0" Content="实时预览间隔（开启预览生效）" Foreground="White"></Label>
                         <Slider x:Name="slHzPreview" Minimum="8" Maximum="200" Value="15"></Slider>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="10 0 10 0" Content="抗锯齿MSAA" Foreground="White" Width="100"/>
+                            <ComboBox x:Name="MSAA_Combox" HorizontalAlignment="Right" Width="91" VerticalAlignment="Center">
+                                <ComboBoxItem IsSelected="True">关闭反走样</ComboBoxItem>
+                                <ComboBoxItem>2X 20采样</ComboBoxItem>
+                                <ComboBoxItem>4X 100采样</ComboBoxItem>
+                            </ComboBox>
+                        </StackPanel>
+
                         <Label FontSize="14" Content="摄像机参数" Foreground="White" ></Label>
                         <Border x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
                             <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
@@ -112,7 +122,7 @@
                     <ProgressBar x:Name="RenderProcess" Height="13" Width="100"></ProgressBar>
                     <Label Content="当前所用处理器核心：" Height="24"  Foreground="White"/>
                     <Label Content="1 Core" Height="24"  Foreground="White" Width="100"/>
-                    <Button Margin="5">保存渲染结果</Button>
+                    <Button Margin="5" Click="SaveWtableBmp">保存渲染结果</Button>
                     <Label x:Name="TimeUseLabel" Content="" Foreground="White"></Label>
                 </WrapPanel>
             </Border>
@@ -123,4 +133,5 @@
 
         </Grid>
     </Grid>
+
 </Window>

@@ -14,6 +14,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using syDrawing = System.Drawing;
+using Point3d = PowerBear_Render_WPF_Ver.PbMath.Vector3d;
 namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
     /// 多线程类 规定（1，1）图像左上角（height，width）图像右下角
@@ -38,37 +39,71 @@ namespace PowerBear_Render_WPF_Ver.Render {
             pixelColorBytes = null;
         }
         //  ------渲染-----
-        PbColorRGB Ray_Color(Ray ray) {
+        double Hit_Sphere(Point3d center, double radius, Ray r) {
+            Vector3d oc = r.origin - center;
+            var a = Vector3d.Dot(r.direction, r.direction);
+            var b = 2.0 * Vector3d.Dot(oc, r.direction);
+            var c = Vector3d.Dot(oc, oc) - radius * radius;
+            var discriminant = b * b - 4 * a * c;
+            if (discriminant < 0) { return -1.0d; } else {
+                return (-b - Math.Sqrt(discriminant)) / (2.0 * a); //2a分之-b+-开跟 b平方 - 4ac
+            }
+        }
+        Vector3d Ray_Color(Ray ray, HitTable world, int depth) {
+            HitResult hitResult;
+            if (depth <= 0) return new Vector3d(0, 0, 0);
+            if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
+                Point3d colorCount = new();
+                var nextVec = Vector3d.Random_Unit_Vector().Normalized();
+                Point3d target = hitResult.p + hitResult.normal + nextVec;
+                colorCount += 0.5d * Ray_Color(new Ray(hitResult.p, target - hitResult.p), world, depth - 1);
+                return colorCount / 1;
+            }
             Vector3d directNormal = ray.direction.Normalized();
-            var t = 0.5d * (directNormal.y() + 1.0d);
+            var t = 0.7 * (directNormal.y() + 1.0d);
             //Vector3d.Vector3DUse(0.5, 0.7, 1.0)
             var res = (1.0d - t) * Vector3d.Vector3DUse(1, 1, 1) + t * GobVar._BackColor;
-            return new PbColorRGB(res);
+            return res;
         }
         public void doRender() {
             try {
+                var aspect_radio = 1.0 * width / height;
+                var viewport_height = 2.0;
+                var viewport_width = aspect_radio * viewport_height;
                 //画幅设定项目
-                Vector3d upper_left_corner = new(-2.0, 1.0, -1.0); //画面左上角
-                Vector3d horizontal = new(4.0, 0d, 0d);
-                Vector3d vertical = new(0d, -2d, 0d);
                 Vector3d origin = new(0d, 0d, 0d);
-
+                Vector3d upper_left_corner = new(-viewport_width, viewport_height, -1.0); //画面左上角
+                Vector3d horizontal = new(2.0 * viewport_width, 0d, 0d);
+                Vector3d vertical = new(0d, -2.0 * viewport_height, 0d);
+                //World
+                Hittable_List world = new Hittable_List();
+                world.Add(new Sphere(new Vector3d(0, 0, -1), 0.5));
+                world.Add(new Sphere(new Vector3d(0, -100.5, -1), 100));
+                int sample_pixel_count = 1;
+                if (GobVar.MSAA_Level == 1) { sample_pixel_count = 4; } else if (GobVar.MSAA_Level == 2) { sample_pixel_count = 100; }
                 for (int i = 1; i <= this.height; i++) {
                     for (int j = 1; j <= this.width; j++) {
+                        Vector3d colorRes = new Vector3d(0, 0, 0);
+                        for (int k = 0; k < sample_pixel_count; k++) { //MSAA重要性采样
+                            double uRandom = PbRandom.Random_Double(), vRandom = PbRandom.Random_Double();
+                            if (GobVar.MSAA_Level == 0) { uRandom = vRandom = 0; }
+                            var u = (1.0d * j + uRandom) / width;
+                            var v = (1.0d * i + vRandom) / height;
+                            Ray ray = new Ray(origin, upper_left_corner + u * horizontal + v * vertical);
+                            colorRes += Vector3d.Clamp(Ray_Color(ray, world, 50));
+                        }
 
-                        var u = 1.0d * j / width;
-                        var v = 1.0d * i / height;
-                        //屏幕投递射线
-                        Ray ray = new Ray(origin, upper_left_corner + u * horizontal + v * vertical);
-                        PbColorRGB resColor = Ray_Color(ray);
-                        this.SetColorToBytes(i, j, resColor.ConvertToSysColor());
-
-
+                        var writeColor = colorRes / sample_pixel_count;//Gamma矫正
+                        writeColor.e[0] = Math.Sqrt(writeColor.e[0]);
+                        writeColor.e[1] = Math.Sqrt(writeColor.e[1]);
+                        writeColor.e[2] = Math.Sqrt(writeColor.e[2]);
+                        this.SetColorToBytes(i, j, new PbColorRGB(writeColor).ConvertToSysColor());
                         //监听刷新
                         if (GobVar.NeedFlush1) {
-                            _BackWorker.ReportProgress((int)(1.0f * ((i - 1) * height + j) / (this.height * this.width) * 100), new Tuple<int, int, byte[]>(i, j, this.pixelColorBytes));
+                            _BackWorker.ReportProgress((int)((1.0f * (i - 1) * (width) + j) / (this.height * this.width) * 100), new Tuple<int, int, byte[]>(i, j, this.pixelColorBytes));
                             GobVar.NeedFlush1 = false;
                         }
+
                     }
                 }
                 _BackWorker.ReportProgress(100);
