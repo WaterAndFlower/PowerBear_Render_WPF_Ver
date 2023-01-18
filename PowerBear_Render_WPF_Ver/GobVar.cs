@@ -1,4 +1,5 @@
-﻿using PowerBear_Render_WPF_Ver.PbMath;
+﻿using PowerBear_Render_WPF_Ver.Materials;
+using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,10 @@ namespace PowerBear_Render_WPF_Ver {
         public static void BitmapWrPixels(ref WriteableBitmap bt, Byte[] pixelColorBytes) {
             bt.WritePixels(new Int32Rect(0, 0, (int)bt.Width, (int)bt.Height), pixelColorBytes, bt.BackBufferStride, 0);
         }
+        //======Deault Objects======
+        public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
+        
+        
         public static WriteableBitmap BitmapWrPixels(WriteableBitmap? bt, Byte[] pixelColorBytes) {
             if (bt == null) {
                 bt = RenderDispter.CreateWriteableBitMap(GobVar.renderWidth, GobVar.renderHeight);

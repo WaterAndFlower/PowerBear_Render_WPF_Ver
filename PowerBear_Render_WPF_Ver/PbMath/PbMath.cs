@@ -15,5 +15,8 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
             if (x > 1) return 1.0d;
             return 0.0d;
         }
+        public static double Degress_To_Radians(double x) {
+            return x / 180.0d * PI;
+        }
     }
 }

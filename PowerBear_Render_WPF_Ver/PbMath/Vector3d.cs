@@ -86,7 +86,7 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         /// </summary>
         public static Vector3d Random_Unit_Vector() {
             var a = PbRandom.Random_Double(0.0d, 2.0d * Math.PI);
-            var z = PbRandom.Random_Double(-0.8d, 1.0d);
+            var z = PbRandom.Random_Double(-1.0d, 1.0d);
             var r = Math.Sqrt(Math.Abs(1.0d - z * z));
             return new Vector3d(r * Math.Cos(a), r * Math.Sin(a), z);
         }

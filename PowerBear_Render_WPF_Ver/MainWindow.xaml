@@ -46,7 +46,7 @@
                 <!--渲染界面-->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <Label FontSize="14" Content="渲染参数" Foreground="White" ></Label>
+                        <Label FontSize="14" Content="渲染参数" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="64*"></ColumnDefinition>
@@ -73,17 +73,52 @@
                             <ComboBox x:Name="MSAA_Combox" HorizontalAlignment="Right" Width="91" VerticalAlignment="Center">
                                 <ComboBoxItem IsSelected="True">关闭反走样</ComboBoxItem>
                                 <ComboBoxItem>2X 20采样</ComboBoxItem>
+                                <ComboBoxItem>4X 50采样</ComboBoxItem>
                                 <ComboBoxItem>4X 100采样</ComboBoxItem>
                             </ComboBox>
                         </StackPanel>
 
-                        <Label FontSize="14" Content="摄像机参数" Foreground="White" ></Label>
-                        <Border x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
+                        <Label FontSize="14" Content="摄像机参数" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+
+                        <Border Margin="0 5 0 0" x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
                             <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
                         </Border>
-                        <Border Margin="0 10 0 0">
-                            <xctk:ColorPicker DisplayColorAndName="True"/>
+                        <Border Margin="0 5 0 0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Label Foreground="White" HorizontalAlignment="Left">FOV</Label>
+                                <Slider Width="180" VerticalAlignment="Center" HorizontalAlignment="Right" Minimum="20" Maximum="300" Value="90"/>
+                            </StackPanel>
                         </Border>
+                        <Border Margin="0 5 0 0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                <Label Foreground="White" HorizontalAlignment="Left">摄像机位置</Label>
+                                <Label Foreground="White">x:</Label>
+                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <Label Foreground="White">y:</Label>
+                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <Label Foreground="White">z:</Label>
+                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                            </StackPanel>
+                        </Border>
+                        <Border Margin="0 5 0 0">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Foreground="White">摄像机观察点　x:</Label>
+                                    <Slider Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="0"></Slider>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Foreground="White">摄像机观察点　y:</Label>
+                                    <Slider Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="0"></Slider>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Foreground="White">摄像机观察点　z:</Label>
+                                    <Slider Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="-1"></Slider>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <!--<Border Margin="0 10 0 0">
+                            <xctk:ColorPicker DisplayColorAndName="True"/>
+                        </Border>-->
                     </StackPanel>
 
                 </ScrollViewer>

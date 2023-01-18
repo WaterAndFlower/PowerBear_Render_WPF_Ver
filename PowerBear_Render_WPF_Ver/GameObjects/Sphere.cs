@@ -1,4 +1,5 @@
-﻿using PowerBear_Render_WPF_Ver.PbMath;
+﻿using PowerBear_Render_WPF_Ver.Materials;
+using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,16 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             this.center = center;
             this.radius = radius;
         }
+        public Sphere(Vector3d center, double radius, Material mat) {
+            this.center = center;
+            this.radius = radius;
+            this.mat = mat;
+        }
 
         public Vector3d center = new Vector3d();
         public double radius;
+        public Material mat = GobVar.DeaultMat;
+
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
             hitResult = new HitResult();
             Vector3d oc = ray.origin - center;
@@ -37,6 +45,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             hitResult.p = ray.At(root);
             var out_normal = (hitResult.p - center) / radius;
             hitResult.Set_Face_Normal(ray, out_normal);
+            hitResult.mat = this.mat;
             return true;
         }
     }

@@ -15,13 +15,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using syDrawing = System.Drawing;
 using Point3d = PowerBear_Render_WPF_Ver.PbMath.Vector3d;
+using PowerBear_Render_WPF_Ver.CameraObj;
+using PowerBear_Render_WPF_Ver.Materials;
+
 namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
     /// 多线程类 规定（1，1）图像左上角（height，width）图像右下角
     /// </summary>
     public class RenderDispter {
-        //Camera设定
-        CameraObj cameraObj;
         //图像设定
         public int width, height;
         public Byte[]? pixelColorBytes; //BGRA32
@@ -53,11 +54,12 @@ namespace PowerBear_Render_WPF_Ver.Render {
             HitResult hitResult;
             if (depth <= 0) return new Vector3d(0, 0, 0);
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
-                Point3d colorCount = new();
-                var nextVec = Vector3d.Random_Unit_Vector().Normalized();
-                Point3d target = hitResult.p + hitResult.normal + nextVec;
-                colorCount += 0.5d * Ray_Color(new Ray(hitResult.p, target - hitResult.p), world, depth - 1);
-                return colorCount / 1;
+                Ray scattered;
+                Vector3d attenuation;
+                if (hitResult.mat.Scatter(ray, hitResult, out attenuation, out scattered)) {
+                    return attenuation * Ray_Color(scattered, world, depth - 1);
+                }
+                return new Vector3d(0, 0, 0);
             }
             Vector3d directNormal = ray.direction.Normalized();
             var t = 0.7 * (directNormal.y() + 1.0d);
@@ -67,29 +69,30 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
         public void doRender() {
             try {
-                var aspect_radio = 1.0 * width / height;
-                var viewport_height = 2.0;
-                var viewport_width = aspect_radio * viewport_height;
-                //画幅设定项目
-                Vector3d origin = new(0d, 0d, 0d);
-                Vector3d upper_left_corner = new(-viewport_width, viewport_height, -1.0); //画面左上角
-                Vector3d horizontal = new(2.0 * viewport_width, 0d, 0d);
-                Vector3d vertical = new(0d, -2.0 * viewport_height, 0d);
-                //World
+                Camera camera = new Camera(width, height, 90d, new Vector3d(-2, 2, 1), new Vector3d(0, 0, -1d), new Vector3d(0, 1, 0));
+                // 材质属性
+                var material_ground = new Lambertian(new Vector3d(0.8d, 0.8d, 0.0d));
+                var material_center = new Lambertian(new Vector3d(0.7d, 0.3d, 0.3d));
+                var material_left = new Metal(new Vector3d(0.8d, 0.8d, 0.8d), 0.3d);
+                var material_right = new Metal(new Vector3d(0.8d, 0.6d, 0.2d), 1.0d);
+                // 处理世界场景数据
                 Hittable_List world = new Hittable_List();
-                world.Add(new Sphere(new Vector3d(0, 0, -1), 0.5));
-                world.Add(new Sphere(new Vector3d(0, -100.5, -1), 100));
+                world.Add(new Sphere(new Vector3d(0, -100.5, -1), 100, material_ground));
+                world.Add(new Sphere(new Vector3d(0, 0, -1), 0.5, material_center));
+                world.Add(new Sphere(new Vector3d(-1, 0, -1), 0.5, material_left));
+                world.Add(new Sphere(new Vector3d(1, 0, -1), 0.5, material_right));
                 int sample_pixel_count = 1;
-                if (GobVar.MSAA_Level == 1) { sample_pixel_count = 4; } else if (GobVar.MSAA_Level == 2) { sample_pixel_count = 100; }
+                if (GobVar.MSAA_Level == 1) { sample_pixel_count = 20; } else if (GobVar.MSAA_Level == 2) { sample_pixel_count = 50; } else if (GobVar.MSAA_Level == 3) { sample_pixel_count = 100; }
+                Vector3d colorRes = new Vector3d(0, 0, 0);
                 for (int i = 1; i <= this.height; i++) {
                     for (int j = 1; j <= this.width; j++) {
-                        Vector3d colorRes = new Vector3d(0, 0, 0);
+                        colorRes.e[0] = colorRes.e[1] = colorRes.e[2] = 0d;
                         for (int k = 0; k < sample_pixel_count; k++) { //MSAA重要性采样
                             double uRandom = PbRandom.Random_Double(), vRandom = PbRandom.Random_Double();
                             if (GobVar.MSAA_Level == 0) { uRandom = vRandom = 0; }
                             var u = (1.0d * j + uRandom) / width;
                             var v = (1.0d * i + vRandom) / height;
-                            Ray ray = new Ray(origin, upper_left_corner + u * horizontal + v * vertical);
+                            Ray ray = camera.GetRay(u, v);
                             colorRes += Vector3d.Clamp(Ray_Color(ray, world, 50));
                         }
 

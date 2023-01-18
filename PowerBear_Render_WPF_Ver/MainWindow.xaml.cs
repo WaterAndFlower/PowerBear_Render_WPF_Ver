@@ -160,7 +160,7 @@ namespace PowerBear_Render_WPF_Ver {
             System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
             if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 System.Drawing.SolidBrush sb = new System.Drawing.SolidBrush(colorDialog.Color);
-                SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, sb.Color.R, sb.Color.G, sb.Color.B));
+                SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(a: 100, sb.Color.R, sb.Color.G, sb.Color.B));
                 GobVar._BackColor = new Vector3d(1.0d * sb.Color.R / 255.0d, 1.0d * sb.Color.G / 255.0d, 1.0d * sb.Color.B / 255.0d);
                 this.RenderSettingsBackgroundColor.Background = solidColorBrush;
             }
