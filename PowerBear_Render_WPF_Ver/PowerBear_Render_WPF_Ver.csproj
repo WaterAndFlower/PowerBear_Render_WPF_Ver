@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DAO\" />
+    <Folder Include="Lights\" />
   </ItemGroup>
 
 </Project>

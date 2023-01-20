@@ -32,17 +32,15 @@
                 </Style>
             </TabControl.Resources>
 
-            <!--主体项目-->
-            <TabItem BorderBrush="{x:Null}">
+            <!--Tab 渲染-->
+            <TabItem Header="渲染" Height="34" Margin="0,0,-2,-2" VerticalAlignment="Bottom">
+                <!--Tab 头-->
                 <TabItem.Background>
                     <LinearGradientBrush EndPoint="0,1">
                         <GradientStop Color="#FFF0F0F0"/>
-                        <GradientStop Color="#FFBCDF73" Offset="1"/>
+                        <GradientStop Color="#FFE7C8A1" Offset="1"/>
                     </LinearGradientBrush>
                 </TabItem.Background>
-                <TabItem.Header>
-                    <TextBlock>渲染</TextBlock>
-                </TabItem.Header>
                 <!--渲染界面-->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -77,7 +75,14 @@
                                 <ComboBoxItem>4X 100采样</ComboBoxItem>
                             </ComboBox>
                         </StackPanel>
-
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="10 0 10 0" Content="多线程核心数" Foreground="White" Width="100"/>
+                            <ComboBox x:Name="CPUs_Combox" HorizontalAlignment="Right" Width="91" VerticalAlignment="Center">
+                                <ComboBoxItem DataContext="1" IsSelected="True">1 CORES</ComboBoxItem>
+                                <ComboBoxItem DataContext="4">4 CORES</ComboBoxItem>
+                                <ComboBoxItem DataContext="8">8 CORES</ComboBoxItem>
+                            </ComboBox>
+                        </StackPanel>
                         <Label FontSize="14" Content="摄像机参数" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
 
                         <Border Margin="0 5 0 0" x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
@@ -86,33 +91,37 @@
                         <Border Margin="0 5 0 0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label Foreground="White" HorizontalAlignment="Left">FOV</Label>
-                                <Slider Width="180" VerticalAlignment="Center" HorizontalAlignment="Right" Minimum="20" Maximum="300" Value="90"/>
+                                <Slider x:Name="uFovSlider" Width="180" VerticalAlignment="Center" HorizontalAlignment="Right" Minimum="20" Maximum="200" Value="93"/>
+                                <Label Foreground="White" HorizontalAlignment="Left" Content="{Binding ElementName=uFovSlider,Path=Value}"/>
                             </StackPanel>
                         </Border>
                         <Border Margin="0 5 0 0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                                 <Label Foreground="White" HorizontalAlignment="Left">摄像机位置</Label>
                                 <Label Foreground="White">x:</Label>
-                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <TextBox x:Name="CameraPosXTextBox" Width="30" Margin="3 0 0 0">0</TextBox>
                                 <Label Foreground="White">y:</Label>
-                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <TextBox x:Name="CameraPosYTextBox" Width="30" Margin="3 0 0 0">0</TextBox>
                                 <Label Foreground="White">z:</Label>
-                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <TextBox x:Name="CameraPosZTextBox" Width="30" Margin="3 0 0 0">1</TextBox>
                             </StackPanel>
                         </Border>
                         <Border Margin="0 5 0 0">
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Label Foreground="White">摄像机观察点　x:</Label>
-                                    <Slider Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="0"></Slider>
+                                    <Slider x:Name="uCameraViewXSlider" Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="0"></Slider>
+                                    <Label Foreground="White" Content="{Binding ElementName=uCameraViewXSlider,Path=Value}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Label Foreground="White">摄像机观察点　y:</Label>
-                                    <Slider Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="0"></Slider>
+                                    <Slider x:Name="uCameraViewYSlider" Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="0"></Slider>
+                                    <Label Foreground="White" Content="{Binding ElementName=uCameraViewYSlider,Path=Value}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Label Foreground="White">摄像机观察点　z:</Label>
-                                    <Slider Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="-1"></Slider>
+                                    <Slider x:Name="uCameraViewZSlider" Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="-1"></Slider>
+                                    <Label Foreground="White" Content="{Binding ElementName=uCameraViewZSlider,Path=Value}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
@@ -123,18 +132,49 @@
 
                 </ScrollViewer>
             </TabItem>
+            <!--Tab 物体-->
             <TabItem Header="物体" Height="34" Margin="0,0,-2,-2" VerticalAlignment="Bottom">
+                <!--Tab头-->
                 <TabItem.Background>
                     <LinearGradientBrush EndPoint="0,1">
                         <GradientStop Color="#FFF0F0F0"/>
-                        <GradientStop Color="#FFDFAF73" Offset="1"/>
+                        <GradientStop Color="#FFC6F39C" Offset="1"/>
                     </LinearGradientBrush>
                 </TabItem.Background>
+                <!--Tab滚动框-->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                </ScrollViewer>
+            </TabItem>
+            <!--Tab 光源-->
+            <TabItem Header="光" Height="34" Margin="0,0,-2,-2" VerticalAlignment="Bottom">
+                <!--Tab头-->
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#FFF0F0F0"/>
+                        <GradientStop Color="#FFA7DAF1" Offset="1"/>
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <!--Tab滚动框-->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
 
                 </ScrollViewer>
             </TabItem>
 
+            <!--Tab 云计算-->
+            <TabItem Header="云计算" Height="50" Margin="0,0,-2,-2" VerticalAlignment="Bottom">
+                <!--Tab头-->
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#FFF0F0F0"/>
+                        <GradientStop Color="#FFA7B3F1" Offset="1"/>
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <!--Tab滚动框-->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                </ScrollViewer>
+            </TabItem>
         </TabControl>
 
         <!--渲染画面布局-->
@@ -156,7 +196,7 @@
                     <Label Content="渲染进度：" Height="24"  Foreground="White"/>
                     <ProgressBar x:Name="RenderProcess" Height="13" Width="100"></ProgressBar>
                     <Label Content="当前所用处理器核心：" Height="24"  Foreground="White"/>
-                    <Label Content="1 Core" Height="24"  Foreground="White" Width="100"/>
+                    <Label x:Name="CpusLabel" Content="1 Core" Height="24"  Foreground="White" Width="100"/>
                     <Button Margin="5" Click="SaveWtableBmp">保存渲染结果</Button>
                     <Label x:Name="TimeUseLabel" Content="" Foreground="White"></Label>
                 </WrapPanel>

@@ -9,6 +9,13 @@ using System.Windows.Media.Media3D;
 
 namespace PowerBear_Render_WPF_Ver.CameraObj {
     public class Camera {
+        /// <summary>
+        /// 相机类，以lookFrom为起点，lookFrom加LookAt为终端，实验
+        /// </summary>
+        /// <param name="fov">视野</param>
+        /// <param name="lookFrom">起点</param>
+        /// <param name="lookAt">以lookfrom做一个圆</param>
+        /// <param name="vup">向上投影视角，控制摄像机左右旋转</param>
         public Camera(int width, int height, double fov, Vector3d lookFrom, Vector3d lookAt, Vector3d vup) {
             this.width = width;
             this.height = height;

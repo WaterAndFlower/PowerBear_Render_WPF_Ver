@@ -23,13 +23,14 @@ namespace PowerBear_Render_WPF_Ver.Render {
     /// 多线程类 规定（1，1）图像左上角（height，width）图像右下角
     /// </summary>
     public class RenderDispter {
-        //图像设定
+        //====Public Var====
         public int width, height;
         public Byte[]? pixelColorBytes; //BGRA32
         public Action? OnFinish, FreshImage;
         public BackgroundWorker _BackWorker; //后台线程管理类，用于刷新
         public int sampleDepth = 1; //采样深度次数
-
+        public Camera mCamera;
+        public int cpus = 1; // 使用cpu核心数
         //方法组
         public RenderDispter() { }
         public RenderDispter(int width, int height) {
@@ -69,7 +70,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
         public void doRender() {
             try {
-                Camera camera = new Camera(width, height, 90d, new Vector3d(-2, 2, 1), new Vector3d(0, 0, -1d), new Vector3d(0, 1, 0));
+                Camera camera = mCamera;
+                if (camera == null) throw new Exception("摄像机为空，啊哈！") { };
                 // 材质属性
                 var material_ground = new Lambertian(new Vector3d(0.8d, 0.8d, 0.0d));
                 var material_center = new Lambertian(new Vector3d(0.7d, 0.3d, 0.3d));
@@ -81,11 +83,17 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 world.Add(new Sphere(new Vector3d(0, 0, -1), 0.5, material_center));
                 world.Add(new Sphere(new Vector3d(-1, 0, -1), 0.5, material_left));
                 world.Add(new Sphere(new Vector3d(1, 0, -1), 0.5, material_right));
-                int sample_pixel_count = 1;
+                int sample_pixel_count = 1; // MSAA_LVEL=0
                 if (GobVar.MSAA_Level == 1) { sample_pixel_count = 20; } else if (GobVar.MSAA_Level == 2) { sample_pixel_count = 50; } else if (GobVar.MSAA_Level == 3) { sample_pixel_count = 100; }
-                Vector3d colorRes = new Vector3d(0, 0, 0);
-                for (int i = 1; i <= this.height; i++) {
-                    for (int j = 1; j <= this.width; j++) {
+                //多线程设定
+                var options = new ParallelOptions {
+                    MaxDegreeOfParallelism = cpus
+                };
+                int pixelsCount = 0;
+                //多线程运行
+                Parallel.For(1, this.height + 1, options, i => {
+                    Parallel.For(1, this.width + 1, options, j => {
+                        Vector3d colorRes = new Vector3d(0, 0, 0); // 每个线程单独一个颜色值
                         colorRes.e[0] = colorRes.e[1] = colorRes.e[2] = 0d;
                         for (int k = 0; k < sample_pixel_count; k++) { //MSAA重要性采样
                             double uRandom = PbRandom.Random_Double(), vRandom = PbRandom.Random_Double();
@@ -95,20 +103,23 @@ namespace PowerBear_Render_WPF_Ver.Render {
                             Ray ray = camera.GetRay(u, v);
                             colorRes += Vector3d.Clamp(Ray_Color(ray, world, 50));
                         }
-
                         var writeColor = colorRes / sample_pixel_count;//Gamma矫正
                         writeColor.e[0] = Math.Sqrt(writeColor.e[0]);
                         writeColor.e[1] = Math.Sqrt(writeColor.e[1]);
                         writeColor.e[2] = Math.Sqrt(writeColor.e[2]);
                         this.SetColorToBytes(i, j, new PbColorRGB(writeColor).ConvertToSysColor());
+                        pixelsCount++;
                         //监听刷新
                         if (GobVar.NeedFlush1) {
-                            _BackWorker.ReportProgress((int)((1.0f * (i - 1) * (width) + j) / (this.height * this.width) * 100), new Tuple<int, int, byte[]>(i, j, this.pixelColorBytes));
+                            Console.WriteLine(pixelsCount.ToString());
+                            _BackWorker.ReportProgress((int)(pixelsCount * 1.0d / (this.height * this.width) * 100), new Tuple<int, int, byte[]>(i, j, this.pixelColorBytes));
                             GobVar.NeedFlush1 = false;
                         }
+                        //用户取消渲染
+                        if (_BackWorker.CancellationPending) { throw new Exception("渲染取消了"); }
+                    });
+                });
 
-                    }
-                }
                 _BackWorker.ReportProgress(100);
             }
             catch (Exception ex) {

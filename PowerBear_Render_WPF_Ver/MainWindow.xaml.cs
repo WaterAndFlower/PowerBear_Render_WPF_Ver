@@ -1,4 +1,6 @@
-﻿using PowerBear_Render_WPF_Ver.PbMath;
+﻿using PowerBear_Render_WPF_Ver.CameraObj;
+using PowerBear_Render_WPF_Ver.DAO;
+using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
@@ -19,7 +21,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -31,12 +32,16 @@ namespace PowerBear_Render_WPF_Ver {
     /// </summary>
     public partial class MainWindow : Window {
         public static MainWindow? Instance { get; private set; }
-
+        /// <summary>
+        /// UI界面的数据
+        /// </summary>
         public class RenderDetails {
             public string BitMapSize { get; set; } = "尚未开始";
             public string Mytest { get; set; } = "testvalue";
+            public string UICpus = "1 Core";
             public void Refush() {
                 MainWindow.Instance.LabelRenderSize.Content = BitMapSize;
+                MainWindow.Instance.CpusLabel.Content = UICpus;
             }
         }
 
@@ -88,12 +93,16 @@ namespace PowerBear_Render_WPF_Ver {
         }
         //--多线程部分--
         BackgroundWorker backgroundWorker;
-        //渲染主线程！！！
+        //！！！渲染主线程！！！
         private void RunThread(object sender, DoWorkEventArgs e) {
             var start = DateTime.Now;
-            Tuple<int, int> data = (Tuple<int, int>)e.Argument;
-            RenderDispter renderDsp = new RenderDispter(data.Item1, data.Item2);
+            var data = (ToRenderDispter)e.Argument;
+
+            RenderDispter renderDsp = new RenderDispter(data.width, data.height);
+            renderDsp.mCamera = data.mCamera;
             renderDsp._BackWorker = backgroundWorker;
+            renderDsp.cpus = data.cpus;
+
             renderDsp.doRender();
             e.Result = renderDsp;
             var stop = DateTime.Now;
@@ -152,7 +161,26 @@ namespace PowerBear_Render_WPF_Ver {
             this.MainImage.Source = GobVar.wBitmap1;
             if (backgroundWorker.IsBusy) { backgroundWorker.CancelAsync(); } else {
                 //启动渲染线程
-                backgroundWorker.RunWorkerAsync(new Tuple<int, int>(int.Parse(RenderWidth.Text), int.Parse(RenderHeight.Text)));
+                var lookFrom = new Vector3d(double.Parse(CameraPosXTextBox.Text), double.Parse(CameraPosYTextBox.Text), double.Parse(CameraPosZTextBox.Text));
+                var lookAt = new Vector3d(uCameraViewXSlider.Value, uCameraViewYSlider.Value, uCameraViewZSlider.Value);
+                lookAt = lookFrom + lookAt.Normalized();
+                Camera mCamera = new(GobVar.renderWidth, GobVar.renderHeight, uFovSlider.Value, lookFrom, lookAt, new Vector3d(0, 1, 0));
+                var t = 1;
+                switch (CPUs_Combox.SelectedIndex) {
+                    case 0:
+                    t = 1;
+                    renderDetails.UICpus = "1 Core";
+                    break;
+                    case 1:
+                    t = 4;
+                    break;
+                    case 2:
+                    t = 8;
+                    break;
+                }
+                renderDetails.UICpus = $"{t} Core";
+                renderDetails.Refush();
+                backgroundWorker.RunWorkerAsync(new ToRenderDispter() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = mCamera, cpus = t });
             }
         }
         //选择颜色值
