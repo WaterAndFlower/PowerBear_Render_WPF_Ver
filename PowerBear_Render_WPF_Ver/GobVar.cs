@@ -3,11 +3,16 @@ using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Runtime.InteropServices;
+using System.Windows.Media;
 
 namespace PowerBear_Render_WPF_Ver {
     public static class GobVar {
@@ -18,14 +23,16 @@ namespace PowerBear_Render_WPF_Ver {
         public static int MSAA_Level = 0;//0: 关闭 1：4x倍
         //======Render Options======
         public static Vector3d _BackColor = new Vector3d();
-        public static void BitmapWrPixels(ref WriteableBitmap bt, Byte[] pixelColorBytes) {
+        public static Hittable_List fnWorld = new Hittable_List();
+
+        public static void BitmapWritePixels(ref WriteableBitmap bt, Byte[] pixelColorBytes) {
             bt.WritePixels(new Int32Rect(0, 0, (int)bt.Width, (int)bt.Height), pixelColorBytes, bt.BackBufferStride, 0);
         }
         //======Deault Objects======
         public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
-        
-        
-        public static WriteableBitmap BitmapWrPixels(WriteableBitmap? bt, Byte[] pixelColorBytes) {
+
+
+        public static WriteableBitmap BitmapWritePixels(WriteableBitmap? bt, Byte[] pixelColorBytes) {
             if (bt == null) {
                 bt = RenderDispter.CreateWriteableBitMap(GobVar.renderWidth, GobVar.renderHeight);
             }

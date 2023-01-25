@@ -26,16 +26,20 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         /// <summary>
         /// 取随机数返回[min,max)
         /// </summary>
-        /// <param name="maxn">最大</param>
         /// <param name="minn">最小</param>
+        /// <param name="maxn">最大</param>
         /// <returns></returns>
-        public static double Random_Double(double maxn, double minn) {
+        public static double Random_Double(double minn, double maxn) {
             Random random = new Random();
-            return (maxn - minn) * random.NextDouble();
+            return minn + (maxn - minn) * random.NextDouble();
         }
-        public static double Random_Double(double maxn, double minn, int seed) {
+        public static double Random_Double(double minn, double maxn, int seed) {
             Random random = new Random(seed);
-            return (maxn - minn) * random.NextDouble();
+            return minn + (maxn - minn) * random.NextDouble();
+        }
+        public static int Random_int(int min, int max) {
+            Random random = new Random();
+            return (int)(Random_Double(min, max + 1));
         }
     }
 }

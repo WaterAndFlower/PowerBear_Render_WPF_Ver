@@ -7,20 +7,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PowerBear_Render_WPF_Ver.GameObjects
-{
+namespace PowerBear_Render_WPF_Ver.GameObjects {
     public struct HitResult {
-        public Vector3d p;
-        public Vector3d normal;
+        public Vector3d p; // 击中的坐标点
+        public Vector3d normal; // 击中的法线
         public double t; // 射线碰撞后at(t)参数
         public bool front_face; //T:射线从表面的外面射入，F:射线从表面内面摄入
-        public Material mat;
+        public Material mat; // 击中之后，根据材质的表现，计算光之后的行为
+        /// <summary>
+        /// 击中点的u和v坐标
+        /// </summary>
+        public double u, v;
         public void Set_Face_Normal(Ray r, Vector3d outward_normal) {
             front_face = Vector3d.Dot(r.direction, outward_normal) < 0;
             normal = front_face ? outward_normal : -1.0d * outward_normal;//取反，便于计算
         }
     };
     public abstract class HitTable {
+        /// <summary>
+        /// 光线求交点
+        /// </summary>
+        /// <param name="ray">一个Ray光线</param>
+        /// <param name="t_min">Ray光线t值裁剪[t_min,t_max)</param>
+        /// <param name="t_max">Ray光线最大t值</param>
+        /// <param name="hitResult">out 回调击中信息</param>
+        /// <returns></returns>
         public abstract bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult);
+        public virtual bool Bounding_Box(out AABB? output_box) { output_box = null; return false; }
+        public bool needDebug = false;
     }
 }

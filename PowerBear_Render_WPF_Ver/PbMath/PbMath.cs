@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PowerBear_Render_WPF_Ver.Lights;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

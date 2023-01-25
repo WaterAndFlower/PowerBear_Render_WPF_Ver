@@ -30,6 +30,8 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         public Vector3d Normalized() { // 归一化向量
             return this / this.Length();
         }
+        // 定义索引器
+        public double this[int i] { get { return e[i]; } }
         // Static Function
         public static Vector3d Vector3DUse(double x, double y, double z) { return new Vector3d(x, y, z); }
         public static Vector3d operator -(Vector3d a, Vector3d b) {
@@ -70,6 +72,9 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         public static Vector3d Clamp(Vector3d x) {
             return new Vector3d(PbMath.Clamp(x.x()), PbMath.Clamp(x.y()), PbMath.Clamp(x.z()));
         }
+        public static Vector3d ClampRange(Vector3d x) {
+            return new Vector3d(x.x() - (int)(x.x()), x.y() - (int)(x.y()), x.z() - (int)(x.z()));
+        }
         /// <summary>
         /// 随机返回一个在单位球内的向量
         /// </summary>
@@ -90,6 +95,8 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
             var r = Math.Sqrt(Math.Abs(1.0d - z * z));
             return new Vector3d(r * Math.Cos(a), r * Math.Sin(a), z);
         }
+
+        public static Vector3d Zero { get; } = new Vector3d(0, 0, 0);
 
         // Structures Math
         public double[] e = new double[3];

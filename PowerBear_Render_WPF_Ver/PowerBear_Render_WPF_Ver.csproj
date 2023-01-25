@@ -20,8 +20,4 @@
     <Resource Include="Resources\蟹堡王.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Lights\" />
-  </ItemGroup>
-
 </Project>

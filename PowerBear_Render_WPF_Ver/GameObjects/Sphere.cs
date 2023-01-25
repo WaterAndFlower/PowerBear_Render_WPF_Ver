@@ -46,7 +46,27 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             var out_normal = (hitResult.p - center) / radius;
             hitResult.Set_Face_Normal(ray, out_normal);
             hitResult.mat = this.mat;
+            //保存UV 到 HitResult
+            Sphere.Get_Sphere_UV(out_normal, out hitResult.u, out hitResult.v);
             return true;
+        }
+
+        public override bool Bounding_Box(out AABB output_box) {
+            var t = new Vector3d(radius, radius, radius);
+            output_box = new AABB(center - t, center + t);
+            return true;
+        }
+        /// <summary>
+        /// 返回在球上的u和v坐标，通过球的法线方向来判断
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="u">out u</param>
+        /// <param name="v">out v</param>
+        public static void Get_Sphere_UV(Vector3d p, out double u, out double v) {
+            var theta = Math.Acos(-p.y());
+            var phi = Math.Atan2(-p.z(), p.x()) + Math.PI;
+            u = phi / (2 * Math.PI);
+            v = theta / Math.PI;
         }
     }
 }

@@ -126,7 +126,7 @@ namespace PowerBear_Render_WPF_Ver {
             TimeUseLabel.Content = val.Item1.ToString() + " " + val.Item2.ToString() + " " + e.ProgressPercentage.ToString();
 
             if (GobVar.AllowPreview) {
-                GobVar.wBitmap1 = GobVar.BitmapWrPixels(GobVar.wBitmap1, val.Item3);
+                GobVar.wBitmap1 = GobVar.BitmapWritePixels(GobVar.wBitmap1, val.Item3);
                 MainImage.Source = GobVar.wBitmap1;
             }
         }
@@ -172,13 +172,13 @@ namespace PowerBear_Render_WPF_Ver {
                     renderDetails.UICpus = "1 Core";
                     break;
                     case 1:
-                    t = 4;
+                    t = 2;
                     break;
                     case 2:
-                    t = 8;
+                    t = 4;
                     break;
                 }
-                renderDetails.UICpus = $"{t} Core";
+                renderDetails.UICpus = $"{t * 2} Core";
                 renderDetails.Refush();
                 backgroundWorker.RunWorkerAsync(new ToRenderDispter() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = mCamera, cpus = t });
             }
