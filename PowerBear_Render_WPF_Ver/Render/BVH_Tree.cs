@@ -21,10 +21,22 @@ namespace PowerBear_Render_WPF_Ver.Render {
             Console.BackgroundColor = ConsoleColor.Black;
             sw.Stop();
         }
+        /// <summary>
+        /// 区间[start,end)
+        /// </summary>
         public BVH_Tree(IEnumerable<HitTable> src_objects, int start, int end) {
             Stopwatch sw = new();
             sw.Start();
             BVH_Node = new BVH_Node(src_objects, start, end);
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.WriteLine($"BVH构建完成了，总共：{src_objects.Count()}元素，耗时：{sw.Elapsed.TotalMilliseconds} ms");
+            Console.BackgroundColor = ConsoleColor.Black;
+            sw.Stop();
+        }
+        public BVH_Tree(IEnumerable<HitTable> src_objects) {
+            Stopwatch sw = new();
+            sw.Start();
+            BVH_Node = new BVH_Node(src_objects, 0, src_objects.Count());
             Console.BackgroundColor = ConsoleColor.Green;
             Console.WriteLine($"BVH构建完成了，总共：{src_objects.Count()}元素，耗时：{sw.Elapsed.TotalMilliseconds} ms");
             Console.BackgroundColor = ConsoleColor.Black;

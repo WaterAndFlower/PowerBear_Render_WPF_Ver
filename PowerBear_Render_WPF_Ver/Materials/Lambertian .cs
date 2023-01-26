@@ -8,9 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PowerBear_Render_WPF_Ver.Materials
-{
+namespace PowerBear_Render_WPF_Ver.Materials {
     public class Lambertian : Material {
+        /// <summary>
+        /// 默认白色小球材质和纹理颜色
+        /// </summary>
+        public Lambertian() { }
+        public Lambertian(double r, double g, double b) { this.albedo = new Vector3d(r, g, b); }
         public Lambertian(Vector3d albedo) { this.albedo = albedo; }
         public Lambertian(Texture texture) { this.mTexture = texture; }
         public Lambertian(Vector3d albedo, Texture texture) { this.albedo = albedo; this.mTexture = texture; }

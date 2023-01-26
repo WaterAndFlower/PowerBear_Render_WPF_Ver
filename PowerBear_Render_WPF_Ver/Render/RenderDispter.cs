@@ -57,6 +57,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
             HitResult hitResult;
             if (depth <= 0) return new Vector3d(0, 0, 0);
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
+                //return new Vector3d(1, 0, 0);
                 Ray scattered;
                 Vector3d attenuation, emitColor = hitResult.mat.Emit(hitResult.u, hitResult.v, hitResult.p);
                 if (hitResult.mat.Scatter(ray, hitResult, out attenuation, out scattered)) {
@@ -91,16 +92,31 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 var material_Light = new DiffuseLightMat(new Solid_Color(10d, 10 * 0.45d, 0.40d), 1);
                 // 处理世界场景数据
                 Hittable_List world = new Hittable_List();
-                //world.Add(new Sphere(new Vector3d(0, -100.5, -1), 100, material_center));
-                world.Add(new Sphere(new Vector3d(0, 0, -1), 1, material_ImageMat));
+
+                var zz = -1d;
+                Vector3d p0 = new(-1, 0, 0), p1 = new(1, 1, zz), p2 = new(1, -1, zz);
+
+
+                //world.Add(new Triangle(p0, p1, p2, new Lambertian(0.2, 0.2, 0)));
+
+                ObjModel md = new ObjModel(@"C:\Users\PowerBear\Desktop\out.obj");
+                world.Add(md);
+
+                world.Add(new Sphere(new Vector3d(0, -100, -1), 100, material_checker));
+                //world.Add(new Sphere(new Vector3d(0, 0, -1), 1, material_ImageMat));
                 //world.Add(new DielectricSphere(new Vector3d(-1, 0, -1), 0.5, material_glass));
                 //world.Add(new Sphere(new Vector3d(1, 0, -1), 0.5, material_right));
                 //world.Add(new Sphere(new Vector3d(0, 2, 0), 1, material_Light));
 
                 // world.objects[2].needDebug = true;
+
+
                 // ======BVH Build======
+                Console.WriteLine("构建整个场景的BVH盒子");
                 BVH_Tree worldBvh = new(world);
                 // ---End---
+
+
                 int sample_pixel_count = 1; // MSAA_LVEL=0
                 if (GobVar.MSAA_Level == 1) { sample_pixel_count = 20; } else if (GobVar.MSAA_Level == 2) { sample_pixel_count = 50; } else if (GobVar.MSAA_Level == 3) { sample_pixel_count = 100; }
                 //多线程设定

@@ -1,4 +1,5 @@
 ﻿using PowerBear_Render_WPF_Ver.CameraObj;
+using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace PowerBear_Render_WPF_Ver.DAO {
         public int width, height;
         public Camera mCamera;
         public int cpus; // 使用CPU核心数
+        public Hittable_List hitObjs;
     }
 }

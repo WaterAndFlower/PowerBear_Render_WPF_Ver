@@ -180,7 +180,7 @@ namespace PowerBear_Render_WPF_Ver {
                 }
                 renderDetails.UICpus = $"{t * 2} Core";
                 renderDetails.Refush();
-                backgroundWorker.RunWorkerAsync(new ToRenderDispter() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = mCamera, cpus = t });
+                backgroundWorker.RunWorkerAsync(new ToRenderDispter() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = mCamera, cpus = t, hitObjs = GobVar.fnWorld });
             }
         }
         //选择颜色值

@@ -22,8 +22,19 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         public double Dot(Vector3d b) { // 向量点积
             return e[0] * b.e[0] + e[1] * b.e[1] + e[2] * b.e[2];
         }
+        /// <summary>
+        /// 左手坐标系下的叉乘
+        /// </summary>
         public Vector3d Cross(Vector3d b) {
             return new Vector3d(this.e[1] * b.e[2] - this.e[2] * b.e[1],
+                                this.e[2] * b.e[0] - this.e[0] * b.e[2],
+                                this.e[0] * b.e[1] - this.e[1] * b.e[0]);
+        }
+        /// <summary>
+        /// 右手坐标系下的叉乘
+        /// </summary>
+        public Vector3d CrossRight(Vector3d b) {
+            return -1.0d * new Vector3d(this.e[1] * b.e[2] - this.e[2] * b.e[1],
                                 this.e[2] * b.e[0] - this.e[0] * b.e[2],
                                 this.e[0] * b.e[1] - this.e[1] * b.e[0]);
         }
