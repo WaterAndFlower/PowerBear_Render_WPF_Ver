@@ -29,11 +29,12 @@ namespace PowerBear_Render_WPF_Ver.Textures {
             u = PbMath.PbMath.Clamp(u);
             v = PbMath.PbMath.Clamp(v);
             if (u >= 1) u = 0.999999999d;
-            if (v >= 1) v = 0.999999999d;
             v = 1.0d - v;
-            return scale * GetRGB((int)(height * v), (int)(width * u));
+            if (v >= 1) v = 0.999999999d;
+            return scale * GetRGB(u, v);
         }
-        Vector3d GetRGB(int x, int y) { //左上角是（0，0）右下角是（height-1，width-1）
+        Vector3d GetRGB(double u, double v) { //左上角是（0，0）右下角是（height-1，width-1）
+            int x = (int)(height * v), y = (int)(width * u);
             int index = x * width * 4 + y * 4;
             if (index < 0) index = 0;
             if (index > colors.Length) index = colors.Length - 1;

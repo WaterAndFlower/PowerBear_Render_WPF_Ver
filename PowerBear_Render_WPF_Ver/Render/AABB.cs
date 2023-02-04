@@ -25,13 +25,21 @@ namespace PowerBear_Render_WPF_Ver.Render {
         /// <returns></returns>
         public bool Hit(Ray r, double t_min, double t_max) {
             for (int a = 0; a < 3; a++) {
-                var invD = 1.0d / r.direction[a];
+                // 说明t无论取任何值都碰撞不了
+                if (r.direction[a] == 0 && (r.origin[a] < minimum[a] || r.origin[a] > maximum[a])) {
+                    return false;
+                }
+
+                // 求各个维度t的交集
+                var invD = 1.0d / r.direction[a];//如果分母是0，直接跳过
                 var t0 = (minimum[a] - r.origin[a]) * invD;
                 var t1 = (maximum[a] - r.origin[a]) * invD;
                 if (invD < 0) { var tt = t0; t0 = t1; t1 = tt; }
                 t_min = t0 > t_min ? t0 : t_min;
                 t_max = t1 < t_max ? t1 : t_max;
-                if (t_min >= t_max) { return false; }
+                if (t_min > t_max) { return false; } // 去掉等于号，因为在包围盒的面上，也算触碰成功了
+
+
             }
             return true;
         }

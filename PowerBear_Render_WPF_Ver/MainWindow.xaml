@@ -83,6 +83,14 @@
                                 <ComboBoxItem DataContext="8">8 CORES</ComboBoxItem>
                             </ComboBox>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="10 0 10 0" Content="光线反弹深度" Foreground="White" Width="100"/>
+                            <ComboBox x:Name="Depth_Combox" HorizontalAlignment="Right" Width="91" VerticalAlignment="Center">
+                                <ComboBoxItem >10次</ComboBoxItem>
+                                <ComboBoxItem IsSelected="True">50次</ComboBoxItem>
+                                <ComboBoxItem>100次</ComboBoxItem>
+                            </ComboBox>
+                        </StackPanel>
                         <Label FontSize="14" Content="摄像机参数" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
 
                         <Border Margin="0 5 0 0" x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
@@ -99,11 +107,11 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                                 <Label Foreground="White" HorizontalAlignment="Left">摄像机位置</Label>
                                 <Label Foreground="White">x:</Label>
-                                <TextBox x:Name="CameraPosXTextBox" Width="30" Margin="3 0 0 0">0</TextBox>
+                                <TextBox x:Name="CameraPosXTextBox" Width="30" Margin="3 0 0 0">277.5</TextBox>
                                 <Label Foreground="White">y:</Label>
-                                <TextBox x:Name="CameraPosYTextBox" Width="30" Margin="3 0 0 0">0</TextBox>
+                                <TextBox x:Name="CameraPosYTextBox" Width="30" Margin="3 0 0 0">277.5</TextBox>
                                 <Label Foreground="White">z:</Label>
-                                <TextBox x:Name="CameraPosZTextBox" Width="30" Margin="3 0 0 0">1</TextBox>
+                                <TextBox x:Name="CameraPosZTextBox" Width="30" Margin="3 0 0 0">-10</TextBox>
                             </StackPanel>
                         </Border>
                         <Border Margin="0 5 0 0">
@@ -120,7 +128,7 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Label Foreground="White">摄像机观察点　z:</Label>
-                                    <Slider x:Name="uCameraViewZSlider" Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="-1"></Slider>
+                                    <Slider x:Name="uCameraViewZSlider" Width="100" VerticalAlignment="Center" Minimum="-1" Maximum="1" Value="1"></Slider>
                                     <Label Foreground="White" Content="{Binding ElementName=uCameraViewZSlider,Path=Value}"/>
                                 </StackPanel>
                             </StackPanel>

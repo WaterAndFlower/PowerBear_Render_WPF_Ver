@@ -19,7 +19,7 @@ using PowerBear_Render_WPF_Ver.CameraObj;
 using PowerBear_Render_WPF_Ver.Materials;
 using PowerBear_Render_WPF_Ver.Textures;
 using PowerBear_Render_WPF_Ver.Lights;
-
+using ILGPU;
 namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
     /// 多线程类 规定（1，1）图像左上角（height，width）图像右下角
@@ -67,18 +67,22 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 }
             }
             // 返回背景颜色 TODO:使用一个背景小球，采样
-            //return GobVar._BackColor;
+            return GobVar._BackColor;
             Vector3d directNormal = ray.direction.Normalized();
             var t = 0.7 * (directNormal.y() + 1.0d);
             var res = (1.0d - t) * Vector3d.Vector3DUse(1, 1, 1) + t * GobVar._BackColor;
             return res;
         }
-        public void doRender() {
+        //CUDA：https://blog.csdn.net/theadore2017/article/details/110919384
+        //利用GPU进行并行运算
+        public void DoRender() {
             var imgTexture = new ImageTexture(@"C:\Users\PowerBear\source\repos\PowerBear_Render_WPF_Ver\PowerBear_Render_WPF_Ver\Resources\Earth.jpg", 1d);
 
             try {
                 Camera camera = mCamera;
                 if (camera == null) throw new Exception("摄像机为空，啊哈！") { };
+
+
                 // 材质属性
                 var material_ground = new Lambertian(new Vector3d(0.2d, 0.3d, 0.0d));
                 var texture_Perlin = new NoiseTexture(6);
@@ -98,11 +102,13 @@ namespace PowerBear_Render_WPF_Ver.Render {
 
 
                 //world.Add(new Triangle(p0, p1, p2, new Lambertian(0.2, 0.2, 0)));
+                var objMat = new Lambertian(new ImageTexture(@"C:\Users\PowerBear\Desktop\Doc\大创渲染器\中间过程演示\Model\依依\依依（1）.png"));
+                ObjModel md = new ObjModel(@"C:\Users\PowerBear\Desktop\Doc\大创渲染器\中间过程演示\Model\依依\依依（1）.obj", objMat);
 
-                ObjModel md = new ObjModel(@"C:\Users\PowerBear\Desktop\out.obj");
-                world.Add(md);
 
-                world.Add(new Sphere(new Vector3d(0, -100, -1), 100, material_checker));
+
+                //world.Add(new Sphere(new Vector3d(0, -100, -1), 100, material_checker));
+
                 //world.Add(new Sphere(new Vector3d(0, 0, -1), 1, material_ImageMat));
                 //world.Add(new DielectricSphere(new Vector3d(-1, 0, -1), 0.5, material_glass));
                 //world.Add(new Sphere(new Vector3d(1, 0, -1), 0.5, material_right));
@@ -110,7 +116,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
 
                 // world.objects[2].needDebug = true;
 
-
+                world = GobVar.Cornell_Box();
+                // world.Add(md);
                 // ======BVH Build======
                 Console.WriteLine("构建整个场景的BVH盒子");
                 BVH_Tree worldBvh = new(world);
@@ -125,7 +132,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 };
                 int pixelsCount = 0;
 
-                //Ray ray = new Ray(new Vector3d(x: 0, y: 0, z: 1), new Vector3d(x: -0.5563959061483481, y: 0.2571223505685548, z: -1));
+                // Debug
+                //Ray ray = new Ray(new Vector3d(x: -10, y: 0, z: 1), new Vector3d(x: 0, y: 0, z: -1));
                 //Ray_Color(ray, worldBvh, 50);
 
 
@@ -140,15 +148,21 @@ namespace PowerBear_Render_WPF_Ver.Render {
                             var u = (1.0d * j + uRandom) / width;
                             var v = (1.0d * i + vRandom) / height;
                             Ray ray = camera.GetRay(u, v);
-                            colorRes += Vector3d.Clamp(Ray_Color(ray, worldBvh, 50));
+                            colorRes += Ray_Color(ray, worldBvh, 50);
                         }
                         // DONE
-                        var writeColor = colorRes / sample_pixel_count;//Gamma矫正
+
+                        var writeColor = colorRes / sample_pixel_count;
+                        writeColor = Vector3d.Clamp(writeColor);
+                        //Gamma矫正
                         writeColor.e[0] = Math.Sqrt(writeColor.e[0]);
                         writeColor.e[1] = Math.Sqrt(writeColor.e[1]);
                         writeColor.e[2] = Math.Sqrt(writeColor.e[2]);
+
                         this.SetColorToBytes(i, j, new PbColorRGB(writeColor).ConvertToSysColor());
                         pixelsCount++;
+
+
                         //监听刷新
                         if (GobVar.NeedFlush1) {
                             _BackWorker.ReportProgress((int)(pixelsCount * 1.0d / (this.height * this.width) * 100), new Tuple<int, int, byte[]>(i, j, this.pixelColorBytes));

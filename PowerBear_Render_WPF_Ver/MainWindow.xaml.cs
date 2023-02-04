@@ -103,7 +103,7 @@ namespace PowerBear_Render_WPF_Ver {
             renderDsp._BackWorker = backgroundWorker;
             renderDsp.cpus = data.cpus;
 
-            renderDsp.doRender();
+            renderDsp.DoRender();
             e.Result = renderDsp;
             var stop = DateTime.Now;
             try {
@@ -196,7 +196,7 @@ namespace PowerBear_Render_WPF_Ver {
 
         void SaveWtableBmp(Object sender, RoutedEventArgs e) {
             String appStartupPath = System.IO.Directory.GetCurrentDirectory() + @"\Out";
-            var saveName = appStartupPath + @"\saveData.png";
+            var saveName = appStartupPath + $"\\saveData{DateTime.Now.ToString("yy-MM-dd hh\\mm\\ss")}.png";
             if (!Directory.Exists(appStartupPath)) { Directory.CreateDirectory(appStartupPath); }
             using (FileStream stream = new FileStream(saveName, FileMode.Create)) {
                 PngBitmapEncoder pngBitmapEncoder = new PngBitmapEncoder();
@@ -207,7 +207,7 @@ namespace PowerBear_Render_WPF_Ver {
             if (btnRes.Equals(MessageBoxResult.Yes)) {
                 Process ExplorerWindowProcess = new Process();
                 ExplorerWindowProcess.StartInfo.FileName = "explorer.exe";
-                ExplorerWindowProcess.StartInfo.Arguments = saveName;
+                ExplorerWindowProcess.StartInfo.Arguments = appStartupPath; //saveName 或 appStartupPath
                 ExplorerWindowProcess.Start();
             }
         }

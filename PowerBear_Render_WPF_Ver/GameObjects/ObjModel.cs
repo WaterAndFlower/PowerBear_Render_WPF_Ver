@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Shapes;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
     public struct ObjData {
@@ -27,7 +28,10 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public string objName = "";
         // Obj模型的材质，可以带贴图玩玩
         public Material mat = new Lambertian(0.5d, 0.5d, 0.5d);//此物体的材质
-        public ObjModel(string path) {
+
+        public Hittable_List tList = new Hittable_List(); // 由于Tree算法有点问题，这个是调试，最后记得注释掉
+
+        void ObjBuild(string path) {
             //使得下标都是从1开始
             vertexsPos.Add(Vector3d.Zero);
             vertexsNormal.Add(Vector3d.Zero);
@@ -55,7 +59,11 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
                             var index = temp.Split('/');
                             faceData.Add(new ObjData(int.Parse(index[0]), int.Parse(index[1]), int.Parse(index[2])));
                         }
+
                         mTriangle.Add(new Triangle(vertexsPos[faceData[stIndex].vertIdex], vertexsPos[faceData[stIndex + 1].vertIdex], vertexsPos[faceData[stIndex + 2].vertIdex], stIndex, stIndex + 1, stIndex + 2));
+
+                        tList.Add(mTriangle[mTriangle.Count - 1]);
+
                     } else if (line.StartsWith("o")) { //模型名字
                         var res = line.Split(' ');
                         objName = res[1];
@@ -71,16 +79,32 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
                 MessageBox.Show($"读取Obj格式文件出错\n{e.Message}\nOBJ名称：{objName}");
             }
         }
+        public ObjModel(string path, Material mat) {
+            ObjBuild(path);
+            this.mat = mat;
+        }
+        public ObjModel(string path) {
+            ObjBuild(path);
+        }
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
+
+            //var tp = tList.Hit(ray, t_min, t_max, out hitResult);
+
             var tp = mBVH.Hit(ray, t_min, t_max, out hitResult);
+
             if (tp == false) { return false; }
             // 从三角形局部坐标，转为整个Obj的UV
             var recObj = hitResult.hitObj as Triangle;//都是三角面
-
+            // 根据读入Obj的顶点法线，线性插值，法线方向
             var resOutNormal = hitResult.u * vertexsNormal[faceData[recObj.p1Index].NorIdex] + hitResult.v * vertexsNormal[faceData[recObj.p2Index].NorIdex] + (1 - hitResult.u - hitResult.v) * vertexsNormal[faceData[recObj.p0Index].NorIdex];
+            //按照比例混合U和V
+            hitResult.u = hitResult.u * vertexsUV[faceData[recObj.p1Index].TexIdex].Item1 + hitResult.v * vertexsUV[faceData[recObj.p2Index].TexIdex].Item1 + (1 - hitResult.u - hitResult.v) * vertexsUV[faceData[recObj.p0Index].TexIdex].Item1;
+
+            hitResult.v = hitResult.u * vertexsUV[faceData[recObj.p1Index].TexIdex].Item2 + hitResult.v * vertexsUV[faceData[recObj.p2Index].TexIdex].Item2 + (1 - hitResult.u - hitResult.v) * vertexsUV[faceData[recObj.p0Index].TexIdex].Item2; ;
 
             hitResult.Set_Face_Normal(ray, resOutNormal);
             hitResult.mat = this.mat;
+
             return tp;
         }
         public override bool Bounding_Box(out AABB? output_box) {

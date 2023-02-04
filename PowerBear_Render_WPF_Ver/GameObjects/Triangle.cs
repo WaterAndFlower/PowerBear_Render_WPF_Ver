@@ -9,7 +9,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// </summary>
     public class Triangle : HitTable {
         public Vector3d[] pointPos = new Vector3d[3]; // 三角形在三维空间中的点
-        public int p0Index, p1Index, p2Index;//专门给OBJ模型用的顶点索引
+        public int p0Index, p1Index, p2Index;//专门给OBJ模型用的Face面索引
         public Material mat = new Lambertian();
         public Triangle(Vector3d p0, Vector3d p1, Vector3d p2) { this.pointPos[0] = p0; this.pointPos[1] = p1; this.pointPos[2] = p2; }
         public Triangle(Vector3d p0, Vector3d p1, Vector3d p2, int index0, int index1, int index2) { this.pointPos[0] = p0; this.pointPos[1] = p1; this.pointPos[2] = p2; this.p0Index = index0; this.p1Index = index1; this.p2Index = index2; }
