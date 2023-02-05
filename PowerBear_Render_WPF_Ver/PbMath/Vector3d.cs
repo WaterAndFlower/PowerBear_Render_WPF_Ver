@@ -42,7 +42,7 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
             return this / this.Length();
         }
         // 定义索引器
-        public double this[int i] { get { return e[i]; } }
+        public double this[int i] { get { return e[i]; } set { e[i] = value; } }
         // Static Function
         public static Vector3d Vector3DUse(double x, double y, double z) { return new Vector3d(x, y, z); }
         public static Vector3d operator -(Vector3d a, Vector3d b) {

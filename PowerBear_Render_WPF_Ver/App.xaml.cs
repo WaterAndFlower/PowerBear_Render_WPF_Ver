@@ -16,6 +16,7 @@ namespace PowerBear_Render_WPF_Ver {
         public App() {
             InitializeComponent();
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            GobVar.AppRunInit();
         }
     }
 }

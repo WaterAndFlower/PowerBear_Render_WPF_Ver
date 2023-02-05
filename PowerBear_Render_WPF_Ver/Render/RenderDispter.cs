@@ -19,7 +19,6 @@ using PowerBear_Render_WPF_Ver.CameraObj;
 using PowerBear_Render_WPF_Ver.Materials;
 using PowerBear_Render_WPF_Ver.Textures;
 using PowerBear_Render_WPF_Ver.Lights;
-using ILGPU;
 namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
     /// 多线程类 规定（1，1）图像左上角（height，width）图像右下角
@@ -117,6 +116,11 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 // world.objects[2].needDebug = true;
 
                 world = GobVar.Cornell_Box();
+                var box1 = new Box(new(130, 0, 65), new(295, 165, 230));
+
+                var box2 = new Box(new(265, 0, 295), new(430, 330, 460));
+
+
                 // world.Add(md);
                 // ======BVH Build======
                 Console.WriteLine("构建整个场景的BVH盒子");

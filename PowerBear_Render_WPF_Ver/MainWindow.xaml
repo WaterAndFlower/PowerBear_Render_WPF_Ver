@@ -9,6 +9,7 @@
         Title="小熊渲染器" Height="508.6" Width="956">
     <!--软件整体Grid-->
     <Grid Background="#FF1F1F1F" x:Name="MainGrid">
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="270px"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -150,8 +151,53 @@
                     </LinearGradientBrush>
                 </TabItem.Background>
                 <!--Tab滚动框-->
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Top">
+                    <StackPanel>
+                        <Label FontSize="14" Content="物体列表" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <ToolBarPanel>
+                            <ToolBar>
+                                <xctk:DropDownButton>
+                                    文件
+                                </xctk:DropDownButton>
+                                <xctk:DropDownButton>
+                                    编辑
+                                </xctk:DropDownButton>
+                                <Button>帮助</Button>
+                            </ToolBar>
+                        </ToolBarPanel>
+                        <ListBox x:Name="uObjectsListBox" SelectedIndex="0" Height="100" Background="{x:Null}" Foreground="#FFEBDFFF">
+                            <ListBoxItem>小球</ListBoxItem>
+                            <ListBoxItem>Combox</ListBoxItem>
+                        </ListBox>
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" >
+                            <Label Foreground="#FFD0BCBC">选中:</Label>
+                            <Label Foreground="White" Content="{Binding ElementName=uObjectsListBox,Path=SelectedIndex}"></Label>
+                        </StackPanel>
+                        <Label FontSize="14" Content="物体变换" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <Border Margin="0 5 0 0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
 
+                                <Label Foreground="White" HorizontalAlignment="Left">坐标</Label>
+                                <Label Foreground="White">x:</Label>
+                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <Label Foreground="White">y:</Label>
+                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <Label Foreground="White">z:</Label>
+                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                            </StackPanel>
+                        </Border>
+                        <Border Margin="0 5 0 0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                <Label Foreground="White" HorizontalAlignment="Left">y轴旋转</Label>
+                                <Slider Minimum="-180" Maximum="180" Value="0" Width="144"></Slider>
+                            </StackPanel>
+                        </Border>
+                        <Button Width="106" HorizontalAlignment="Left" Background="#FFF8DE84" >保存</Button>
+                        <Label Foreground="#FFFFC5C5">*不报错将不会生效</Label>
+                        <Label FontSize="14" Content="增加或删除" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <Button>新增小球</Button>
+                        <Button Foreground="Red">删除（最后一个）</Button>
+                    </StackPanel>
                 </ScrollViewer>
             </TabItem>
             <!--Tab 光源-->
@@ -165,7 +211,20 @@
                 </TabItem.Background>
                 <!--Tab滚动框-->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-
+                    <StackPanel>
+                        <Label FontSize="14" Content="场景灯光光源数据" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <ListBox x:Name="uLightsListBox" SelectedIndex="0" Height="100" Background="{x:Null}" Foreground="#FFEBDFFF">
+                            <ListBoxItem>头顶光</ListBoxItem>
+                            <ListBoxItem>世界光</ListBoxItem>
+                        </ListBox>
+                        <Button>新增</Button>
+                        <Button Foreground="Red">删除</Button>
+                        <Label FontSize="14" Content="灯光属性" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <Label Foreground="White">光线颜色</Label>
+                        <xctk:ColorPicker></xctk:ColorPicker>
+                        <Label Foreground="White">激发亮度</Label>
+                        <Slider Minimum="1.1" Maximum="40" Value="10"></Slider>
+                    </StackPanel>
                 </ScrollViewer>
             </TabItem>
 
@@ -180,7 +239,14 @@
                 </TabItem.Background>
                 <!--Tab滚动框-->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-
+                    <StackPanel>
+                        <Label FontSize="14" Content="Remote Server IP" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <TextBox>http:\\192.168.0.1:1219</TextBox>
+                        <Label FontSize="14" Content="Function" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <Button>推送渲染任务</Button>
+                        <Button>拉取渲染任务</Button>
+                        <Button>同步服务器中数据</Button>
+                    </StackPanel>
                 </ScrollViewer>
             </TabItem>
         </TabControl>

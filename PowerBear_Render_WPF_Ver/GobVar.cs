@@ -46,7 +46,7 @@ namespace PowerBear_Render_WPF_Ver {
 
             objects.Add(new YZ_Rect(0, 555, 0, 555, 555, green));
             objects.Add(new YZ_Rect(0, 555, 0, 555, 0, red));
-            objects.Add(new XZ_Rect(113, 443, 127, 432, 554, light));
+            objects.Add(new XZ_Rect(213, 343, 227, 332, 554.9, light));
             objects.Add(new XZ_Rect(0, 555, 0, 555, 0, white));
             objects.Add(new XZ_Rect(0, 555, 0, 555, 555, white));
             objects.Add(new XY_Rect(0, 555, 0, 555, 555, white));
@@ -56,6 +56,9 @@ namespace PowerBear_Render_WPF_Ver {
 
 
         //======Gobal Functions======
+        public static void AppRunInit() { //在App.xaml.cs里面
+            Console.WriteLine(GobVar.TestDLL(1, 2));
+        }
         /// <summary>
         /// 将数组中的数据写入到Bitmap贴图里面
         /// </summary>
@@ -76,5 +79,13 @@ namespace PowerBear_Render_WPF_Ver {
         public static void BitmapWritePixels(ref WriteableBitmap bt, Byte[] pixelColorBytes) {
             bt.WritePixels(new Int32Rect(0, 0, (int)bt.Width, (int)bt.Height), pixelColorBytes, bt.BackBufferStride, 0);
         }
+        /// <summary>
+        /// 测试C++部分的DLL文件是否链接成功了
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        [DllImport("PowerBear_Render_CPP_DLL")]
+        public extern static int TestDLL(int a, int b);
     }
 }
