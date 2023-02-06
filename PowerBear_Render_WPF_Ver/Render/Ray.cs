@@ -11,7 +11,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
     /// </summary>
     public class Ray : ICloneable {
         //Basis
-        public Ray(Vector3d o, Vector3d d) { origin = o; direction = d; }
+        public Ray(Vector3d o, Vector3d d) { origin = new(o); direction = new(d); }
+        public Ray(Ray r) { origin = new(r.origin); direction = new(r.direction); }
         public Vector3d At(double t) { return origin + t * direction; }
 
         public Object Clone() {

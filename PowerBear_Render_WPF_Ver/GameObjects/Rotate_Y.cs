@@ -1,18 +1,32 @@
 ﻿using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
+using System.Windows.Controls;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
+    /// <summary>
+    /// 绕着世界坐标轴的O点进行旋转，如果想要旋转正确，建议先在O点旋转完成，再去平移
+    /// </summary>
     public class Rotate_Y : HitTable {
         public HitTable ptr;
-        public double sin_theta, cos_theta;
+        public double angle, radians, sin_theta, cos_theta;
         public bool has_box;
         public AABB? bbox;
+        Matrix3x3d Roate, RoateT;
         public Rotate_Y(HitTable ptr, double angle) {
             this.ptr = ptr;
-            var radians = PbMath.PbMath.Degress_To_Radians(angle);
+            this.angle = angle;
+            this.radians = PbMath.PbMath.Degress_To_Radians(angle);
             this.sin_theta = Math.Sin(radians);
             this.cos_theta = Math.Cos(radians);
+
+            Roate = new(new double[] { cos_theta,-sin_theta,0,
+                                       0        ,         0,0,
+                                       sin_theta,cos_theta, 1});
+            RoateT = new(new double[] { cos_theta,sin_theta,0,
+                                       0        ,         0,0,
+                                       -sin_theta,cos_theta, 1});
+
             // 大部分GameObject拥有包围盒子，如果没有包围盒，那么光线求交将在BVH过程中始终不正常
             has_box = ptr.Bounding_Box(out bbox);
 
@@ -47,9 +61,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         }
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
             // 射线源点
-            var origin = ray.origin;
+            var origin = new Vector3d(ray.origin);
             // 射线方向
-            var direction = ray.direction;
+            var direction = new Vector3d(ray.direction);
 
             // 射线原点先经过 -θ的旋转
             origin[0] = cos_theta * ray.origin[0] - sin_theta * ray.origin[2];
@@ -67,10 +81,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
                 return false;
 
             // 算出的碰撞点p
-            var p = hitResult.p;
+            var p = new Vector3d(hitResult.p);
             // 算出的碰撞法线normal
-            var normal = hitResult.normal;
-
+            var normal = new Vector3d(hitResult.normal);
             // 碰撞点p需要正向旋转θ
             p[0] = cos_theta * hitResult.p[0] + sin_theta * hitResult.p[2];
             p[2] = -sin_theta * hitResult.p[0] + cos_theta * hitResult.p[2];
@@ -81,7 +94,8 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
 
             // 记录新的碰撞点和碰撞法线
             hitResult.p = p;
-            hitResult.Set_Face_Normal(rotated_r, normal);
+            //hitResult.normal = normal;
+            hitResult.Set_Face_Normal(ray, normal); // 有Bug，已经修正
 
             return true;
         }

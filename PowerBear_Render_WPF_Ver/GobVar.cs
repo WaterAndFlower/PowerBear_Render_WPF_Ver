@@ -58,6 +58,7 @@ namespace PowerBear_Render_WPF_Ver {
         //======Gobal Functions======
         public static void AppRunInit() { //在App.xaml.cs里面
             Console.WriteLine(GobVar.TestDLL(1, 2));
+            Console.WriteLine("和C++的DLL通讯成功");
         }
         /// <summary>
         /// 将数组中的数据写入到Bitmap贴图里面

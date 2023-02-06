@@ -11,6 +11,8 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         // Base Function
         public Vector3d() { }
         public Vector3d(double x, double y, double z) { e[0] = x; e[1] = y; e[2] = z; }
+        public Vector3d(Vector3d v) { this.e[0] = v[0]; this.e[1] = v[1]; this.e[2] = v[2]; }
+        // public Vector3d(Vector3d v) { this.e = v.e; } // Error Function
         public double x() { return e[0]; }
         public double y() { return e[1]; }
         public double z() { return e[2]; }

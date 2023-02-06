@@ -21,6 +21,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public HitTable? hitObj; // 击中的物体是什么，可以为null
         public void Set_Face_Normal(Ray r, Vector3d outward_normal) {
             front_face = Vector3d.Dot(r.direction, outward_normal) < 0;
+            //if (front_face !=true) { Console.WriteLine("No"); }
             normal = front_face ? outward_normal : -1.0d * outward_normal;//取反，便于计算
             normal = normal.Normalized();
         }

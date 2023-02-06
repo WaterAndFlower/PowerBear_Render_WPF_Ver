@@ -211,5 +211,6 @@ namespace PowerBear_Render_WPF_Ver {
                 ExplorerWindowProcess.Start();
             }
         }
+
     }
 }
