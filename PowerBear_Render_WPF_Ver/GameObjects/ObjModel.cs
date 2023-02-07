@@ -29,7 +29,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         // Obj模型的材质，可以带贴图玩玩
         public Material mat = new Lambertian(0.5d, 0.5d, 0.5d);//此物体的材质
 
-        public Hittable_List tList = new Hittable_List(); // 由于Tree算法有点问题，这个是调试，最后记得注释掉
+        // public Hittable_List tList = new Hittable_List(); // 由于Tree算法有点问题，这个是调试，最后记得注释掉
 
         void ObjBuild(string path) {
             //使得下标都是从1开始
@@ -62,7 +62,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
 
                         mTriangle.Add(new Triangle(vertexsPos[faceData[stIndex].vertIdex], vertexsPos[faceData[stIndex + 1].vertIdex], vertexsPos[faceData[stIndex + 2].vertIdex], stIndex, stIndex + 1, stIndex + 2));
 
-                        tList.Add(mTriangle[mTriangle.Count - 1]);
+                        //  tList.Add(mTriangle[mTriangle.Count - 1]);
 
                     } else if (line.StartsWith("o")) { //模型名字
                         var res = line.Split(' ');
@@ -86,6 +86,8 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public ObjModel(string path) {
             ObjBuild(path);
         }
+        ObjModel() { }
+
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
 
             //var tp = tList.Hit(ray, t_min, t_max, out hitResult);
@@ -109,6 +111,17 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         }
         public override bool Bounding_Box(out AABB? output_box) {
             return mBVH.Bounding_Box(out output_box);
+        }
+        public override object Clone() {
+            var res = new ObjModel();
+            foreach (var item in mTriangle) res.mTriangle.Add(item);
+            foreach (var item in vertexsPos) res.vertexsPos.Add(item);
+            foreach (var item in vertexsNormal) res.vertexsNormal.Add(item);
+            foreach (var item in vertexsUV) res.vertexsUV.Add(item);
+            foreach (var item in faceData) res.faceData.Add(item);
+            res.mBVH = new(res.mTriangle);
+            res.mat = this.mat;
+            return res;
         }
     }
 }

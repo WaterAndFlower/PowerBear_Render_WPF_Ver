@@ -48,5 +48,11 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             output_box = new AABB(center - t, center + t);
             return true;
         }
+
+        public override object Clone() {
+            DielectricSphere m = new DielectricSphere(this.center, this.radius);
+            m.mat = this.mat;
+            return m;
+        }
     }
 }

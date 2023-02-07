@@ -1,0 +1,126 @@
+﻿<Window x:Class="PowerBear_Render_WPF_Ver.AddObjectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PowerBear_Render_WPF_Ver" 
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="新增物体" Height="450" Width="800">
+    <!--CSS-->
+    <Window.Resources>
+        <SolidColorBrush x:Key="TitleColor" Color="#FF274E40"></SolidColorBrush>
+    </Window.Resources>
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="13*"></ColumnDefinition>
+            <ColumnDefinition Width="37*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF0EAC00" Offset="0.212"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <StackPanel>
+                <TextBlock FontSize="100" HorizontalAlignment="Center" Foreground="White">+</TextBlock>
+                <TextBlock FontSize="50" HorizontalAlignment="Center" Foreground="White">新增</TextBlock>
+            </StackPanel>
+        </Grid>
+        <ScrollViewer Grid.Column="1">
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="Margin" Value="0 3 0 3"></Setter></Style>
+                </StackPanel.Resources>
+
+                <TextBlock FontSize="25" FontWeight="DemiBold" Padding="4" Background="#FF274E40" Foreground="White">Render</TextBlock>
+
+                <Label FontSize="14" Content="材质属性" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
+                <TextBlock>选择一种材质类型，以此创造物体表面的材质</TextBlock>
+                <TabControl>
+                    <TabItem Header="漫反射材质">
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock>Albedo:</TextBlock>
+                            <xctk:ColorPicker Width="200" SelectedColor="White" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <TextBlock>用于做材质反射光的滤波</TextBlock>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="金属材质">
+
+                    </TabItem>
+                    <TabItem Header="玻璃材质">
+
+                    </TabItem>
+                </TabControl>
+
+                <Label FontSize="14" Content="纹理属性" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
+                <TextBlock>每一个材质包含一个纹理，设定纹理描述材质表面反射率</TextBlock>
+                <TabControl>
+                    <TabItem Header="纯颜色">
+                        <StackPanel HorizontalAlignment="Left">
+                            <xctk:ColorPicker Width="200" SelectedColor="Gray" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <TextBlock>总是返回同一个颜色</TextBlock>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="棋盘纹理">
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock>第一个颜色</TextBlock>
+                            <xctk:ColorPicker Width="200" SelectedColor="White" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <TextBlock>第二个颜色</TextBlock>
+                            <xctk:ColorPicker Width="200" SelectedColor="Green" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <TextBlock>棋盘一样，根据sin波长，进行</TextBlock>
+                            <TextBlock>Scale:</TextBlock>
+                            <Slider Minimum="5" Maximum="20" Value="10"></Slider>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Header="柏林噪声">
+
+                    </TabItem>
+                    <TabItem Header="图像纹理">
+
+                    </TabItem>
+                </TabControl>
+                <Border Height="4"></Border>
+                <TextBlock FontSize="25" FontWeight="DemiBold" Padding="4" Background="#FF274E40" Foreground="White">Object</TextBlock>
+                <!--添加小球-->
+                <Label FontSize="14" Content="添加小球" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
+                <StackPanel Orientation="Horizontal">
+                    <Label>三维坐标</Label>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center">0</TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>球体半径</Label>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">5</TextBox>
+                    <Label>RoateY</Label>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding angleY}"></TextBox>
+                </StackPanel>
+                <Button Click="Button_Click_AddSphere">添加</Button>
+                <!--添加盒体-->
+                <Label FontSize="14" Content="添加盒体Box" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
+                <StackPanel Orientation="Horizontal">
+                    <Label>三维坐标PosMin</Label>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center">0</TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>三维坐标PosMax</Label>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center">0</TextBox>
+                </StackPanel>
+
+                <Button>添加</Button>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

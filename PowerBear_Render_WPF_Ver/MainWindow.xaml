@@ -110,9 +110,9 @@
                                 <Label Foreground="White">x:</Label>
                                 <TextBox x:Name="CameraPosXTextBox" Width="30" Margin="3 0 0 0">0</TextBox>
                                 <Label Foreground="White">y:</Label>
-                                <TextBox x:Name="CameraPosYTextBox" Width="30" Margin="3 0 0 0">2</TextBox>
+                                <TextBox x:Name="CameraPosYTextBox" Width="30" Margin="3 0 0 0">5</TextBox>
                                 <Label Foreground="White">z:</Label>
-                                <TextBox x:Name="CameraPosZTextBox" Width="30" Margin="3 0 0 0">3</TextBox>
+                                <TextBox x:Name="CameraPosZTextBox" Width="30" Margin="3 0 0 0">10</TextBox>
                             </StackPanel>
                         </Border>
                         <Border Margin="0 5 0 0">
@@ -165,9 +165,15 @@
                                 <Button>帮助</Button>
                             </ToolBar>
                         </ToolBarPanel>
-                        <ListBox x:Name="uObjectsListBox" SelectedIndex="0" Height="100" Background="{x:Null}" Foreground="#FFEBDFFF">
-                            <ListBoxItem>小球</ListBoxItem>
-                            <ListBoxItem>Combox</ListBoxItem>
+                        <ListBox SelectionChanged="uObjectsListBox_SelectionChanged" x:Name="uObjectsListBox" SelectedIndex="0" Height="100" Background="{x:Null}" Foreground="#FFEBDFFF">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding needRender}"></CheckBox>
+                                        <TextBlock Text="{Binding objName}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
                         </ListBox>
                         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" >
                             <Label Foreground="#FFD0BCBC">选中:</Label>
@@ -179,24 +185,26 @@
 
                                 <Label Foreground="White" HorizontalAlignment="Left">坐标</Label>
                                 <Label Foreground="White">x:</Label>
-                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <TextBox Width="30" Margin="3 0 0 0" Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.offset[0]}"></TextBox>
                                 <Label Foreground="White">y:</Label>
-                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <TextBox Width="30" Margin="3 0 0 0" Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.offset[1]}"></TextBox>
                                 <Label Foreground="White">z:</Label>
-                                <TextBox Width="30" Margin="3 0 0 0">0</TextBox>
+                                <TextBox Width="30" Margin="3 0 0 0" Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.offset[2]}"></TextBox>
                             </StackPanel>
                         </Border>
                         <Border Margin="0 5 0 0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                                 <Label Foreground="White" HorizontalAlignment="Left">y轴旋转</Label>
-                                <Slider Minimum="-180" Maximum="180" Value="0" Width="144"></Slider>
+                                <Slider x:Name="uSliderRoateY" Minimum="-180" Maximum="180" Value="{Binding ElementName=uObjectsListBox,Path=SelectedItem.angleY}" Width="144"></Slider>
+                                <TextBlock  Text="{Binding ElementName=uSliderRoateY,Path=Value}" Foreground="White"></TextBlock>
                             </StackPanel>
                         </Border>
+                        <TextBox Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.objName}"></TextBox>
                         <Button Width="106" HorizontalAlignment="Left" Background="#FFF8DE84" >保存</Button>
-                        <Label Foreground="#FFFFC5C5">*不报错将不会生效</Label>
+                        <Label Foreground="#FFFFC5C5">*不保存 也 会生效</Label>
                         <Label FontSize="14" Content="增加或删除" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
-                        <Button>新增小球</Button>
-                        <Button Foreground="Red">删除（最后一个）</Button>
+                        <Button Click="Button_Click_AddObject">新增小球</Button>
+                        <Button Foreground="Red" Click="Button_Click_RemoveObject">删除（选中项）</Button>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

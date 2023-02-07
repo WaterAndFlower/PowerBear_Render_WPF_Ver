@@ -1,5 +1,6 @@
 ﻿using PowerBear_Render_WPF_Ver.CameraObj;
 using PowerBear_Render_WPF_Ver.DAO;
+using PowerBear_Render_WPF_Ver.GameObjects;
 using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
@@ -49,7 +50,6 @@ namespace PowerBear_Render_WPF_Ver {
         System.Timers.Timer timertimer = new System.Timers.Timer();
         public MainWindow() {
             InitializeComponent();
-            this.Title = "小熊CPU离线渲染器Ver1.6";
 
             var wb = new WriteableBitmap(500, 500, 96, 96, PixelFormats.Bgra32, null);
             byte[] buffer = new byte[500 * 500 * 4];
@@ -71,6 +71,8 @@ namespace PowerBear_Render_WPF_Ver {
             backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
             backgroundWorker.DoWork += new DoWorkEventHandler(RunThread);
             backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RunWorkDown);
+
+            uObjectsListBox.ItemsSource = GobVar.fnObjects;
         }
         //强制UI进行刷新
         public void UIRefresh() {
@@ -142,45 +144,54 @@ namespace PowerBear_Render_WPF_Ver {
         }
         //开始渲染部分
         private void Button_Click(object sender, RoutedEventArgs e) {
-            GobVar.MSAA_Level = MSAA_Combox.SelectedIndex;
-            timertimer.Start();
-            GC.Collect();
-            //GC.WaitForFullGCComplete();
-            //设定参数
-            this.renderDetails.BitMapSize = RenderWidth.Text + "*" + RenderHeight.Text;
-            this.renderDetails.Refush();
-            GobVar.AllowPreview = cbAllowPreview.IsChecked == true ? true : false;
-            timertimer.Interval = slHzPreview.Value;
+            try {
+                GobVar.MSAA_Level = MSAA_Combox.SelectedIndex;
+                timertimer.Start();
+                GC.Collect();
+                //GC.WaitForFullGCComplete();
+                //设定参数
+                this.renderDetails.BitMapSize = RenderWidth.Text + "*" + RenderHeight.Text;
+                this.renderDetails.Refush();
+                GobVar.AllowPreview = cbAllowPreview.IsChecked == true ? true : false;
+                timertimer.Interval = slHzPreview.Value;
 
-            this.MainImage.Width = int.Parse(RenderWidth.Text);
-            this.MainImage.Height = int.Parse(RenderHeight.Text);
-            //使用一张假图像显示结果
-            GobVar.renderWidth = int.Parse(RenderWidth.Text);
-            GobVar.renderHeight = int.Parse(RenderHeight.Text);
-            GobVar.wBitmap1 = RenderDispter.CreateWriteableBitMap(int.Parse(RenderWidth.Text), int.Parse(RenderHeight.Text));
-            this.MainImage.Source = GobVar.wBitmap1;
-            if (backgroundWorker.IsBusy) { backgroundWorker.CancelAsync(); } else {
-                //启动渲染线程
-                var lookFrom = new Vector3d(double.Parse(CameraPosXTextBox.Text), double.Parse(CameraPosYTextBox.Text), double.Parse(CameraPosZTextBox.Text));
-                var lookAt = new Vector3d(uCameraViewXSlider.Value, uCameraViewYSlider.Value, uCameraViewZSlider.Value);
-                lookAt = lookFrom + lookAt.Normalized();
-                Camera mCamera = new(GobVar.renderWidth, GobVar.renderHeight, uFovSlider.Value, lookFrom, lookAt, new Vector3d(0, 1, 0));
-                var t = 1;
-                switch (CPUs_Combox.SelectedIndex) {
-                    case 0:
-                    t = 1;
-                    renderDetails.UICpus = "1 Core";
-                    break;
-                    case 1:
-                    t = 2;
-                    break;
-                    case 2:
-                    t = 4;
-                    break;
+                this.MainImage.Width = int.Parse(RenderWidth.Text);
+                this.MainImage.Height = int.Parse(RenderHeight.Text);
+                //使用一张假图像显示结果
+                GobVar.renderWidth = int.Parse(RenderWidth.Text);
+                GobVar.renderHeight = int.Parse(RenderHeight.Text);
+                GobVar.wBitmap1 = RenderDispter.CreateWriteableBitMap(int.Parse(RenderWidth.Text), int.Parse(RenderHeight.Text));
+                this.MainImage.Source = GobVar.wBitmap1;
+                if (backgroundWorker.IsBusy) { backgroundWorker.CancelAsync(); } else {
+                    //启动渲染线程
+                    var lookFrom = new Vector3d(double.Parse(CameraPosXTextBox.Text), double.Parse(CameraPosYTextBox.Text), double.Parse(CameraPosZTextBox.Text));
+                    var lookAt = new Vector3d(uCameraViewXSlider.Value, uCameraViewYSlider.Value, uCameraViewZSlider.Value);
+                    lookAt = lookFrom + lookAt.Normalized();
+                    Camera mCamera = new(GobVar.renderWidth, GobVar.renderHeight, uFovSlider.Value, lookFrom, lookAt, new Vector3d(0, 1, 0));
+
+                    var t = 1;
+                    switch (CPUs_Combox.SelectedIndex) {
+                        case 0:
+                        t = 1;
+                        renderDetails.UICpus = "1 Core";
+                        break;
+                        case 1:
+                        t = 2;
+                        break;
+                        case 2:
+                        t = 4;
+                        break;
+                    }
+                    renderDetails.UICpus = $"{t}C{t * 2}T";
+
+                    GobVar.InitRender();
+
+                    renderDetails.Refush();
+                    backgroundWorker.RunWorkerAsync(new ToRenderDispter() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = mCamera, cpus = t, hitObjs = GobVar.fnWorld });
                 }
-                renderDetails.UICpus = $"{t * 2} Core";
-                renderDetails.Refush();
-                backgroundWorker.RunWorkerAsync(new ToRenderDispter() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = mCamera, cpus = t, hitObjs = GobVar.fnWorld });
+            }
+            catch (Exception ex) {
+                System.Windows.MessageBox.Show("不能进行渲染，可能填写数字的地方有误：\n"+ex.Message);
             }
         }
         //选择颜色值
@@ -212,5 +223,20 @@ namespace PowerBear_Render_WPF_Ver {
             }
         }
 
+        private void uObjectsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+
+        }
+
+        private void Button_Click_RemoveObject(object sender, RoutedEventArgs e) {
+            try {
+                GobVar.fnObjects.Remove(GobVar.fnObjects[uObjectsListBox.SelectedIndex]);
+            }
+            catch (Exception ex) { System.Windows.MessageBox.Show("删除不了，原因：\n" + ex.Message); }
+        }
+
+        private void Button_Click_AddObject(object sender, RoutedEventArgs e) {
+            AddObjectWindow adWin = new AddObjectWindow();
+            adWin.ShowDialog();
+        }
     }
 }

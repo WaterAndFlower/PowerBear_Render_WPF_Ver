@@ -14,7 +14,7 @@ namespace PowerBear_Render_WPF_Ver.Textures {
             even = new Solid_Color(evenColor);
         }
         public override Vector3d Value(double u, double v, Vector3d p) {
-            var sines = Math.Sin(10 * p.x()) * Math.Sin(10 * p.y()) * Math.Sin(10 * p.z());
+            var sines = Math.Sin(scale * p.x()) * Math.Sin(scale * p.y()) * Math.Sin(scale * p.z());
             if (sines < 0) {
                 return odd.Value(u, v, p);
             } else {
@@ -22,5 +22,6 @@ namespace PowerBear_Render_WPF_Ver.Textures {
             }
         }
         public Texture odd, even;
+        public double scale { get; set; } = 10;
     }
 }

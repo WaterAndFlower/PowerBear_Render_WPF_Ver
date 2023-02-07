@@ -18,6 +18,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             this.center = center;
             this.radius = radius;
             this.mat = mat;
+            this.objName = "新建小球体";
         }
 
         public Vector3d center = new Vector3d();
@@ -67,6 +68,10 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             var phi = Math.Atan2(-p.z(), p.x()) + Math.PI;
             u = phi / (2 * Math.PI);
             v = theta / Math.PI;
+        }
+
+        public override object Clone() {
+            return new Sphere(this.center, this.radius, this.mat);
         }
     }
 }

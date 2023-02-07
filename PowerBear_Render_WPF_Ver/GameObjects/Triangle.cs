@@ -54,6 +54,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             output_box = new AABB(new Vector3d(xmin, ymin, zmin), new Vector3d(xmax, ymax, zmax));
             return true;
         }
+        public override object Clone() {
+            return new Triangle(this.pointPos[0], this.pointPos[1], this.pointPos[2], this.mat);
+        }
     }
 }
 //https://zhuanlan.zhihu.com/p/405075535

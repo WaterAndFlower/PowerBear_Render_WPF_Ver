@@ -26,7 +26,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             normal = normal.Normalized();
         }
     };
-    public abstract class HitTable {
+    public abstract class HitTable : ICloneable {
+        public string objName { get; set; } = "未命名";
+        public bool needRender { get; set; } = true;
         /// <summary>
         /// 光线求交点
         /// </summary>
@@ -46,5 +48,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         /// 小熊渲染器，渲染管线，在渲染后
         /// </summary>
         public virtual void AfterRendering() { }
+        public virtual object Clone() { throw new NotImplementedException(); }
+
     }
 }

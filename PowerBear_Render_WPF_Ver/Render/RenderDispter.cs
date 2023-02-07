@@ -54,7 +54,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
         Vector3d Ray_Color(Ray ray, HitTable world, int depth) { //投射光线
             HitResult hitResult;
-            if (depth <= 40) return new Vector3d(0, 0, 0);
+            if (depth <= 0) return new Vector3d(0, 0, 0);
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
                 //return new Vector3d(1, 0, 0);
                 Ray scattered;
@@ -80,60 +80,13 @@ namespace PowerBear_Render_WPF_Ver.Render {
             try {
                 Camera camera = mCamera;
                 if (camera == null) throw new Exception("摄像机为空，啊哈！") { };
-
-
-                // 材质属性
-                var material_ground = new Lambertian(new Vector3d(0.2d, 0.3d, 0.0d));
-                var texture_Perlin = new NoiseTexture(6);
-                var material_center = new Lambertian(texture_Perlin);
-                //var material_center = new Lambertian(new Vector3d(0.7d, 0.3d, 0.3d));
-                var material_left = new Dielectric(1.5d);
-                var material_right = new Metal(new Vector3d(0.8d, 0.6d, 0.2d), 0.3d);
-                var material_glass = new Dielectric(index_of_refraction: 1.5d);
-                var material_checker = new Lambertian(new CheckerTexture(new Vector3d(0.2, 0.3, 0.1), new Vector3d(0.9, 0.9, 0.9)));
-                var material_ImageMat = new Lambertian(imgTexture);
-                var material_Light = new DiffuseLightMat(new Solid_Color(10d, 10 * 0.45d, 0.40d), 1);
-                var material_White = new Lambertian(new Solid_Color(0.5d, 0.5d, 0.5d));
-                // 处理世界场景数据
-                Hittable_List world = new Hittable_List();
-
-                var zz = -1d;
-                Vector3d p0 = new(-1, 0, 0), p1 = new(1, 1, zz), p2 = new(1, -1, zz);
-
-
-                //world.Add(new Triangle(p0, p1, p2, new Lambertian(0.2, 0.2, 0)));
+                
                 var objMat = new Lambertian(new ImageTexture(@"C:\Users\PowerBear\Desktop\Doc\大创渲染器\中间过程演示\Model\依依\依依（1）.png"));
                 HitTable md = new ObjModel(@"C:\Users\PowerBear\Desktop\Doc\大创渲染器\中间过程演示\Model\依依\依依（1）.obj", objMat);
-                //HitTable md = new Box(new(-2, -1, -1), new(2, 1, 1));
-                md = new Rotate_Y(md, -60d);
-                //md = new Translate(md, new(0, 0, 0));
-
-
-                //world.Add(new Sphere(new Vector3d(0, -100, -1), 100, material_checker));
-
-                //world.Add(new Sphere(new Vector3d(0, 0, -1), 1, material_ImageMat));
-                //world.Add(new DielectricSphere(new Vector3d(-1, 0, -1), 0.5, material_glass));
-                //world.Add(new Sphere(new Vector3d(1, 0, -1), 0.5, material_right));
-                //world.Add(new Sphere(new Vector3d(0, 2, 0), 1, material_Light));
-
-                // world.objects[2].needDebug = true;
-
-                //world = GobVar.Cornell_Box();
-                HitTable box1 = new Box(new(130, 0, 65), new(295, 165, 230));
-                // box1 = new Rotate_Y(box1, 15);
-                // box1 = new Translate(box1, new(265, 0, 295));
-
-                HitTable box2 = new Box(new(265, 0, 295), new(430, 330, 460));
-
-                // world.Add(box1);
-                // world.Add(box2);
-                world.Add(md);
-
-
 
                 // ======BVH Build======
                 Console.WriteLine("构建整个场景的BVH盒子");
-                BVH_Tree worldBvh = new(world);
+                BVH_Tree worldBvh = new(GobVar.fnWorld);
                 // ---End---
 
 
@@ -146,8 +99,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 int pixelsCount = 0;
 
                 // =====Debug=====
-                //Ray ray = new Ray(new Vector3d(x: 0, y: 0, z: 5), new Vector3d(x: -0.003d, y: 0, z: -1));
-                //Ray_Color(ray, worldBvh, 50);
+                Ray ray = new Ray(new Vector3d(x: 0, y: 0, z: 5), new Vector3d(x: -0d, y: 0, z: -1));
+                Ray_Color(ray, worldBvh, 50);
 
 
                 //多线程运行
@@ -161,7 +114,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
                             var u = (1.0d * j + uRandom) / width;
                             var v = (1.0d * i + vRandom) / height;
                             Ray ray = camera.GetRay(u, v);
-                            colorRes += Ray_Color(ray, worldBvh, 50);
+                            colorRes += Ray_Color(ray, worldBvh, GobVar.Render_Depth);
                         }
                         // DONE
 
