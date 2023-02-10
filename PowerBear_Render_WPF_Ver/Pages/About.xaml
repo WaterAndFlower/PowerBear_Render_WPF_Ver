@@ -1,0 +1,29 @@
+﻿<Window x:Class="PowerBear_Render_WPF_Ver.Pages.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PowerBear_Render_WPF_Ver.Pages"
+        mc:Ignorable="d"
+        Title="About-关于本软件" Height="328" Width="620" AllowDrop="False" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20">
+            <Image Source="/Resources/软件ICON.png"></Image>
+        </StackPanel>
+        <StackPanel Margin="20" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock FontSize="30" FontWeight="Bold">小 熊 渲 染 器</TextBlock>
+            <Border Height="10"/>
+            <TextBlock TextWrapping="WrapWithOverflow">一款完全基于CPU的离线渲染器，可以方便快捷地进行三维处理和渲染画面，软件运行资源消耗小，很低的内存占用。</TextBlock>
+            <Border Height="10"/>
+            <TextBlock TextWrapping="WrapWithOverflow">很感谢您使用本软件，本软件受到国家著作权相关法律的保护。</TextBlock>
+            <Border Height="13"/>
+            <TextBlock FontWeight="Bold">小熊科技工作室（R） 编写 COPY RIGHT 2023-2024</TextBlock>
+            <TextBlock>版本信息：Version 1.2.13</TextBlock>
+            <TextBlock>联系方式和官方网站：*邮件：丹阳市正德路8号*Web：小熊WEB</TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>

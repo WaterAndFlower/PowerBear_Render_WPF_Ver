@@ -1,4 +1,5 @@
 ﻿using PowerBear_Render_WPF_Ver.GameObjects;
+using PowerBear_Render_WPF_Ver.PbMath;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,16 @@ namespace PowerBear_Render_WPF_Ver {
     /// AddObject.xaml 的交互逻辑
     /// </summary>
     public partial class AddObjectWindow : Window {
-        public double angleY { get; set; } = 0;
+        // ==== new Sphere ====
+        public double SpRadius { get; set; } = 5;
+        public double SpPosX { get; set; } = 0;
+        public double SpPosY { get; set; } = 0;
+        public double SpPosZ { get; set; } = 0;
+        // ==== new BoX ====
+        public Vector3d BoxPosMin { get; set; } = new(-1d, -1d, -1d);
+        public Vector3d BoxPosMax { get; set; } = new(1d, 1d, 1d);
+
+        public Sphere newSphere { get; set; } = new();
         public AddObjectWindow() {
             InitializeComponent();
             this.DataContext = this;
@@ -26,6 +36,7 @@ namespace PowerBear_Render_WPF_Ver {
 
         private void Button_Click_AddSphere(object sender, RoutedEventArgs e) {
             GobVar.fnObjects.Add(new NormalObject(new Box()));
+            GobVar.Render_Preview();
         }
     }
 }

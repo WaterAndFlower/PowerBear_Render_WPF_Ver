@@ -6,10 +6,17 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Resources\软件ICON（白色底）.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\软件ICON.png" />
+    <None Remove="Resources\软件ICON（白色底）.ico" />
     <None Remove="蟹堡王.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\软件ICON（白色底）.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +25,12 @@
 
   <ItemGroup>
     <Resource Include="Resources\蟹堡王.png" />
+    <Resource Include="Resources\软件ICON.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\软件ICON（白色底）.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

@@ -29,8 +29,10 @@ namespace PowerBear_Render_WPF_Ver {
         //======Render Options======
         public static Vector3d _BackColor = new Vector3d();
         public static Hittable_List fnWorld = new Hittable_List(); // fnWorld = fnObjects + fnLights
-        public static BindingList<NormalObject> fnObjects { get; set; } = new();
+        static BindingList<NormalObject> _fnObjects = new();
+        public static BindingList<NormalObject> fnObjects { get { return _fnObjects; } set { _fnObjects = value; } }
         public static Hittable_List fnLights { get; set; } = new Hittable_List();
+        public static bool stopAtRenderColor { get; set; } = false; //只进行像素着色器渲染，不渲染真正颜色
 
         //======Deault Objects======
         public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
@@ -86,9 +88,24 @@ namespace PowerBear_Render_WPF_Ver {
             NormalObject cornell_BoxObj = new(cornell_Box);
             cornell_BoxObj.objName = "光照盒子";
 
+
+            HitTable modelYiYi = new ObjModel("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\依依\\依依（1）.obj", new Lambertian(new ImageTexture("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\依依\\依依（1）.png")));
+
+            NormalObject modelYiyiObj = new(modelYiYi);
+            modelYiyiObj.objName = "依依";
+
             fnObjects.Add(box1Obj);
             fnObjects.Add(box2Obj);
             fnObjects.Add(cornell_BoxObj);
+            fnObjects.Add(modelYiyiObj);
+        }
+        /// <summary>
+        /// 出发了，像素级渲染，根据条件进行判断
+        /// </summary>
+        public static void Render_Preview() {
+            if (MainWindow.Instance.renderDetails.uAllowRenderPreview == false) return;
+            GobVar.stopAtRenderColor = true;
+            MainWindow.Instance.DoRender();
         }
         /// <summary>
         /// 将数组中的数据写入到Bitmap贴图里面

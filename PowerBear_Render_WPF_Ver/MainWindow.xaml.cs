@@ -1,6 +1,7 @@
 ﻿using PowerBear_Render_WPF_Ver.CameraObj;
 using PowerBear_Render_WPF_Ver.DAO;
 using PowerBear_Render_WPF_Ver.GameObjects;
+using PowerBear_Render_WPF_Ver.Pages;
 using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
@@ -40,6 +41,7 @@ namespace PowerBear_Render_WPF_Ver {
             public string BitMapSize { get; set; } = "尚未开始";
             public string Mytest { get; set; } = "testvalue";
             public string UICpus = "1 Core";
+            public bool uAllowRenderPreview { get; set; } = false; //允许，是否启动像素级预览功能，移动物体完毕，将会立即渲染画面
             public void Refush() {
                 MainWindow.Instance.LabelRenderSize.Content = BitMapSize;
                 MainWindow.Instance.CpusLabel.Content = UICpus;
@@ -96,8 +98,8 @@ namespace PowerBear_Render_WPF_Ver {
         //--多线程部分--
         BackgroundWorker backgroundWorker;
         //！！！渲染主线程！！！
-        private void RunThread(object sender, DoWorkEventArgs e) {
-            var start = DateTime.Now;
+        public void RunThread(object sender, DoWorkEventArgs e) {
+
             var data = (ToRenderDispter)e.Argument;
 
             RenderDispter renderDsp = new RenderDispter(data.width, data.height);
@@ -107,22 +109,27 @@ namespace PowerBear_Render_WPF_Ver {
 
             renderDsp.DoRender();
             e.Result = renderDsp;
-            var stop = DateTime.Now;
-            try {
-                TimeUseLabel.Dispatcher.BeginInvoke(new Action(() => {
-                    TimeUseLabel.Content = $"完成时间：{DateTime.Now}|总耗时（秒）：{(stop - start).TotalSeconds}|总耗时（分）:{(stop - start).TotalMinutes}";
-                    RenderProcess.Value = 100;
-                }));
-            }
-            catch (Exception ex) {
-                System.Windows.MessageBox.Show(ex.Message);
-            }
+
+
             //this.renderDetails.Refush();
             //timertimer.Stop();
         }
 
         private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-            if (e.UserState == null) return;//已经渲染完毕了
+            if (e.ProgressPercentage == 100) {
+                try {
+                    var timeSpan = (TimeSpan)e.UserState;
+                    TimeUseLabel.Dispatcher.BeginInvoke(new Action(() => {
+                        TimeUseLabel.Content = $"完成时间：{DateTime.Now}|总耗时（秒）：{timeSpan.TotalSeconds}|总耗时（分）:{timeSpan.TotalMinutes}";
+                        RenderProcess.Value = 100;
+                    }));
+                }
+                catch (Exception ex) {
+                    System.Windows.MessageBox.Show(ex.Message);
+                }
+                return;
+            }//已经渲染完毕了
+
             RenderProcess.Value = e.ProgressPercentage;
             var val = (Tuple<int, int, byte[]>)e.UserState;
             TimeUseLabel.Content = val.Item1.ToString() + " " + val.Item2.ToString() + " " + e.ProgressPercentage.ToString();
@@ -142,8 +149,7 @@ namespace PowerBear_Render_WPF_Ver {
             });
             timertimer.Stop();
         }
-        //开始渲染部分
-        private void Button_Click(object sender, RoutedEventArgs e) {
+        public void DoRender() {
             try {
                 GobVar.MSAA_Level = MSAA_Combox.SelectedIndex;
                 timertimer.Start();
@@ -191,8 +197,13 @@ namespace PowerBear_Render_WPF_Ver {
                 }
             }
             catch (Exception ex) {
-                System.Windows.MessageBox.Show("不能进行渲染，可能填写数字的地方有误：\n"+ex.Message);
+                System.Windows.MessageBox.Show("不能进行渲染，可能填写数字的地方有误：\n" + ex.Message);
             }
+        }
+        //开始渲染部分
+        private void Button_Click(object sender, RoutedEventArgs e) {
+            GobVar.stopAtRenderColor = false;
+            DoRender();
         }
         //选择颜色值
         private void BackGroundColor_MouseDown(object sender, MouseButtonEventArgs e) {
@@ -236,7 +247,30 @@ namespace PowerBear_Render_WPF_Ver {
 
         private void Button_Click_AddObject(object sender, RoutedEventArgs e) {
             AddObjectWindow adWin = new AddObjectWindow();
+            adWin.Owner = this;
+            adWin.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             adWin.ShowDialog();
+
+        }
+
+        private void Button_Click_About(object sender, RoutedEventArgs e) {
+            AboutWindow abWin = new();
+            abWin.Owner = this;
+            abWin.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            abWin.ShowDialog();
+        }
+
+        private void CheckBox_Click_uRenderLIst(object sender, RoutedEventArgs e) {
+            GobVar.Render_Preview();
+        }
+
+        private void Button_Click_SaveTransform(object sender, RoutedEventArgs e) {
+            GobVar.Render_Preview();
+        }
+
+        private void Button_Click_RenderPreview(object sender, RoutedEventArgs e) {
+            GobVar.AllowPreview = true;
+            GobVar.Render_Preview();
         }
     }
 }

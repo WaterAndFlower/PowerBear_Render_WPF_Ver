@@ -19,6 +19,8 @@ using PowerBear_Render_WPF_Ver.CameraObj;
 using PowerBear_Render_WPF_Ver.Materials;
 using PowerBear_Render_WPF_Ver.Textures;
 using PowerBear_Render_WPF_Ver.Lights;
+using static System.Windows.Forms.Design.AxImporter;
+
 namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
     /// 多线程类 规定（1，1）图像左上角（height，width）图像右下角
@@ -32,6 +34,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         public int sampleDepth = 1; //采样深度次数
         public Camera mCamera;
         public int cpus = 1; // 使用cpu核心数
+        BVH_Tree worldBvh;
         //方法组
         public RenderDispter() { }
         public RenderDispter(int width, int height) {
@@ -72,21 +75,51 @@ namespace PowerBear_Render_WPF_Ver.Render {
             var res = (1.0d - t) * Vector3d.Vector3DUse(1, 1, 1) + t * GobVar._BackColor;
             return res;
         }
+        // 像素化着色器，用于先看看图像的大体位置
+        Vector3d Ray_Color_Preview(Ray ray, HitTable world) { //投射光线
+            HitResult hitResult;
+            if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
+                return new Vector3d(1, 0, 0);
+            } else {
+                return new Vector3d();
+            }
+        }
+        public void PreviewRender() {
+            Camera camera = mCamera;
+            Parallel.For(1, this.height + 1, i => {
+                Parallel.For(1, this.width + 1, j => {
+                    var colorRes = new Vector3d();
+                    var u = (1.0d * j) / width;
+                    var v = (1.0d * i) / height;
+                    Ray ray = camera.GetRay(u, v);
+                    colorRes += Ray_Color_Preview(ray, worldBvh);
+                    this.SetColorToBytes(i, j, new PbColorRGB(colorRes).ConvertToSysColor());
+                });
+            });
+            if (GobVar.NeedFlush1) {
+                _BackWorker.ReportProgress((int)(0 * 1.0d / (this.height * this.width) * 100), new Tuple<int, int, byte[]>(0, 0, this.pixelColorBytes));
+                GobVar.NeedFlush1 = false;
+            }
+        }
         //CUDA：https://blog.csdn.net/theadore2017/article/details/110919384
         //利用GPU进行并行运算
         public void DoRender() {
-            var imgTexture = new ImageTexture(@"C:\Users\PowerBear\source\repos\PowerBear_Render_WPF_Ver\PowerBear_Render_WPF_Ver\Resources\Earth.jpg", 1d);
+            worldBvh = new(GobVar.fnWorld);
+
+            PreviewRender();
+
+            if (GobVar.stopAtRenderColor == true) return; // 当只需要渲染像素时候，其他不渲染
 
             try {
                 Camera camera = mCamera;
                 if (camera == null) throw new Exception("摄像机为空，啊哈！") { };
-                
+
                 var objMat = new Lambertian(new ImageTexture(@"C:\Users\PowerBear\Desktop\Doc\大创渲染器\中间过程演示\Model\依依\依依（1）.png"));
                 HitTable md = new ObjModel(@"C:\Users\PowerBear\Desktop\Doc\大创渲染器\中间过程演示\Model\依依\依依（1）.obj", objMat);
 
                 // ======BVH Build======
                 Console.WriteLine("构建整个场景的BVH盒子");
-                BVH_Tree worldBvh = new(GobVar.fnWorld);
+
                 // ---End---
 
 
@@ -99,10 +132,10 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 int pixelsCount = 0;
 
                 // =====Debug=====
-                Ray ray = new Ray(new Vector3d(x: 0, y: 0, z: 5), new Vector3d(x: -0d, y: 0, z: -1));
-                Ray_Color(ray, worldBvh, 50);
+                //Ray ray = new Ray(new Vector3d(x: 0, y: 0, z: 5), new Vector3d(x: -0d, y: 0, z: -1));
+                //Ray_Color(ray, worldBvh, 50);
 
-
+                var start = DateTime.Now;
                 //多线程运行
                 Parallel.For(1, this.height + 1, options, i => {
                     Parallel.For(fromInclusive: 1, this.width + 1, options, j => {
@@ -138,8 +171,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
                         if (_BackWorker.CancellationPending) { throw new Exception("渲染取消了"); }
                     });
                 });
-
-                _BackWorker.ReportProgress(100);
+                var stop = DateTime.Now;
+                _BackWorker.ReportProgress(100, (stop - start));
             }
             catch (Exception ex) {
                 MessageBox.Show("渲染过程中出现错误\n" + ex.Message);

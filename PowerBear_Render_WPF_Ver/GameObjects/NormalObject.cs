@@ -32,5 +32,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public override bool Bounding_Box(out AABB? output_box) {
             return actualObj.Bounding_Box(out output_box);
         }
+
+        public override object Clone() {
+            return new NormalObject((HitTable)srcObj.Clone());
+        }
     }
 }

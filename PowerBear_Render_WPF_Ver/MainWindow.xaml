@@ -6,7 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:PowerBear_Render_WPF_Ver"
         mc:Ignorable="d"
-        Title="小熊渲染器" Height="508.6" Width="956">
+        Title="小熊渲染器" Height="554" Width="1067">
     <!--软件整体Grid-->
     <Grid Background="#FF1F1F1F" x:Name="MainGrid">
 
@@ -62,8 +62,11 @@
                             <Label  Foreground="White" Content="高度："></Label>
                             <TextBox Grid.Column="1" x:Name="RenderHeight"  Text="500"/>
                         </Grid>
-                        <Button Margin="10 10 10 0" Content="开始渲染" Click="Button_Click"></Button>
-                        <CheckBox x:Name="cbAllowPreview" Margin="10 10 10 0" Content="是否使用画面预览" Foreground="White" IsChecked="True"></CheckBox>
+                        <Button Margin="10 10 10 0" Click="Button_Click" Background="#FF00AA31">
+                            <TextBlock Foreground="White" FontWeight="Bold">开始渲染</TextBlock>
+                        </Button>
+                        <CheckBox x:Name="cbAllowPreview" Margin="10 10 10 0" Content="渲染时显示过程" Foreground="White" IsChecked="True"></CheckBox>
+                        <Button Margin="10 10 10 0" Foreground="Black" Click="Button_Click_RenderPreview">像素着色器渲染（预览）</Button>
                         <Label  Margin="10 10 10 0" Content="实时预览间隔（开启预览生效）" Foreground="White"></Label>
                         <Slider x:Name="slHzPreview" Minimum="8" Maximum="200" Value="15"></Slider>
 
@@ -153,23 +156,31 @@
                 <!--Tab滚动框-->
                 <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Top">
                     <StackPanel>
+                        <CheckBox IsChecked="{Binding uAllowRenderPreview}" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center">启用，像素着色器快速预览</CheckBox>
                         <Label FontSize="14" Content="物体列表" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <ToolBarPanel>
                             <ToolBar>
-                                <xctk:DropDownButton>
-                                    文件
+                                <xctk:DropDownButton Content="文件">
+                                    <xctk:DropDownButton.DropDownContent>
+                                        <StackPanel Margin="0 3 0 3">
+                                            <Button BorderThickness="0" Margin="0 3 0 0" MinWidth="180">读取外部文件</Button>
+                                            <Button BorderThickness="0" Margin="0 3 0 0">保存外部文件</Button>
+                                            <TextBlock Width="180" Margin="0 5 0 0">*保存文件，将把数据保存在一个</TextBlock>
+                                            <TextBlock>.pbObj格式的文件里面。</TextBlock>
+                                        </StackPanel>
+                                    </xctk:DropDownButton.DropDownContent>
                                 </xctk:DropDownButton>
                                 <xctk:DropDownButton>
                                     编辑
                                 </xctk:DropDownButton>
-                                <Button>帮助</Button>
+                                <Button Click="Button_Click_About">帮助</Button>
                             </ToolBar>
                         </ToolBarPanel>
                         <ListBox SelectionChanged="uObjectsListBox_SelectionChanged" x:Name="uObjectsListBox" SelectedIndex="0" Height="100" Background="{x:Null}" Foreground="#FFEBDFFF">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding needRender}"></CheckBox>
+                                        <CheckBox IsChecked="{Binding needRender}" Click="CheckBox_Click_uRenderLIst"></CheckBox>
                                         <TextBlock Text="{Binding objName}" />
                                     </StackPanel>
                                 </DataTemplate>
@@ -190,6 +201,7 @@
                                 <TextBox Width="30" Margin="3 0 0 0" Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.offset[1]}"></TextBox>
                                 <Label Foreground="White">z:</Label>
                                 <TextBox Width="30" Margin="3 0 0 0" Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.offset[2]}"></TextBox>
+                               
                             </StackPanel>
                         </Border>
                         <Border Margin="0 5 0 0">
@@ -200,11 +212,16 @@
                             </StackPanel>
                         </Border>
                         <TextBox Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.objName}"></TextBox>
-                        <Button Width="106" HorizontalAlignment="Left" Background="#FFF8DE84" >保存</Button>
-                        <Label Foreground="#FFFFC5C5">*不保存 也 会生效</Label>
+                        <Button Width="106" HorizontalAlignment="Left" Background="#FFF8DE84" Click="Button_Click_SaveTransform" >保存</Button>
+                        <Label Foreground="#FFFFC5C5">*自动保存，大部分情况下，无需手动保存</Label>
                         <Label FontSize="14" Content="增加或删除" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
-                        <Button Click="Button_Click_AddObject">新增小球</Button>
+                        <Button Click="Button_Click_AddObject">新增Object</Button>
                         <Button Foreground="Red" Click="Button_Click_RemoveObject">删除（选中项）</Button>
+                        <Label FontSize="14" Content="动画（实验功能）" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <Button>
+                            渲染动画
+                        </Button>
+                        <TextBlock TextWrapping="Wrap" Foreground="White">渲染，当前选中的物体，旋转360度，在30s内。文件将保存在软件目录下Out/Animation内。</TextBlock>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

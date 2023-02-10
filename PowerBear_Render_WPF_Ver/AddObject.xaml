@@ -92,15 +92,13 @@
                 <Label FontSize="14" Content="添加小球" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
                 <StackPanel Orientation="Horizontal">
                     <Label>三维坐标</Label>
-                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
-                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
-                    <TextBox Width="60" VerticalAlignment="Center">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding SpPosX}"></TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0"  Text="{Binding SpPosY}"></TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center"  Text="{Binding SpPosZ}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label>球体半径</Label>
-                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">5</TextBox>
-                    <Label>RoateY</Label>
-                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding angleY}"></TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding SpRadius}"></TextBox>
                 </StackPanel>
                 <Button Click="Button_Click_AddSphere">添加</Button>
                 <!--添加盒体-->

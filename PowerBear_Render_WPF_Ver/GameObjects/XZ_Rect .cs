@@ -48,6 +48,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             output_box = new(new Vector3d(x0, k - 0.00001d, z0), new Vector3d(x1, k + 0.00001d, z1));
             return true;
         }
+        public override object Clone() {
+            return new XZ_Rect(x0, x1, z0, z1, k, mat);
+        }
     }
 
     /// <summary>
@@ -90,6 +93,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             output_box = new(new Vector3d(k - 0.00001d, y0, z0), new Vector3d(k + 0.00001d, y1, z1));
             return true;
         }
+        public override object Clone() {
+            return new YZ_Rect(y0, y1, z0, z1, k, mat);
+        }
     }
     /// <summary>
     /// XY平面
@@ -130,6 +136,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public override bool Bounding_Box(out AABB? output_box) {
             output_box = new(new Vector3d(x0, y0, k - 0.00001d), new Vector3d(x1, y1, k + 0.00001d));
             return true;
+        }
+        public override object Clone() {
+            return new XY_Rect(x0, x1, y0, y1, k, mat);
         }
     }
 }
