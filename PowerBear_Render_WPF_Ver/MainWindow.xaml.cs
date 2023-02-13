@@ -41,7 +41,7 @@ namespace PowerBear_Render_WPF_Ver {
             public string BitMapSize { get; set; } = "尚未开始";
             public string Mytest { get; set; } = "testvalue";
             public string UICpus = "1 Core";
-            public bool uAllowRenderPreview { get; set; } = false; //允许，是否启动像素级预览功能，移动物体完毕，将会立即渲染画面
+            public bool uAllowRenderPreview { get; set; } = true; //允许，是否启动像素级预览功能，移动物体完毕，将会立即渲染画面（启动像素着色器预览功能）
             public void Refush() {
                 MainWindow.Instance.LabelRenderSize.Content = BitMapSize;
                 MainWindow.Instance.CpusLabel.Content = UICpus;

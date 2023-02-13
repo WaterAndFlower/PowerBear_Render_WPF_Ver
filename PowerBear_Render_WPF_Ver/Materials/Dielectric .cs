@@ -63,7 +63,7 @@ namespace PowerBear_Render_WPF_Ver.Materials {
                 resDir = Refract(unit_direction, rec.normal, etai_over_etat); // 发生折射
             }
 
-            attenuation = this.attenuation;
+            attenuation = this.attenuation * mTexture.Value(rec.u, rec.v, rec.p);
             scattered = new Ray(rec.p, resDir);
             return true;
         }

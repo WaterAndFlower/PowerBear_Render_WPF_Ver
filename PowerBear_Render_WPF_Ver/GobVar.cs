@@ -63,11 +63,12 @@ namespace PowerBear_Render_WPF_Ver {
 
             return objects;
         }
-
-
         //======Gobal Functions======
         public static void AppRunInit() { //在App.xaml.cs里面
-            Console.WriteLine(GobVar.TestDLL(1, 2));
+            // GobVar.doDeNoise();
+            var result = GobVar.TestString();
+            Console.WriteLine(result);
+
             Console.WriteLine("和C++的DLL通讯成功");
 
             // 初始的一些小场景 和 材质 之类的玩意
@@ -135,6 +136,14 @@ namespace PowerBear_Render_WPF_Ver {
         /// <returns></returns>
         [DllImport("PowerBear_Render_CPP_DLL")]
         public extern static int TestDLL(int a, int b);
+
+        [DllImport("PowerBear_Render_CPP_DLL")]
+        public extern static char TestString();
+        /// <summary>
+        /// 进行降噪算法的实现，使用C++的OpenCV库，提供了支持，这部分属于图像处理
+        /// </summary>
+        [DllImport("PowerBear_Render_CPP_DLL")]
+        public extern static void doDeNoise();
         /// <summary>
         /// 在渲染之前，根据设定的参数，设定渲染变量
         /// </summary>

@@ -35,7 +35,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             sides.Add(new YZ_Rect(p0.y(), p1.y(), p0.z(), p1.z(), p0.x(), mat));
         }
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
-            return sides.Hit(ray, t_min, t_max, out hitResult);
+            var res = sides.Hit(ray, t_min, t_max, out hitResult);
+            hitResult.mat = this.mat;
+            return res;
         }
         public override bool Bounding_Box(out AABB? output_box) {
             output_box = new AABB(pointMin, pointMax);

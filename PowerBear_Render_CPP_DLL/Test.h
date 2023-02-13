@@ -10,3 +10,5 @@
 
 extern "C" Func_API int TestDLL(
 	const unsigned long long a, const unsigned long long b);
+
+extern "C" Func_API char TestString();

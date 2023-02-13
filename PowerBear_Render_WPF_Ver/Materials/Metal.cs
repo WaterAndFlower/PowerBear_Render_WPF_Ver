@@ -19,10 +19,10 @@ namespace PowerBear_Render_WPF_Ver.Materials {
         public override bool Scatter(Ray r_in, HitResult rec, out Vector3d attenuation, out Ray scattered) {
             Vector3d reflected = Reflect(Vector3d.Unit_Vector(r_in.direction), rec.normal);
             scattered = new Ray(rec.p, reflected + fuzz * Vector3d.Random_Unit_Vector().Normalized());
-            attenuation = albedo;
+            attenuation = albedo * mTexture.Value(rec.u, rec.v, rec.p);
             return Vector3d.Dot(scattered.direction, rec.normal.Normalized()) > 0;
         }
         public Vector3d albedo;
-        double fuzz = 0;
+        double fuzz = 0; // 光滑程度
     }
 }

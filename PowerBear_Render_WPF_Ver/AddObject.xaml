@@ -36,54 +36,76 @@
             <StackPanel>
                 <StackPanel.Resources>
                     <Style TargetType="Label">
-                        <Setter Property="Margin" Value="0 3 0 3"></Setter></Style>
+                        <Setter Property="Margin" Value="0 3 0 3"></Setter>
+                    </Style>
                 </StackPanel.Resources>
 
                 <TextBlock FontSize="25" FontWeight="DemiBold" Padding="4" Background="#FF274E40" Foreground="White">Render</TextBlock>
 
                 <Label FontSize="14" Content="材质属性" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
                 <TextBlock>选择一种材质类型，以此创造物体表面的材质</TextBlock>
-                <TabControl>
+                <TabControl SelectedIndex="{Binding MatPanelSelectedIndex}">
                     <TabItem Header="漫反射材质">
                         <StackPanel HorizontalAlignment="Left">
                             <TextBlock>Albedo:</TextBlock>
-                            <xctk:ColorPicker Width="200" SelectedColor="White" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <xctk:ColorPicker x:Name="uDiffuseColor" Width="200" SelectedColor="White" DisplayColorAndName="True"></xctk:ColorPicker>
                             <TextBlock>用于做材质反射光的滤波</TextBlock>
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="金属材质">
-
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock>Albedo:</TextBlock>
+                            <xctk:ColorPicker x:Name="uMetalColor" Width="200" SelectedColor="White" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <TextBlock>金属程度:（值越小，反射越强烈）</TextBlock>
+                            <TextBox Text="{Binding MetalFuzz}"></TextBox>
+                        </StackPanel>
                     </TabItem>
                     <TabItem Header="玻璃材质">
-
+                        <StackPanel HorizontalAlignment="Left">
+                            <TextBlock>Albedo:</TextBlock>
+                            <xctk:ColorPicker x:Name="uDielectricColor" Width="200" SelectedColor="White" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <TextBlock>折射率:</TextBlock>
+                            <TextBox Text="{Binding Index_Of_Refraction}"></TextBox>
+                        </StackPanel>
                     </TabItem>
                 </TabControl>
 
                 <Label FontSize="14" Content="纹理属性" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
                 <TextBlock>每一个材质包含一个纹理，设定纹理描述材质表面反射率</TextBlock>
-                <TabControl>
+                <TabControl SelectedIndex="{Binding TexPanelSelectedIndex}">
                     <TabItem Header="纯颜色">
                         <StackPanel HorizontalAlignment="Left">
-                            <xctk:ColorPicker Width="200" SelectedColor="Gray" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <xctk:ColorPicker x:Name="uSolidColor" Width="200" SelectedColor="Gray" DisplayColorAndName="True"></xctk:ColorPicker>
                             <TextBlock>总是返回同一个颜色</TextBlock>
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="棋盘纹理">
                         <StackPanel HorizontalAlignment="Left">
                             <TextBlock>第一个颜色</TextBlock>
-                            <xctk:ColorPicker Width="200" SelectedColor="White" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <xctk:ColorPicker x:Name="uCheckerFirstColor" Width="200" SelectedColor="White" DisplayColorAndName="True"></xctk:ColorPicker>
                             <TextBlock>第二个颜色</TextBlock>
-                            <xctk:ColorPicker Width="200" SelectedColor="Green" DisplayColorAndName="True"></xctk:ColorPicker>
+                            <xctk:ColorPicker x:Name="uCheckerSecColor" Width="200" SelectedColor="Green" DisplayColorAndName="True"></xctk:ColorPicker>
                             <TextBlock>棋盘一样，根据sin波长，进行</TextBlock>
                             <TextBlock>Scale:</TextBlock>
                             <Slider Minimum="5" Maximum="20" Value="10"></Slider>
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="柏林噪声">
-
+                        <StackPanel HorizontalAlignment="Left">
+                            <Label>
+                                <TextBlock TextWrapping="Wrap" Foreground="#FFB47B00">*当前已经成功选择了，【柏林噪声】，本纹理没有什么颜色可以调整，您将得到一个黑白噪声图。</TextBlock>
+                            </Label>
+                            <StackPanel Orientation="Horizontal">
+                                <Label>噪声尺度:</Label>
+                                <TextBox Width="60" VerticalAlignment="Center"  Text="{Binding NoiseScale}"></TextBox>
+                            </StackPanel>
+                        </StackPanel>
                     </TabItem>
                     <TabItem Header="图像纹理">
-
+                        <StackPanel Orientation="Horizontal">
+                            <Label>文件Path:</Label>
+                            <TextBox TextWrapping="Wrap" Width="400" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding ImgTexPath}"></TextBox>
+                        </StackPanel>
                     </TabItem>
                 </TabControl>
                 <Border Height="4"></Border>
@@ -105,19 +127,37 @@
                 <Label FontSize="14" Content="添加盒体Box" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
                 <StackPanel Orientation="Horizontal">
                     <Label>三维坐标PosMin</Label>
-                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
-                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
-                    <TextBox Width="60" VerticalAlignment="Center">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding BoxPosMin[0]}"></TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding BoxPosMin[1]}"></TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Text="{Binding BoxPosMin[2]}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label>三维坐标PosMax</Label>
-                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
-                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0">0</TextBox>
-                    <TextBox Width="60" VerticalAlignment="Center">0</TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding BoxPosMax[0]}"></TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding BoxPosMax[1]}"></TextBox>
+                    <TextBox Width="60" VerticalAlignment="Center" Text="{Binding BoxPosMax[2]}"></TextBox>
                 </StackPanel>
-
-                <Button>添加</Button>
-
+                <Button Click="Button_Click_AddBox">添加</Button>
+                <!--添加XZ平面-->
+                <Label FontSize="14" Content="添加XZ平面" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
+                <StackPanel Orientation="Horizontal">
+                    <Label>X方向长度</Label>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding PanelX}"></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Z方向长度</Label>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding PanelZ}"></TextBox>
+                    <Label>Y方向位置</Label>
+                    <TextBox Width="60" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding PanelY_Pos}"></TextBox>
+                </StackPanel>
+                <Button Click="Button_Click_AddXZPanel">添加</Button>
+                <!--添加一个Obj模型-->
+                <Label FontSize="14" Content="添加Object文件模型" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
+                <StackPanel Orientation="Horizontal">
+                    <Label>文件路径:</Label>
+                    <TextBox TextWrapping="Wrap" Width="400" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding ObjPath}"></TextBox>
+                </StackPanel>
+                <Button Click="Button_Click_ObjModel">添加</Button>
             </StackPanel>
         </ScrollViewer>
     </Grid>

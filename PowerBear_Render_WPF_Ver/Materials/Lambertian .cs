@@ -26,6 +26,5 @@ namespace PowerBear_Render_WPF_Ver.Materials {
         }
 
         public Vector3d albedo { get; set; } = new Vector3d(x: 1, 1, 1);//光线衰减值（反射颜色值）
-        public Texture mTexture { get; set; } = new Solid_Color();
     }
 }

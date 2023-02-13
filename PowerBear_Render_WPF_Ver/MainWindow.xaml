@@ -201,7 +201,7 @@
                                 <TextBox Width="30" Margin="3 0 0 0" Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.offset[1]}"></TextBox>
                                 <Label Foreground="White">z:</Label>
                                 <TextBox Width="30" Margin="3 0 0 0" Text="{Binding ElementName=uObjectsListBox,Path=SelectedItem.offset[2]}"></TextBox>
-                               
+
                             </StackPanel>
                         </Border>
                         <Border Margin="0 5 0 0">

@@ -20,6 +20,7 @@ using PowerBear_Render_WPF_Ver.Materials;
 using PowerBear_Render_WPF_Ver.Textures;
 using PowerBear_Render_WPF_Ver.Lights;
 using static System.Windows.Forms.Design.AxImporter;
+using System.Reflection.Emit;
 
 namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
@@ -35,6 +36,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
         public Camera mCamera;
         public int cpus = 1; // 使用cpu核心数
         BVH_Tree worldBvh;
+
+        int sample_pixel_count = 1; // MSAA_LVEL=0
         //方法组
         public RenderDispter() { }
         public RenderDispter(int width, int height) {
@@ -119,11 +122,9 @@ namespace PowerBear_Render_WPF_Ver.Render {
 
                 // ======BVH Build======
                 Console.WriteLine("构建整个场景的BVH盒子");
-
                 // ---End---
 
 
-                int sample_pixel_count = 1; // MSAA_LVEL=0
                 if (GobVar.MSAA_Level == 1) { sample_pixel_count = 20; } else if (GobVar.MSAA_Level == 2) { sample_pixel_count = 50; } else if (GobVar.MSAA_Level == 3) { sample_pixel_count = 100; }
                 //多线程设定
                 var options = new ParallelOptions {
@@ -141,7 +142,11 @@ namespace PowerBear_Render_WPF_Ver.Render {
                     Parallel.For(fromInclusive: 1, this.width + 1, options, j => {
                         Vector3d colorRes = new Vector3d(0, 0, 0); // 每个线程单独一个颜色值
                         colorRes.e[0] = colorRes.e[1] = colorRes.e[2] = 0d;
-                        for (int k = 0; k < sample_pixel_count; k++) { //MSAA重要性采样
+
+                        // 去判断，这个像素点，是不是红色的，需不需要进行MSAA
+                        var actual_sample_pixel_count = Get_MSAA_Level(i, j);
+
+                        for (int k = 0; k < actual_sample_pixel_count; k++) { //MSAA重要性采样
                             double uRandom = PbRandom.Random_Double(), vRandom = PbRandom.Random_Double();
                             if (GobVar.MSAA_Level == 0) { uRandom = vRandom = 0; }
                             var u = (1.0d * j + uRandom) / width;
@@ -149,9 +154,10 @@ namespace PowerBear_Render_WPF_Ver.Render {
                             Ray ray = camera.GetRay(u, v);
                             colorRes += Ray_Color(ray, worldBvh, GobVar.Render_Depth);
                         }
+
                         // DONE
 
-                        var writeColor = colorRes / sample_pixel_count;
+                        var writeColor = colorRes / actual_sample_pixel_count;
                         writeColor = Vector3d.Clamp(writeColor);
                         //Gamma矫正
                         writeColor.e[0] = Math.Sqrt(writeColor.e[0]);
@@ -196,7 +202,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
 
         void Init(int width, int height) {
-            this.pixelColorBytes = new Byte[width * height * 4];
+            if (this.pixelColorBytes == null) { this.pixelColorBytes = new Byte[width * height * 4]; }
             this.width = width;
             this.height = height;
         }
@@ -213,6 +219,32 @@ namespace PowerBear_Render_WPF_Ver.Render {
             this.pixelColorBytes[point + 1] = color.G;
             this.pixelColorBytes[point + 2] = color.R;
             this.pixelColorBytes[point + 3] = 255;
+        }
+        /// <summary>
+        /// 根据之前计算的红色信息点，这些点是重要的，来绘制图元
+        /// </summary>
+        int Get_MSAA_Level(int x, int y) {
+            //return sample_pixel_count;
+            bool needDo = false;
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    needDo |= Get_Red_Color(x + dx, y + dy);
+                }
+            }
+            if (needDo) {
+                return sample_pixel_count;
+            } else {
+                return 1;
+            }
+        }
+        bool Get_Red_Color(int x, int y) {
+            x--; y--;
+            int point = x * width * 4 + y * 4;
+            if (point >= 0 && point < this.pixelColorBytes.Length && this.pixelColorBytes[point + 2] == 255) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }
