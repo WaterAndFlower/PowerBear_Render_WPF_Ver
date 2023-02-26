@@ -11,7 +11,7 @@
     <Grid Background="#FF1F1F1F" x:Name="MainGrid">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="270px"></ColumnDefinition>
+            <ColumnDefinition Width="280px"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <!--自定义Header-->
@@ -97,13 +97,35 @@
                         </StackPanel>
                         <Label FontSize="14" Content="摄像机参数" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
 
-                        <Border Margin="0 5 0 0" x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
-                            <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
-                        </Border>
+                        <TabControl >
+                            <TabControl.Background>
+                                <SolidColorBrush Color="Transparent" Opacity="1"/>
+                            </TabControl.Background>
+
+                            <TabItem Header="单">
+                                <Border Margin="0 5 0 0" x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
+                                    <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
+                                </Border>
+                            </TabItem>
+                            <TabItem Header="双">
+                                <StackPanel>
+                                    <Border Margin="0 5 0 0" Background="#000000" MouseDown="BackGroundColor_MouseDown">
+                                        <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
+                                    </Border>
+                                    <Border Margin="0 5 0 0" Background="#000000" MouseDown="BackGroundColor_MouseDown">
+                                        <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
+                                    </Border>
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem Header="纹">
+                                <TextBox Text="HDRI贴图"></TextBox>
+                            </TabItem>
+                        </TabControl>
+
                         <Border Margin="0 5 0 0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label Foreground="White" HorizontalAlignment="Left">FOV</Label>
-                                <Slider x:Name="uFovSlider" Width="180" VerticalAlignment="Center" HorizontalAlignment="Right" Minimum="20" Maximum="200" Value="93"/>
+                                <Slider x:Name="uFovSlider" Width="170" VerticalAlignment="Center" Minimum="20" Maximum="200" Value="93"/>
                                 <Label Foreground="White" HorizontalAlignment="Left" Content="{Binding ElementName=uFovSlider,Path=Value}"/>
                             </StackPanel>
                         </Border>

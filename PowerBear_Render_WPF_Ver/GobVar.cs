@@ -23,9 +23,10 @@ namespace PowerBear_Render_WPF_Ver {
         public static int renderWidth, renderHeight;
         public static bool NeedFlush1 { get; set; } = false;
         public static bool AllowPreview { get; set; } = true; //允许运行过程中预览结果
-        public static WriteableBitmap? wBitmap1;
+        public static WriteableBitmap? wBitmap1 { get; set; } //用于写入图像的Bitmap
         public static int MSAA_Level = 0;//0: 关闭 1：4x倍
         public static int Render_Depth { get; set; } = 50;
+        public static string appStartupPath = System.IO.Directory.GetCurrentDirectory();
         //======Render Options======
         public static Vector3d _BackColor = new Vector3d();
         public static Hittable_List fnWorld = new Hittable_List(); // fnWorld = fnObjects + fnLights
@@ -65,7 +66,8 @@ namespace PowerBear_Render_WPF_Ver {
         }
         //======Gobal Functions======
         public static void AppRunInit() { //在App.xaml.cs里面
-            // GobVar.doDeNoise();
+            //byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            //GobVar.doDeNoise(data, 4, 0);
             var result = GobVar.TestString();
             Console.WriteLine(result);
 
@@ -73,7 +75,8 @@ namespace PowerBear_Render_WPF_Ver {
 
             // 初始的一些小场景 和 材质 之类的玩意
 
-            HitTable box1 = new Box(new(0, 0, 0), new(3, 3, 3));
+            var t = new Box(new(0, 0, 0), new(3, 3, 3));
+            HitTable box1 = t;
             NormalObject box1Obj = new(box1);
             box1Obj.angleY = -40d;
             box1Obj.offset = new(-1.6, 0, -1.3);
@@ -97,7 +100,7 @@ namespace PowerBear_Render_WPF_Ver {
 
             fnObjects.Add(box1Obj);
             fnObjects.Add(box2Obj);
-            fnObjects.Add(cornell_BoxObj);
+            //fnObjects.Add(cornell_BoxObj);
             fnObjects.Add(modelYiyiObj);
         }
         /// <summary>
@@ -128,6 +131,16 @@ namespace PowerBear_Render_WPF_Ver {
         public static void BitmapWritePixels(ref WriteableBitmap bt, Byte[] pixelColorBytes) {
             bt.WritePixels(new Int32Rect(0, 0, (int)bt.Width, (int)bt.Height), pixelColorBytes, bt.BackBufferStride, 0);
         }
+
+        public static void SaveBitmp(string path, string fileName, ImageSource se) {
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+            var saveActualPath = path + "\\" + fileName;
+            using (FileStream stream = new FileStream(saveActualPath, FileMode.Create)) {
+                PngBitmapEncoder pngBitmapEncoder = new PngBitmapEncoder();
+                pngBitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)se));
+                pngBitmapEncoder.Save(stream);
+            }
+        }
         /// <summary>
         /// 测试C++部分的DLL文件是否链接成功了
         /// </summary>
@@ -143,7 +156,12 @@ namespace PowerBear_Render_WPF_Ver {
         /// 进行降噪算法的实现，使用C++的OpenCV库，提供了支持，这部分属于图像处理
         /// </summary>
         [DllImport("PowerBear_Render_CPP_DLL")]
-        public extern static void doDeNoise();
+        public extern static byte[] doDeNoise(byte[] inptImg, int width, int height);
+
+        [DllImport("PowerBear_Render_CPP_DLL")]
+        public extern static void doCanny();
+        //调试cpp dll文件：https://blog.csdn.net/weixin_40314351/article/details/127652594
+
         /// <summary>
         /// 在渲染之前，根据设定的参数，设定渲染变量
         /// </summary>

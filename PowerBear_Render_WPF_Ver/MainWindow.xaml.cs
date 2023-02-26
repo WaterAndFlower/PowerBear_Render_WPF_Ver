@@ -148,6 +148,19 @@ namespace PowerBear_Render_WPF_Ver {
                 MainImage.Source = RenderDispter.CreateWriteableBitMap(wb.pixelColorBytes, wb.width, wb.height);
             });
             timertimer.Stop();
+
+            // 渲染完毕，将数据保存到Tmp文件夹中【渲染完毕处理】
+            GobVar.SaveBitmp(GobVar.appStartupPath, $"/Tmp/Read.png", MainImage.Source);
+            try {
+                var mwidth = GobVar.wBitmap1.PixelWidth;
+                var mheight = GobVar.wBitmap1.PixelHeight;
+                byte[] inpt = PbIO.BGRA_TO_BGR(wb.pixelColorBytes, mheight, mwidth);
+                var res = GobVar.doDeNoise(inpt, mwidth, mheight);
+                //    GobVar.doCanny();
+            }
+            catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); }
+            //Task.Delay(1000);
+            // MainImage.Source = new BitmapImage(new Uri(GobVar.appStartupPath + "/Tmp/Write.png"));
         }
         public void DoRender() {
             try {
@@ -219,12 +232,9 @@ namespace PowerBear_Render_WPF_Ver {
         void SaveWtableBmp(Object sender, RoutedEventArgs e) {
             String appStartupPath = System.IO.Directory.GetCurrentDirectory() + @"\Out";
             var saveName = appStartupPath + $"\\saveData{DateTime.Now.ToString("yy-MM-dd hh\\mm\\ss")}.png";
-            if (!Directory.Exists(appStartupPath)) { Directory.CreateDirectory(appStartupPath); }
-            using (FileStream stream = new FileStream(saveName, FileMode.Create)) {
-                PngBitmapEncoder pngBitmapEncoder = new PngBitmapEncoder();
-                pngBitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)MainImage.Source));
-                pngBitmapEncoder.Save(stream);
-            }
+
+            GobVar.SaveBitmp(appStartupPath, $"\\saveData{DateTime.Now.ToString("yy-MM-dd hh\\mm\\ss")}.png", MainImage.Source);
+
             var btnRes = System.Windows.MessageBox.Show(saveName + "\n\n点击YES打开目录", "保存成功", MessageBoxButton.YesNo);
             if (btnRes.Equals(MessageBoxResult.Yes)) {
                 Process ExplorerWindowProcess = new Process();

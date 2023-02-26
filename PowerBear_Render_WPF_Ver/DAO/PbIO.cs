@@ -20,5 +20,20 @@ namespace PowerBear_Render_WPF_Ver.DAO {
             }
             return Pixels;
         }
+        public static Byte[] Bitmap_TO_BGR(BitmapSource bmp) {
+            Int32 mheight = bmp.PixelHeight;
+            Int32 mwidth = bmp.PixelWidth;
+            byte[] inpt = BitmapToBytes(bmp);
+            byte[] outp = new byte[mwidth * mheight * 3];
+            // B G R
+            for (int i = 0, ii = 0; i < mwidth * mheight * 3; i += 3, ii += 4) { outp[i] = inpt[ii]; outp[i + 1] = inpt[ii + 1]; outp[i + 2] = inpt[ii + 2]; }
+            return outp;
+        }
+        public static Byte[] BGRA_TO_BGR(byte[] inpt,int mheight,int mwidth) {
+            byte[] outp = new byte[mwidth * mheight * 3];
+            // B G R
+            for (int i = 0, ii = 0; i < mwidth * mheight * 3; i += 3, ii += 4) { outp[i] = inpt[ii]; outp[i + 1] = inpt[ii + 1]; outp[i + 2] = inpt[ii + 2]; }
+            return outp;
+        }
     }
 }

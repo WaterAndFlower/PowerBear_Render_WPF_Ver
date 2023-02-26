@@ -11,7 +11,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     public class Box : HitTable {
         public Vector3d pointMin, pointMax;
         public Hittable_List sides;
-        public Material mat = new Lambertian();
+        private Material mat = new Lambertian();
         public Box() { pointMin = new(-0.5, -0.5, -0.5); pointMax = new(0.5, 0.5, 0.5); }
         public Box(Vector3d p0min, Vector3d p1max, Material mat) {
             this.pointMin = p0min;
@@ -44,7 +44,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             return true;
         }
         public override object Clone() {
-            return new Box(this.pointMin, this.pointMax);
+            return new Box(this.pointMin, this.pointMax, this.mat);
         }
     }
 }

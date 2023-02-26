@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "PowerBear_Render_WPF_Ver": {
+      "commandName": "Project",
+      "nativeDebugging": true,
+      "hotReloadEnabled": true
+    }
+  }
+}
