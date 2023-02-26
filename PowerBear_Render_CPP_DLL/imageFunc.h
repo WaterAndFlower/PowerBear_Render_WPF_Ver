@@ -8,5 +8,5 @@
 #define Func_API __declspec(dllimport)
 #endif
 
-extern "C" Func_API void doDeNoise(BYTE, int, int, BYTE*);
+extern "C" Func_API void doDeNoise(BYTE[], int, int, BYTE*);
 extern "C" Func_API void doCanny();
