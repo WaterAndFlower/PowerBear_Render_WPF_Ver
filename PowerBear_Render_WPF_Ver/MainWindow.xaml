@@ -97,28 +97,31 @@
                         </StackPanel>
                         <Label FontSize="14" Content="摄像机参数" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
 
-                        <TabControl >
+                        <TabControl SelectedIndex="{Binding _backColorType}">
                             <TabControl.Background>
                                 <SolidColorBrush Color="Transparent" Opacity="1"/>
                             </TabControl.Background>
 
                             <TabItem Header="单">
-                                <Border Margin="0 5 0 0" x:Name="RenderSettingsBackgroundColor" Background="#000000" MouseDown="BackGroundColor_MouseDown">
-                                    <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
-                                </Border>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="颜色1" Foreground="White"></Label>
+                                    <xctk:ColorPicker x:Name="uBackgroundColorPicker1" SelectedColor="{Binding _backColor1}" ShowDropDownButton="False" MinWidth="200" Background="{x:Null}" BorderBrush="{x:Null}"></xctk:ColorPicker>
+                                </StackPanel>
                             </TabItem>
                             <TabItem Header="双">
                                 <StackPanel>
-                                    <Border Margin="0 5 0 0" Background="#000000" MouseDown="BackGroundColor_MouseDown">
-                                        <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
-                                    </Border>
-                                    <Border Margin="0 5 0 0" Background="#000000" MouseDown="BackGroundColor_MouseDown">
-                                        <Label Width="60" FontSize="10" Content="画面背景颜色" Foreground="White" HorizontalAlignment="Left" Background="#7F000000"/>
-                                    </Border>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="颜色1" Foreground="White"></Label>
+                                        <xctk:ColorPicker SelectedColor="{Binding ElementName=uBackgroundColorPicker1,Path=SelectedColor}" ShowDropDownButton="False" MinWidth="200" Background="{x:Null}" BorderBrush="{x:Null}"></xctk:ColorPicker>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="颜色2" Foreground="White"></Label>
+                                        <xctk:ColorPicker SelectedColor="{Binding _backColor2}" ShowDropDownButton="False" MinWidth="200" Background="{x:Null}" BorderBrush="{x:Null}"></xctk:ColorPicker>
+                                    </StackPanel>
                                 </StackPanel>
                             </TabItem>
                             <TabItem Header="纹">
-                                <TextBox Text="HDRI贴图"></TextBox>
+                                <TextBox Text="{Binding _backImgPath}"></TextBox>
                             </TabItem>
                         </TabControl>
 
@@ -271,6 +274,9 @@
                         <xctk:ColorPicker></xctk:ColorPicker>
                         <Label Foreground="White">激发亮度</Label>
                         <Slider Minimum="1.1" Maximum="40" Value="10"></Slider>
+                        <Label FontSize="14" Content="屏幕处理 与 NPR非真实渲染" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        <CheckBox Foreground="White" >OpenCV屏幕降噪</CheckBox>
+                        <CheckBox Foreground="White" >卡通渲染（卡通光照+描边算法）</CheckBox>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

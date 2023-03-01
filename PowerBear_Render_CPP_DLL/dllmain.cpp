@@ -3,7 +3,7 @@
 // DLL文件输出位置：在WPF的bin文件夹下，Debug
 // https://learn.microsoft.com/ZH-cn/cpp/build/walkthrough-creating-and-using-a-dynamic-link-library-cpp?view=msvc-160
 #include "pch.h"
-
+#include <opencv2/core/utils/logger.hpp>
 BOOL APIENTRY DllMain(HMODULE hModule,
 	DWORD  ul_reason_for_call,
 	LPVOID lpReserved
@@ -18,5 +18,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	case DLL_PROCESS_DETACH:
 		break;
 	}
+	// 这里设置一些初始的东西
+	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);// 取消opencv调试信息提示
 	return TRUE;
 }

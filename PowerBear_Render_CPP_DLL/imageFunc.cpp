@@ -5,7 +5,7 @@
 #include "opencv2/imgproc.hpp"
 
 uchar* Mat_to_array(cv::Mat input);
-
+void Mat_to_array(cv::Mat input, BYTE* nptr);
 
 void doDeNoise(BYTE inptImg[], int width, int height, BYTE* outPtr) {
 	//https://blog.csdn.net/iiinoname/article/details/127600364
@@ -58,30 +58,28 @@ uchar* Mat_to_array(cv::Mat input)
 	{
 		for (int j = 0; j < width; j++)
 		{
-			pRga[k] = input.at<cv::Vec3b>(i, j)[0];
-			pRga[height * width + k] = input.at<cv::Vec3b>(i, j)[1];
-			pRga[height * width * 2 + k] = input.at<cv::Vec3b>(i, j)[2];
-			k++;
+			pRga[k++] = input.at<cv::Vec3b>(i, j)[0];
+			pRga[k++] = input.at<cv::Vec3b>(i, j)[1];
+			pRga[k++] = input.at<cv::Vec3b>(i, j)[2];
 		}
 	}
 	return pRga;
 }
 
-void Mat_to_array(cv::Mat input, BYTE* nptr)
+void Mat_to_array(cv::Mat input, BYTE* nptr) // 数组指针
 {
 	auto height = input.rows;
 	auto width = input.cols;
 	int value = 0;
-	uchar* &pRga = nptr;
+	uchar*& pRga = nptr;
 	int k = 0;
-	for (int i = 0; i < height; i++)  //BGR
+	for (int i = 0; i < height; i++)  //RGB
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = 0; j < width; j++) //RGB
 		{
-			pRga[k] = input.at<cv::Vec3b>(i, j)[0];
-			pRga[height * width + k] = input.at<cv::Vec3b>(i, j)[1];
-			pRga[height * width * 2 + k] = input.at<cv::Vec3b>(i, j)[2];
-			k++;
+			pRga[k++] = input.at<cv::Vec3b>(i, j)[2];// R == R 在mat里面【2】才是R因为是BGR存储的
+			pRga[k++] = input.at<cv::Vec3b>(i, j)[1];
+			pRga[k++] = input.at<cv::Vec3b>(i, j)[0];
 		}
 	}
 }

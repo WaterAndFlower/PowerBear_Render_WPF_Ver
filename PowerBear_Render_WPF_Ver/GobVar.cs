@@ -34,8 +34,8 @@ namespace PowerBear_Render_WPF_Ver {
         public static BindingList<NormalObject> fnObjects { get { return _fnObjects; } set { _fnObjects = value; } }
         public static Hittable_List fnLights { get; set; } = new Hittable_List();
         public static bool stopAtRenderColor { get; set; } = false; //只进行像素着色器渲染，不渲染真正颜色
-
         //======Deault Objects======
+        public static HitTable skyObject = new Sphere(new(0, 0, 0), 10000, new SkyMat(new Solid_Color(0.4d, 0.1d, 0.3d)));
         public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
         public static Hittable_List worldObjects = new(); // 世界场景数组，渲染器渲染这个
 
@@ -156,9 +156,9 @@ namespace PowerBear_Render_WPF_Ver {
         /// 进行降噪算法的实现，使用C++的OpenCV库，提供了支持，这部分属于图像处理
         /// </summary>
         [DllImport("PowerBear_Render_CPP_DLL")]
-        public extern static byte[] doDeNoise(byte[] inptImg, int width, int height);
+        unsafe public extern static void doDeNoise(byte[] inptImg, int width, int height, Byte* outPtr);
 
-        [DllImport("PowerBear_Render_CPP_DLL")]
+    [DllImport("PowerBear_Render_CPP_DLL")]
         public extern static void doCanny();
         //调试cpp dll文件：https://blog.csdn.net/weixin_40314351/article/details/127652594
 

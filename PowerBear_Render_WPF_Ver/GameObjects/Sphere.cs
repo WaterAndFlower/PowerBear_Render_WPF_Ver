@@ -22,7 +22,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         }
 
         public Vector3d center = new Vector3d();
-        public double radius;
+        public double radius = 0.5d;
         public Material mat = GobVar.DeaultMat;
 
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {

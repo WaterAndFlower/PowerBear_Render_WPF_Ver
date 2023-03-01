@@ -81,7 +81,7 @@ namespace PowerBear_Render_WPF_Ver {
                 tex = new NoiseTexture(NoiseScale);
                 break;
                 case 3: // 图像纹理
-
+                tex = new ImageTexture(ImgTexPath);
                 break;
             }
             mat.mTexture = tex;
@@ -121,7 +121,7 @@ namespace PowerBear_Render_WPF_Ver {
         private void Button_Click_ObjModel(object sender, RoutedEventArgs e) {
             var mat = GetUsrMat();
             var newObj = new NormalObject(new ObjModel(ObjPath, mat));
-            newObj.objName = "未命名XZPanel";
+            newObj.objName = "未命名Obj物体";
 
             GobVar.fnObjects.Add(newObj);
             GobVar.Render_Preview();

@@ -1,9 +1,11 @@
 ﻿using PowerBear_Render_WPF_Ver.CameraObj;
 using PowerBear_Render_WPF_Ver.DAO;
 using PowerBear_Render_WPF_Ver.GameObjects;
+using PowerBear_Render_WPF_Ver.Materials;
 using PowerBear_Render_WPF_Ver.Pages;
 using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
+using PowerBear_Render_WPF_Ver.Textures;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,7 +28,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Color = System.Drawing.Color;
 using sDrawing = System.Drawing;
+using sysColor = System.Windows.Media.Color;
 
 namespace PowerBear_Render_WPF_Ver {
     /// <summary>
@@ -42,6 +46,10 @@ namespace PowerBear_Render_WPF_Ver {
             public string Mytest { get; set; } = "testvalue";
             public string UICpus = "1 Core";
             public bool uAllowRenderPreview { get; set; } = true; //允许，是否启动像素级预览功能，移动物体完毕，将会立即渲染画面（启动像素着色器预览功能）
+            public sysColor _backColor1 { get; set; } = sysColor.FromRgb(182, 210, 234);
+            public sysColor _backColor2 { get; set; } = sysColor.FromRgb(255, 255, 255);
+            public int _backColorType { get; set; } = 0;//0 单 1 双 2 HDRI
+            public string _backImgPath { get; set; } = "C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\HDRI\\sky_hdri.png";
             public void Refush() {
                 MainWindow.Instance.LabelRenderSize.Content = BitMapSize;
                 MainWindow.Instance.CpusLabel.Content = UICpus;
@@ -145,7 +153,7 @@ namespace PowerBear_Render_WPF_Ver {
 
             //更新主UI
             this.Dispatcher.Invoke((Action)delegate () {
-                MainImage.Source = RenderDispter.CreateWriteableBitMap(wb.pixelColorBytes, wb.width, wb.height);
+                MainImage.Source = PbIO.CreateWriteableBitMap_BGRA(wb.pixelColorBytes, wb.width, wb.height);
             });
             timertimer.Stop();
 
@@ -155,39 +163,72 @@ namespace PowerBear_Render_WPF_Ver {
                 var mwidth = GobVar.wBitmap1.PixelWidth;
                 var mheight = GobVar.wBitmap1.PixelHeight;
                 byte[] inpt = PbIO.BGRA_TO_BGR(wb.pixelColorBytes, mheight, mwidth);
-                var res = GobVar.doDeNoise(inpt, mwidth, mheight);
+                byte[] resRGB = new byte[mwidth * mheight * 3];
+                unsafe {
+                    fixed (Byte* ptr = resRGB)
+                    GobVar.doDeNoise(inpt, mwidth, mheight, ptr);
+                }
                 //    GobVar.doCanny();
+                this.Dispatcher.Invoke((Action)delegate () {
+                    MainImage.Source = PbIO.CreateWriteableBitMap_RGB(resRGB, wb.width, wb.height);
+                });
             }
             catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); }
             //Task.Delay(1000);
             // MainImage.Source = new BitmapImage(new Uri(GobVar.appStartupPath + "/Tmp/Write.png"));
         }
+        void BeforeRender() { // 在DoRender之前，进行一次预处理
+            GobVar.MSAA_Level = MSAA_Combox.SelectedIndex;
+            timertimer.Start();
+            GC.Collect();
+            //GC.WaitForFullGCComplete();
+            //设定参数 在这里进行 一些预先的设置
+            this.renderDetails.BitMapSize = RenderWidth.Text + "*" + RenderHeight.Text;
+            this.renderDetails.Refush();
+            GobVar.AllowPreview = cbAllowPreview.IsChecked == true ? true : false;
+            timertimer.Interval = slHzPreview.Value;
+
+            this.MainImage.Width = int.Parse(RenderWidth.Text);
+            this.MainImage.Height = int.Parse(RenderHeight.Text);
+            //使用一张假图像显示结果
+            GobVar.renderWidth = int.Parse(RenderWidth.Text);
+            GobVar.renderHeight = int.Parse(RenderHeight.Text);
+            GobVar.wBitmap1 = RenderDispter.CreateWriteableBitMap(int.Parse(RenderWidth.Text), int.Parse(RenderHeight.Text));
+            this.MainImage.Source = GobVar.wBitmap1;
+            var _bcakColor1 = renderDetails._backColor1;
+            var _bcakColor2 = renderDetails._backColor2;
+            // 设置天空盒
+            Sphere _BackObj = new Sphere(new(0, 0, 0), 10000);
+            switch (renderDetails._backColorType) {
+                case 0: {
+                        _BackObj.mat = new SkyMat(new Solid_Color(_bcakColor1.R / 255d, _bcakColor1.G / 255d, _bcakColor1.B / 255d));
+                        break;
+                    }
+                case 1: {
+                        _BackObj.mat = new SkyMat(new LinerColor(_bcakColor1, _bcakColor2));
+                        break;
+                    }
+                case 2: {
+                        _BackObj.mat = new SkyMat(new ImageTexture(renderDetails._backImgPath));
+                        break;
+                    }
+            }
+            GobVar.skyObject = _BackObj;
+
+            GobVar.InitRender(); // 小熊渲染管线
+        }
         public void DoRender() {
             try {
-                GobVar.MSAA_Level = MSAA_Combox.SelectedIndex;
-                timertimer.Start();
-                GC.Collect();
-                //GC.WaitForFullGCComplete();
-                //设定参数
-                this.renderDetails.BitMapSize = RenderWidth.Text + "*" + RenderHeight.Text;
-                this.renderDetails.Refush();
-                GobVar.AllowPreview = cbAllowPreview.IsChecked == true ? true : false;
-                timertimer.Interval = slHzPreview.Value;
+                BeforeRender();
 
-                this.MainImage.Width = int.Parse(RenderWidth.Text);
-                this.MainImage.Height = int.Parse(RenderHeight.Text);
-                //使用一张假图像显示结果
-                GobVar.renderWidth = int.Parse(RenderWidth.Text);
-                GobVar.renderHeight = int.Parse(RenderHeight.Text);
-                GobVar.wBitmap1 = RenderDispter.CreateWriteableBitMap(int.Parse(RenderWidth.Text), int.Parse(RenderHeight.Text));
-                this.MainImage.Source = GobVar.wBitmap1;
+                // 开始渲染
                 if (backgroundWorker.IsBusy) { backgroundWorker.CancelAsync(); } else {
                     //启动渲染线程
                     var lookFrom = new Vector3d(double.Parse(CameraPosXTextBox.Text), double.Parse(CameraPosYTextBox.Text), double.Parse(CameraPosZTextBox.Text));
                     var lookAt = new Vector3d(uCameraViewXSlider.Value, uCameraViewYSlider.Value, uCameraViewZSlider.Value);
                     lookAt = lookFrom + lookAt.Normalized();
                     Camera mCamera = new(GobVar.renderWidth, GobVar.renderHeight, uFovSlider.Value, lookFrom, lookAt, new Vector3d(0, 1, 0));
-
+                    // 设定CPU显示UI
                     var t = 1;
                     switch (CPUs_Combox.SelectedIndex) {
                         case 0:
@@ -201,9 +242,7 @@ namespace PowerBear_Render_WPF_Ver {
                         t = 4;
                         break;
                     }
-                    renderDetails.UICpus = $"{t}C{t * 2}T";
-
-                    GobVar.InitRender();
+                    renderDetails.UICpus = $"{t * 2}C{t * 2 * 2}T";
 
                     renderDetails.Refush();
                     backgroundWorker.RunWorkerAsync(new ToRenderDispter() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = mCamera, cpus = t, hitObjs = GobVar.fnWorld });
@@ -217,16 +256,6 @@ namespace PowerBear_Render_WPF_Ver {
         private void Button_Click(object sender, RoutedEventArgs e) {
             GobVar.stopAtRenderColor = false;
             DoRender();
-        }
-        //选择颜色值
-        private void BackGroundColor_MouseDown(object sender, MouseButtonEventArgs e) {
-            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                System.Drawing.SolidBrush sb = new System.Drawing.SolidBrush(colorDialog.Color);
-                SolidColorBrush solidColorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(a: 100, sb.Color.R, sb.Color.G, sb.Color.B));
-                GobVar._BackColor = new Vector3d(1.0d * sb.Color.R / 255.0d, 1.0d * sb.Color.G / 255.0d, 1.0d * sb.Color.B / 255.0d);
-                this.RenderSettingsBackgroundColor.Background = solidColorBrush;
-            }
         }
 
         void SaveWtableBmp(Object sender, RoutedEventArgs e) {
