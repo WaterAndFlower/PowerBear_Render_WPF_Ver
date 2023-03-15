@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PowerBear_Render_WPF_Ver.Textures {
+    [Serializable]
     public class Solid_Color : Texture {
         /// <summary>
         /// 初始值是White（1，1，1）
@@ -16,6 +17,6 @@ namespace PowerBear_Render_WPF_Ver.Textures {
         public override Vector3d Value(double u, double v, Vector3d p) {
             return color;
         }
-        Vector3d color = new Vector3d(1, 1, 1);
+        public Vector3d color = new Vector3d(1, 1, 1);
     }
 }

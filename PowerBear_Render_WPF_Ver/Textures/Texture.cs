@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.Textures {
     /// <summary>
     /// 材质纹理类，不允许直接实例化。令左下角是(0,0)，右上角是(1,1)。
     /// </summary>
+    [XmlInclude(typeof(Solid_Color))]
+    [XmlInclude(typeof(LinerColor))]
     public abstract class Texture {
         /// <summary>
         /// 返回纹理的颜色值。p是击中点在空间中的坐标。

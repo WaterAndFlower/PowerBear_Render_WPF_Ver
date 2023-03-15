@@ -17,6 +17,8 @@ using PowerBear_Render_WPF_Ver.GameObjects;
 using PowerBear_Render_WPF_Ver.Lights;
 using PowerBear_Render_WPF_Ver.Textures;
 using System.ComponentModel;
+using PowerBear_Render_WPF_Ver.DAO;
+using PowerBear_Render_WPF_Ver.CameraObj;
 
 namespace PowerBear_Render_WPF_Ver {
     public static class GobVar {
@@ -24,20 +26,23 @@ namespace PowerBear_Render_WPF_Ver {
         public static bool NeedFlush1 { get; set; } = false;
         public static bool AllowPreview { get; set; } = true; //允许运行过程中预览结果
         public static WriteableBitmap? wBitmap1 { get; set; } //用于写入图像的Bitmap
-        public static int MSAA_Level = 0;//0: 关闭 1：4x倍
         public static int Render_Depth { get; set; } = 50;
         public static string appStartupPath = System.IO.Directory.GetCurrentDirectory();
         //======Render Options======
         public static Vector3d _BackColor = new Vector3d();
         public static Hittable_List fnWorld = new Hittable_List(); // fnWorld = fnObjects + fnLights
-        static BindingList<NormalObject> _fnObjects = new();
-        public static BindingList<NormalObject> fnObjects { get { return _fnObjects; } set { _fnObjects = value; } }
-        public static Hittable_List fnLights { get; set; } = new Hittable_List();
+        public static BindingList<PointLight_Phong> fnLights { get; set; } = new(); //存放的是Phong模型的光照
         public static bool stopAtRenderColor { get; set; } = false; //只进行像素着色器渲染，不渲染真正颜色
         //======Deault Objects======
         public static HitTable skyObject = new Sphere(new(0, 0, 0), 10000, new SkyMat(new Solid_Color(0.4d, 0.1d, 0.3d)));
         public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
         public static Hittable_List worldObjects = new(); // 世界场景数组，渲染器渲染这个
+
+        // ======场景物体=======
+        public static Camera mCamera = new();
+        static BindingList<NormalObject> _fnObjects = new();
+        public static BindingList<NormalObject> fnObjects { get { return _fnObjects; } set { _fnObjects = value; } }
+        public static ToRenderDispterData RenderDispData;
 
         /// <summary>
         /// 封装好的，Cornell_Box，是1984年创建的一个展示光照效果的演示程序
@@ -74,7 +79,7 @@ namespace PowerBear_Render_WPF_Ver {
             Console.WriteLine("和C++的DLL通讯成功");
 
             // 初始的一些小场景 和 材质 之类的玩意
-
+            /*
             var t = new Box(new(0, 0, 0), new(3, 3, 3));
             HitTable box1 = t;
             NormalObject box1Obj = new(box1);
@@ -93,15 +98,39 @@ namespace PowerBear_Render_WPF_Ver {
             cornell_BoxObj.objName = "光照盒子";
 
 
-            HitTable modelYiYi = new ObjModel("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\依依\\依依（1）.obj", new Lambertian(new ImageTexture("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\依依\\依依（1）.png")));
+            HitTable xzPanel = new XZ_Rect(-3, 3, -3, 3, 5, new DiffuseLightMat(new Solid_Color(1, 1, 1), 30));
+            NormalObject xzPanelObj = new(xzPanel);
+            xzPanelObj.objName = "头顶光";
 
-            NormalObject modelYiyiObj = new(modelYiYi);
-            modelYiyiObj.objName = "依依";
+            HitTable xzPanel2 = new XZ_Rect(-100, 100, -100, 100, 0, new Lambertian());
+            NormalObject xzPanel2Obj = new(xzPanel2);
+            xzPanel2Obj.objName = "底部平面";
 
             fnObjects.Add(box1Obj);
             fnObjects.Add(box2Obj);
-            //fnObjects.Add(cornell_BoxObj);
-            fnObjects.Add(modelYiyiObj);
+            fnObjects.Add(cornell_BoxObj);
+            fnObjects.Add(xzPanelObj);
+            fnObjects.Add(xzPanel2Obj);
+            */
+            //HitTable modelYiYi = new ObjModel("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\依依\\依依（1）.obj", new Lambertian(new ImageTexture("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\依依\\依依（1）.png")));
+
+            //NormalObject modelYiyiObj = new(modelYiYi);
+            //modelYiyiObj.objName = "依依";
+            //fnObjects.Add(modelYiyiObj);
+
+            HitTable sphere = new Sphere(Vector3d.Zero, 5, new Metal(new(0.5d, 0.5d, 0.5d), 0.1));
+            NormalObject sphereObj = new(sphere);
+            sphereObj.offset = new(5.5, 0, 0);
+            sphereObj.objName = "小球体_Metal";
+            fnObjects.Add(sphereObj);
+
+            HitTable sphere2 = new DielectricSphere(Vector3d.Zero, 5, new Dielectric(1.5d));
+            NormalObject sphereObj2 = new(sphere2);
+            sphereObj2.offset = new(-5.5, 0, 0);
+            sphereObj2.objName = "小球体_Glass";
+            fnObjects.Add(sphereObj2);
+
+            PbIO.JsonEncode();
         }
         /// <summary>
         /// 出发了，像素级渲染，根据条件进行判断
@@ -144,22 +173,13 @@ namespace PowerBear_Render_WPF_Ver {
         /// <summary>
         /// 测试C++部分的DLL文件是否链接成功了
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
         [DllImport("PowerBear_Render_CPP_DLL")]
         public extern static int TestDLL(int a, int b);
 
         [DllImport("PowerBear_Render_CPP_DLL")]
         public extern static char TestString();
-        /// <summary>
-        /// 进行降噪算法的实现，使用C++的OpenCV库，提供了支持，这部分属于图像处理
-        /// </summary>
-        [DllImport("PowerBear_Render_CPP_DLL")]
-        unsafe public extern static void doDeNoise(byte[] inptImg, int width, int height, Byte* outPtr);
 
-    [DllImport("PowerBear_Render_CPP_DLL")]
-        public extern static void doCanny();
+
         //调试cpp dll文件：https://blog.csdn.net/weixin_40314351/article/details/127652594
 
         /// <summary>
@@ -181,7 +201,6 @@ namespace PowerBear_Render_WPF_Ver {
             // 设置背景颜色方式
             fnWorld.Clear();
             foreach (var item in GobVar.fnObjects) if (item.needRender) fnWorld.Add(item);
-            foreach (var item in GobVar.fnLights.objects) if (item.needRender) fnWorld.Add(item);
 
             // Loop Before Rendering
             foreach (var item in GobVar.fnWorld.objects) {

@@ -88,6 +88,15 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         public static Vector3d ClampRange(Vector3d x) {
             return new Vector3d(x.x() - (int)(x.x()), x.y() - (int)(x.y()), x.z() - (int)(x.z()));
         }
+        public static Vector3d ClampRangeDouble(Vector3d x, double xmin, double xmax) {
+            Vector3d res = new();
+            for (int i = 0; i < 3; i++) {
+                if (x[i] < xmin) { res[i] = xmin; }
+                if (x[i] > xmax) { res[i] = xmax; }
+                res[i] = x[i];
+            }
+            return res;
+        }
         /// <summary>
         /// 随机返回一个在单位球内的向量
         /// </summary>

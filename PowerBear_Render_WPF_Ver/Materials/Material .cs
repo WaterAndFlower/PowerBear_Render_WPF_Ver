@@ -2,8 +2,10 @@
 using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using PowerBear_Render_WPF_Ver.Textures;
+using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.Materials {
+    [XmlInclude(typeof(SkyMat))]
     public abstract class Material {
         /// <summary>
         /// 计算光线打在这个材质上，会发生什么反射。并且计算当前打入的颜色是什么值

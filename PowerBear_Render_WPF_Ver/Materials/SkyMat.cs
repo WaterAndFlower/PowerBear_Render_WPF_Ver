@@ -9,9 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PowerBear_Render_WPF_Ver.Materials {
+    [Serializable]
     public class SkyMat : Material {
         public SkyMat(Texture tex) { _tex = tex; }
-
+        public SkyMat() { }
         public override bool Scatter(Ray r_in, HitResult rec, out Vector3d attenuation, out Ray scattered) {
             scattered = new Ray(Vector3d.Zero, Vector3d.Zero);
             attenuation = _tex.Value(rec.u, rec.v, r_in.direction);//这点最终于，要把光线方向传递进去。

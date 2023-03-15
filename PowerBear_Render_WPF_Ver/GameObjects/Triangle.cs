@@ -13,6 +13,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public Material mat = new Lambertian();
         public Triangle(Vector3d p0, Vector3d p1, Vector3d p2) { this.pointPos[0] = p0; this.pointPos[1] = p1; this.pointPos[2] = p2; }
         public Triangle(Vector3d p0, Vector3d p1, Vector3d p2, int index0, int index1, int index2) { this.pointPos[0] = p0; this.pointPos[1] = p1; this.pointPos[2] = p2; this.p0Index = index0; this.p1Index = index1; this.p2Index = index2; }
+        public Triangle() { }
         public Triangle(Vector3d p0, Vector3d p1, Vector3d p2, Material mat) { this.pointPos[0] = p0; this.pointPos[1] = p1; this.pointPos[2] = p2; this.mat = mat; }
         /// <summary>
         /// u*P1+v*P2+(1-u-v)*P0

@@ -5,9 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
+    [XmlType("SphereXML")]
     public class Sphere : HitTable {
         public Sphere() { }
         public Sphere(Vector3d center, double radius) {
@@ -21,9 +24,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             this.objName = "新建小球体";
         }
 
-        public Vector3d center = new Vector3d();
-        public double radius = 0.5d;
-        public Material mat = GobVar.DeaultMat;
+        public Vector3d center { get; set; } = new Vector3d();
+        public double radius { get; set; } = 0.5d;
+        public Material mat { get; set; } = GobVar.DeaultMat;
 
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
             hitResult = new HitResult();

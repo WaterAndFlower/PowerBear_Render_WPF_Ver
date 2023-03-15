@@ -4,8 +4,10 @@ using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
     public struct HitResult {
@@ -26,6 +28,12 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             normal = normal.Normalized();
         }
     };
+    [Serializable]
+    [XmlInclude(typeof(DielectricSphere))]
+    [XmlInclude(typeof(Dielectric))]
+    [XmlInclude(typeof(Translate))]
+    [XmlInclude(typeof(Triangle))]
+    [XmlInclude(typeof(Sphere))]
     public abstract class HitTable : ICloneable {
         public string objName { get; set; } = "未命名";
         public bool needRender { get; set; } = true;

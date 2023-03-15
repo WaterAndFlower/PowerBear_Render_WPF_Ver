@@ -21,27 +21,54 @@ using PowerBear_Render_WPF_Ver.Textures;
 using PowerBear_Render_WPF_Ver.Lights;
 using static System.Windows.Forms.Design.AxImporter;
 using System.Reflection.Emit;
+using PowerBear_Render_WPF_Ver.DAO;
 
 namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
     /// 多线程类 规定（1，1）图像左上角（height，width）图像右下角
     /// </summary>
-    public class RenderDispter {
+    public class RenderDispter : BaseRenderDispter {
         //====Public Var====
         public int width, height;
-        public Byte[]? pixelColorBytes; //BGRA32
-        public Action? OnFinish, FreshImage;
         public BackgroundWorker _BackWorker; //后台线程管理类，用于刷新
         public int sampleDepth = 1; //采样深度次数
         public Camera mCamera;
         public int cpus = 1; // 使用cpu核心数
-        BVH_Tree worldBvh;
 
+        BVH_Tree worldBvh;
         int sample_pixel_count = 1; // MSAA_LVEL=0
+        public Byte[]? pixelColorBytes; //BGRA32 最后图片模样的数组
+        public Byte[]? pixelRedPreview; //BGRA32 像素化着色器，红色背景图，预览用
+
         //方法组
-        public RenderDispter() { }
-        public RenderDispter(int width, int height) {
-            this.Init(width, height);
+        public RenderDispter(ToRenderDispterData parm) : base(parm) {
+            _BackWorker = parm._BackWorker;
+            width = parm.width;
+            height = parm.height;
+            sampleDepth = parm.sample_depth;
+            mCamera = parm.mCamera;
+            cpus = parm.cpus;
+            switch (parm.sample_pixel_level) {
+                case 0: {
+                        sample_pixel_count = 1;
+                        break;
+                    }
+                case 1: {
+                        sample_pixel_count = 20;
+                        break;
+                    }
+                case 2: {
+                        sample_pixel_count = 50;
+                        break;
+                    }
+            }
+            Init(width, height);
+        }
+        void Init(int width, int height) {
+            if (this.pixelColorBytes == null) { this.pixelColorBytes = new Byte[width * height * 4]; }
+            if (this.pixelRedPreview == null) { this.pixelRedPreview = new Byte[width * height * 4]; }
+            this.width = width;
+            this.height = height;
         }
         ~RenderDispter() {
             GobVar.wBitmap1 = null;
@@ -78,7 +105,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 Ray scattered;
                 Vector3d atten;
                 if (hitResult.mat.Scatter(ray, hitResult, out atten, out scattered)) {
-                    return atten * 1d;
+                    return atten * 1.2d;
                 }
             }
             return GobVar._BackColor;
@@ -89,17 +116,42 @@ namespace PowerBear_Render_WPF_Ver.Render {
             var res = (1.0d - t) * Vector3d.Vector3DUse(1, 1, 1) + t * GobVar._BackColor;
             return res;
         }
+        // ====== Phong 渲染部分 ======
+        static Vector3d LightPos = new(10, 10, 10); // 一个平行光源的位置
+        static Vector3d LightColor = new(1, 1, 1);
+        static Vector3d HighColor = new(1, 1, 1);
 
-        static Vector3d LightPos = new(5, 3, -2);
+        Vector3d Reflect(Vector3d v, Vector3d n) {
+            return v - 2 * Vector3d.Dot(v, n) * n;
+        }
         /// <summary>
         /// 采用裴详凤算法，一个Phong模型的光照计算
         /// </summary>
         Vector3d Ray_Color_Phong(Ray ray, HitTable world, int depth) {
             HitResult hitResult;
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
-                Point3d backColor = new(0.4, 0.2, 0);
                 // 在这里实现算法部分
-                return backColor + hitResult.normal.Dot(LightPos) * new Vector3d(0.5d, 0.5d, 0.5d);
+                Ray scattered;
+                Vector3d attenuation, emitColor = hitResult.mat.Emit(hitResult.u, hitResult.v, hitResult.p);
+                if (hitResult.mat.Scatter(ray, hitResult, out attenuation, out scattered)) {
+                    //Console.WriteLine(hitResult.mat.GetType());
+
+
+                    Vector3d ambient = GobVar._BackColor * 0.5d;
+                    Vector3d worldNormal = hitResult.normal.Normalized();
+                    Vector3d worldLightDir = LightPos;
+                    Vector3d diffuse = attenuation * LightColor * PbMath.PbMath.ClampRangeDouble(worldNormal.Dot(worldLightDir), 0, 1);
+                    //开始计算高光
+                    Vector3d reflectDir = Reflect(worldLightDir, worldNormal).Normalized();
+                    //mCamera.origin - hitResult.p
+                    Vector3d viewDir = (ray.direction).Normalized();
+                    Vector3d specular = HighColor * LightColor * Math.Pow(PbMath.PbMath.ClampRangeDouble(reflectDir.Dot(viewDir), 0, 1d), 18);
+
+                    return ambient + diffuse + specular;
+                    //return emitColor + attenuation * Ray_Color(scattered, world, depth - 1);
+                } else {
+                    return emitColor; // 返回自发光的颜色
+                }
             }
             // 在这里实现光照盒反射部分
             ray.origin = Vector3d.Zero;
@@ -119,7 +171,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
                 return new Vector3d(1, 0, 0);
             } else {
-                return new Vector3d();
+                return new Vector3d(0, 0, 0);
             }
         }
 
@@ -127,12 +179,12 @@ namespace PowerBear_Render_WPF_Ver.Render {
             Camera camera = mCamera;
             Parallel.For(1, this.height + 1, i => {
                 Parallel.For(1, this.width + 1, j => {
-                    var colorRes = new Vector3d();
                     var u = (1.0d * j) / width;
                     var v = (1.0d * i) / height;
                     Ray ray = camera.GetRay(u, v);
-                    colorRes += Ray_Color_Preview(ray, worldBvh);
-                    this.SetColorToBytes(i, j, new PbColorRGB(colorRes).ConvertToSysColor());
+                    var colorRes = Ray_Color_Preview(ray, worldBvh);
+                    this.SetColorToBytes(i, j, new PbColorRGB(colorRes).ConvertToSysColor(), this.pixelRedPreview);
+                    this.SetColorToBytes(i, j, new PbColorRGB(colorRes).ConvertToSysColor(), this.pixelColorBytes);
                 });
             });
             if (GobVar.NeedFlush1) {
@@ -142,7 +194,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
         //CUDA：https://blog.csdn.net/theadore2017/article/details/110919384
         //利用GPU进行并行运算
-        public void DoRender() {
+        public override void DoRender() {
             worldBvh = new(GobVar.fnWorld);
 
             PreviewRender();
@@ -153,15 +205,10 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 Camera camera = mCamera;
                 if (camera == null) throw new Exception("摄像机为空，啊哈！") { };
 
-                var objMat = new Lambertian(new ImageTexture(@"C:\Users\PowerBear\Desktop\Doc\大创渲染器\中间过程演示\Model\依依\依依（1）.png"));
-                HitTable md = new ObjModel(@"C:\Users\PowerBear\Desktop\Doc\大创渲染器\中间过程演示\Model\依依\依依（1）.obj", objMat);
-
                 // ======BVH Build======
                 Console.WriteLine("构建整个场景的BVH盒子");
                 // ---End---
 
-
-                if (GobVar.MSAA_Level == 1) { sample_pixel_count = 20; } else if (GobVar.MSAA_Level == 2) { sample_pixel_count = 50; } else if (GobVar.MSAA_Level == 3) { sample_pixel_count = 100; }
                 //多线程设定
                 var options = new ParallelOptions {
                     MaxDegreeOfParallelism = cpus
@@ -175,7 +222,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 var start = DateTime.Now;
                 //多线程运行
                 Parallel.For(1, this.height + 1, options, i => {
-                    Parallel.For(fromInclusive: 1, this.width + 1, options, j => {
+                    Parallel.For(1, this.width + 1, options, j => {
                         Vector3d colorRes = new(0, 0, 0); // 每个线程单独一个颜色值
                         colorRes.e[0] = colorRes.e[1] = colorRes.e[2] = 0d;
 
@@ -184,12 +231,12 @@ namespace PowerBear_Render_WPF_Ver.Render {
 
                         for (int k = 0; k < actual_sample_pixel_count; k++) { //MSAA重要性采样
                             double uRandom = PbRandom.Random_Double(), vRandom = PbRandom.Random_Double();
-                            if (GobVar.MSAA_Level == 0) { uRandom = vRandom = 0; }
+                            if (actual_sample_pixel_count == 1) { uRandom = vRandom = 0; }
                             var u = (1.0d * j + uRandom) / width;
                             var v = (1.0d * i + vRandom) / height;
                             Ray ray = camera.GetRay(u, v);
-                            //colorRes += Ray_Color(ray, worldBvh, GobVar.Render_Depth);
-                            colorRes += Ray_Color_Phong(ray, worldBvh, GobVar.Render_Depth);
+                            colorRes += Ray_Color(ray, worldBvh, GobVar.Render_Depth);
+                            //colorRes += Ray_Color_Phong(ray, worldBvh, GobVar.Render_Depth);
                         }
 
                         // DONE
@@ -201,7 +248,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
                         writeColor.e[1] = Math.Sqrt(writeColor.e[1]);
                         writeColor.e[2] = Math.Sqrt(writeColor.e[2]);
 
-                        this.SetColorToBytes(i, j, new PbColorRGB(writeColor).ConvertToSysColor());
+                        this.SetColorToBytes(i, j, new PbColorRGB(writeColor).ConvertToSysColor(), pixelColorBytes);
                         pixelsCount++;
 
 
@@ -227,24 +274,20 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
 
 
-        void Init(int width, int height) {
-            if (this.pixelColorBytes == null) { this.pixelColorBytes = new Byte[width * height * 4]; }
-            this.width = width;
-            this.height = height;
-        }
+
         /// <summary>
         /// 设置图像画面的颜色，操作PixelColorBytes数组，从1开始，到最终像素结束
         /// </summary>
         /// <param name="x">画面高度</param>
         /// <param name="y">画面宽度</param>
         /// <param name="color">系统库自带的颜色</param>
-        void SetColorToBytes(int x, int y, System.Drawing.Color color) {
+        void SetColorToBytes(int x, int y, System.Drawing.Color color, Byte[] array) {
             x--; y--;
             int point = x * width * 4 + y * 4;
-            this.pixelColorBytes[point] = color.B;
-            this.pixelColorBytes[point + 1] = color.G;
-            this.pixelColorBytes[point + 2] = color.R;
-            this.pixelColorBytes[point + 3] = 255;
+            array[point] = color.B;
+            array[point + 1] = color.G;
+            array[point + 2] = color.R;
+            array[point + 3] = 255;
         }
         /// <summary>
         /// 根据之前计算的红色信息点，这些点是重要的，来绘制图元
@@ -266,7 +309,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         bool Get_Red_Color(int x, int y) {
             x--; y--;
             int point = x * width * 4 + y * 4;
-            if (point >= 0 && point < this.pixelColorBytes.Length && this.pixelColorBytes[point + 2] == 255) {
+            if (point >= 0 && point < this.pixelRedPreview.Length && this.pixelRedPreview[point + 2] == 255) {
                 return true;
             } else {
                 return false;

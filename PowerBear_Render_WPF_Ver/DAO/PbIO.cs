@@ -7,6 +7,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using PowerBear_Render_WPF_Ver.Render;
 using System.Windows;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
+using PowerBear_Render_WPF_Ver.GameObjects;
+using System.IO;
+using System.ComponentModel;
+using PowerBear_Render_WPF_Ver.Materials;
+using PowerBear_Render_WPF_Ver.Textures;
+using PowerBear_Render_WPF_Ver.CameraObj;
 
 namespace PowerBear_Render_WPF_Ver.DAO {
     public class PbIO {
@@ -57,6 +66,42 @@ namespace PowerBear_Render_WPF_Ver.DAO {
                 toBytesBGRA[i1 + 3] = 255;
             }
             return CreateWriteableBitMap_BGRA(toBytesBGRA, width, height);
+        }
+
+        // 序列化场景的物体
+        public static void JsonEncode() {
+            string xml_fnObjects = "", xml_Camera = "", xml_SkyBox = "";
+
+            var res = JsonSerializer.Serialize(GobVar.fnObjects);
+            Console.WriteLine(res);
+
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(BindingList<NormalObject>), new Type[] { typeof(Sphere), typeof(Metal), typeof(Solid_Color) });
+
+            // 序列化 fnObjects 为 XML
+            using MemoryStream mms = new();
+            xmlSerializer.Serialize(mms, GobVar.fnObjects);
+            mms.Position = 0;
+            using StreamReader ssr = new(mms);
+            Console.WriteLine(ssr.ReadToEnd());
+
+            // 序列化 Camera 参数为 XML
+            xmlSerializer = new(typeof(Camera));
+            using MemoryStream mss2 = new();
+            xmlSerializer.Serialize(mss2, GobVar.mCamera);
+            mss2.Position = 0;
+            using StreamReader ssr2 = new(mss2);
+            Console.WriteLine(ssr2.ReadToEnd());
+
+            // 序列化 天空盒 为 XML
+            xmlSerializer = new(typeof(Sphere), new Type[] { typeof(Material), typeof(Texture) });
+            using MemoryStream mss3 = new();
+            xmlSerializer.Serialize(mss3, GobVar.skyObject);
+            mss3.Position = 0;
+            using StreamReader ssr3 = new(mss3);
+            Console.WriteLine(ssr3.ReadToEnd());
+
+            //序列化 线程参数 为 XML
+
         }
     }
 }

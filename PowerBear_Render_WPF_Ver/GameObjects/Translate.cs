@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
     public class Translate : HitTable {
-        public HitTable ptr;
-        public Vector3d offset;
-
+        public HitTable ptr { get; set; }
+        public Vector3d offset { get; set; }
+        public Translate() { }
         public Translate(HitTable ptr, Vector3d offset) {
             this.ptr = ptr;
             this.offset = offset;

@@ -17,32 +17,35 @@ void doDeNoise(BYTE inptImg[], int width, int height, BYTE* outPtr) {
 	cv::imwrite("C:/Users/PowerBear/source/repos/PowerBear_Render_WPF_Ver/PowerBear_Render_WPF_Ver/bin/Debug/net6.0-windows/Tmp/Write_DeNoise.png", result);
 	Mat_to_array(result, outPtr);
 }
-void doCanny() {
-	cv::Mat Img = cv::imread("C:/Users/PowerBear/source/repos/PowerBear_Render_WPF_Ver/PowerBear_Render_WPF_Ver/bin/Debug/net6.0-windows/Tmp/Read.png", cv::ImreadModes::IMREAD_COLOR);
-	cv::Mat dstImage, grayImage, edge, cannyImage;//复制的待变换图，灰度图，边缘图
-	//创建原图同类型同大小的矩阵
-	dstImage.create(Img.size(), Img.type());
-	cannyImage.create(Img.size(), Img.type());
+void doCanny(BYTE inptImg[], int width, int height) {
+	//auto imageMat = cv::imread("C:\\Users\\PowerBear\\Desktop\\1.png");
+	cv::Mat imageMat(height, width, CV_8UC3, inptImg, width * 3);
+	cv::Mat grayImage, contour_Mat, binImg, cannyImage, cannyImg;//复制的待变换图，灰度图，边缘图
+
+	grayImage.create(imageMat.size(), imageMat.type());
+	binImg.create(imageMat.size(), imageMat.type());
+	cvtColor(imageMat, grayImage, cv::COLOR_BGR2GRAY);
+	//cv::threshold(grayImage, binImg, 0, 128, cv::ThresholdTypes::THRESH_OTSU);
+	binImg = grayImage;
 	//转灰度
-	cvtColor(Img, grayImage, cv::COLOR_BGR2GRAY);
-	//高斯滤波降噪
-	blur(grayImage, edge, cv::Size(3, 3));
-	Canny(edge, cannyImage, 3, 9, 3);
-	imshow("3-9-3 canny算子", cannyImage);
+	cv::imshow("Display 灰度图", binImg);
+	cv::waitKey(0);
+	cv::Mat edge;
+	cv::Canny(grayImage, edge, 0, 200);
+	cv::imshow("Display Edge", edge);
 
-	blur(grayImage, edge, cv::Size(3, 3));
-	Canny(edge, cannyImage, 5, 200, 3);
-	imshow("5-200-3 canny算子", cannyImage);
+	std::vector<std::vector<cv::Point>> contour_vec;
+	std::vector<cv::Vec4i> hierarchy;
+	cv::findContours(edge, contour_vec, hierarchy, cv::RETR_CCOMP, cv::ContourApproximationModes::CHAIN_APPROX_SIMPLE);
 
-	cv::imwrite("C:/Users/PowerBear/source/repos/PowerBear_Render_WPF_Ver/PowerBear_Render_WPF_Ver/bin/Debug/net6.0-windows/Tmp/WriteCanny.png", cannyImage);
+	contour_Mat.create(imageMat.size(), imageMat.type());
+	cv::drawContours(imageMat, contour_vec, -1, cv::Scalar(0), 2);
 
-	std::vector<std::vector<cv::Point>> contours;
-	cv::Mat outImg;
-	outImg.create(Img.size(), Img.type());
-	cv::threshold(grayImage, outImg, 127, 255, cv::THRESH_BINARY);
+	cv::imshow("轮廓图", imageMat);
 	//cv::findContours(outImg, contours, cv::ContoursMode, 0);
 	//https://www.jb51.net/article/220037.htm
 	//https://www.w3cschool.cn/opencv/opencv-p8ze2dhc.html
+	//https://blog.csdn.net/qq_30460949/article/details/124626347
 }
 
 

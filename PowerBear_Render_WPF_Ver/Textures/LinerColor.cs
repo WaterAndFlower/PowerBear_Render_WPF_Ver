@@ -28,7 +28,7 @@ namespace PowerBear_Render_WPF_Ver.Textures {
             return res;
         }
 
-        Vector3d color1 = new(0, 0, 0);
-        Vector3d color2 = new(0, 0, 0);
+        public Vector3d color1 = new(0, 0, 0);
+        public Vector3d color2 = new(0, 0, 0);
     }
 }

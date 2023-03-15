@@ -272,11 +272,13 @@
                         <Label FontSize="14" Content="灯光属性" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <Label Foreground="White">光线颜色</Label>
                         <xctk:ColorPicker></xctk:ColorPicker>
+                        <Label Foreground="White">Phong背景颜色</Label>
+                        <xctk:ColorPicker DisplayColorAndName="True" SelectedColor="#000000"></xctk:ColorPicker>
                         <Label Foreground="White">激发亮度</Label>
                         <Slider Minimum="1.1" Maximum="40" Value="10"></Slider>
                         <Label FontSize="14" Content="屏幕处理 与 NPR非真实渲染" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
-                        <CheckBox Foreground="White" >OpenCV屏幕降噪</CheckBox>
-                        <CheckBox Foreground="White" >卡通渲染（卡通光照+描边算法）</CheckBox>
+                        <CheckBox Foreground="White" IsChecked="{Binding _AllowDoDeNoise}">OpenCV屏幕降噪</CheckBox>
+                        <CheckBox Foreground="White" IsChecked="{Binding _AllowPhongModel}">卡通渲染（卡通光照+描边算法）</CheckBox>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -296,7 +298,7 @@
                         <Label FontSize="14" Content="Remote Server IP" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <TextBox>http:\\192.168.0.1:1219</TextBox>
                         <Label FontSize="14" Content="Function" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
-                        <Button>推送渲染任务</Button>
+                        <Button Click="Button_Click_PushNetWork">推送渲染任务</Button>
                         <Button>拉取渲染任务</Button>
                         <Button>同步服务器中数据</Button>
                     </StackPanel>

@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
 namespace PowerBear_Render_WPF_Ver.CameraObj {
+    [Serializable]
     public class Camera {
+        public Camera() { }
         /// <summary>
         /// 相机类，以lookFrom为起点，lookFrom加LookAt为终端，实验
         /// </summary>
@@ -41,13 +43,14 @@ namespace PowerBear_Render_WPF_Ver.CameraObj {
             return new Ray(origin, upper_left_corner + u * horizontal + v * vertical - origin);
         }
 
-        public double width, height;
+        public double width { get; set; }
+        public double height { get; set; }
         public double aspect_radio;
         public double forceLength = 1.0d;
 
         double viewport_height = 2.0d;
         double viewport_width;
-        Vector3d origin = new(0d, 0d, 0d);
+        public Vector3d origin = new(0d, 0d, 0d);
         Vector3d upper_left_corner; //画面左上角
         Vector3d horizontal;
         Vector3d vertical;

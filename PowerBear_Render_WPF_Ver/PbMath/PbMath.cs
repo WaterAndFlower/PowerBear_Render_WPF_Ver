@@ -19,5 +19,8 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         public static double Degress_To_Radians(double x) {
             return x / 180.0d * PI;
         }
+        public static double ClampRangeDouble(double x, double xmin, double xmax) {
+            return Math.Max(Math.Min(x, xmax), xmin);
+        }
     }
 }

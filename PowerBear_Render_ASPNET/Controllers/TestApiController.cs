@@ -1,17 +1,18 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PowerBear_Render_ASPNET.Controllers {
     [ApiController]
-    [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase {
+    [Route("[controller]/[action]")]
+    public class TestApiController : ControllerBase {
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<TestApiController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger) {
+        public TestApiController(ILogger<TestApiController> logger) {
             _logger = logger;
         }
 
@@ -23,6 +24,10 @@ namespace PowerBear_Render_ASPNET.Controllers {
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+        [HttpGet(Name = "GetAdd")]
+        public ActionResult Add(int a, int b) {
+            return new JsonResult(a + b);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace PowerBear_Render_WPF_Ver.Materials {
     public class Dielectric : Material {
         public double ir;
         public Vector3d attenuation = new Vector3d(1.0d, 1.0d, 1.0d);
-
+        public Dielectric() { }
         public Dielectric(double index_of_refraction, Vector3d attenuation) {
             ir = index_of_refraction;
             this.attenuation = attenuation;

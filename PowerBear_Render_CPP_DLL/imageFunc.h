@@ -9,4 +9,4 @@
 #endif
 
 extern "C" Func_API void doDeNoise(BYTE[], int, int, BYTE*);
-extern "C" Func_API void doCanny();
+extern "C" Func_API void doCanny(BYTE inptImg[], int width, int height);

@@ -2,6 +2,7 @@
 using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
+using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// <summary>

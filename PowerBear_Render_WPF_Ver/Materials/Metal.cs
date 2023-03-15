@@ -6,13 +6,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.Materials {
+    [XmlInclude(typeof(Material))]
     public class Metal : Material {
         public Metal(Vector3d albeod, double fuzz) {
             this.albedo = albeod;
             this.fuzz = fuzz < 1 ? fuzz : 1;
         }
+        public Metal() { }
         Vector3d Reflect(Vector3d v, Vector3d n) {
             return v - 2 * Vector3d.Dot(v, n) * n;
         }

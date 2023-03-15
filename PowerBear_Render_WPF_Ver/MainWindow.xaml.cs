@@ -50,6 +50,8 @@ namespace PowerBear_Render_WPF_Ver {
             public sysColor _backColor2 { get; set; } = sysColor.FromRgb(255, 255, 255);
             public int _backColorType { get; set; } = 0;//0 单 1 双 2 HDRI
             public string _backImgPath { get; set; } = "C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\HDRI\\sky_hdri.png";
+            public bool _AllowDoDeNoise { get; set; } = false;
+            public bool _AllowPhongModel { get; set; } = false;
             public void Refush() {
                 MainWindow.Instance.LabelRenderSize.Content = BitMapSize;
                 MainWindow.Instance.CpusLabel.Content = UICpus;
@@ -80,9 +82,10 @@ namespace PowerBear_Render_WPF_Ver {
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
             backgroundWorker.DoWork += new DoWorkEventHandler(RunThread);
-            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RunWorkDown);
+            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AfterRender);
 
             uObjectsListBox.ItemsSource = GobVar.fnObjects;
+            InitRenderSettings();
         }
         //强制UI进行刷新
         public void UIRefresh() {
@@ -108,12 +111,9 @@ namespace PowerBear_Render_WPF_Ver {
         //！！！渲染主线程！！！
         public void RunThread(object sender, DoWorkEventArgs e) {
 
-            var data = (ToRenderDispter)e.Argument;
+            var data = (ToRenderDispterData)e.Argument;
 
-            RenderDispter renderDsp = new RenderDispter(data.width, data.height);
-            renderDsp.mCamera = data.mCamera;
-            renderDsp._BackWorker = backgroundWorker;
-            renderDsp.cpus = data.cpus;
+            BaseRenderDispter renderDsp = new RenderDispter(data);
 
             renderDsp.DoRender();
             e.Result = renderDsp;
@@ -148,7 +148,7 @@ namespace PowerBear_Render_WPF_Ver {
             }
         }
         // 线程运行完毕回调函数
-        public void RunWorkDown(object? sender, RunWorkerCompletedEventArgs e) {
+        public void AfterRender(object? sender, RunWorkerCompletedEventArgs e) {
             var wb = (RenderDispter)e.Result;
 
             //更新主UI
@@ -164,40 +164,35 @@ namespace PowerBear_Render_WPF_Ver {
                 var mheight = GobVar.wBitmap1.PixelHeight;
                 byte[] inpt = PbIO.BGRA_TO_BGR(wb.pixelColorBytes, mheight, mwidth);
                 byte[] resRGB = new byte[mwidth * mheight * 3];
-                unsafe {
-                    fixed (Byte* ptr = resRGB)
-                    GobVar.doDeNoise(inpt, mwidth, mheight, ptr);
+
+                // 渲染完毕后做的事情
+                if (renderDetails._AllowDoDeNoise) {
+                    CppFunction.DoDeNoise(inpt, mwidth, mheight, resRGB);
+                    this.Dispatcher.Invoke((Action)delegate () {
+                        MainImage.Source = PbIO.CreateWriteableBitMap_RGB(resRGB, wb.width, wb.height);
+                    });
                 }
-                //    GobVar.doCanny();
-                this.Dispatcher.Invoke((Action)delegate () {
-                    MainImage.Source = PbIO.CreateWriteableBitMap_RGB(resRGB, wb.width, wb.height);
-                });
+                if (renderDetails._AllowPhongModel) {
+                    CppFunction.DoCanny(inpt, mwidth, mheight);
+                }
+
             }
             catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message); }
             //Task.Delay(1000);
             // MainImage.Source = new BitmapImage(new Uri(GobVar.appStartupPath + "/Tmp/Write.png"));
         }
-        void BeforeRender() { // 在DoRender之前，进行一次预处理
-            GobVar.MSAA_Level = MSAA_Combox.SelectedIndex;
-            timertimer.Start();
-            GC.Collect();
-            //GC.WaitForFullGCComplete();
-            //设定参数 在这里进行 一些预先的设置
-            this.renderDetails.BitMapSize = RenderWidth.Text + "*" + RenderHeight.Text;
-            this.renderDetails.Refush();
-            GobVar.AllowPreview = cbAllowPreview.IsChecked == true ? true : false;
-            timertimer.Interval = slHzPreview.Value;
-
-            this.MainImage.Width = int.Parse(RenderWidth.Text);
-            this.MainImage.Height = int.Parse(RenderHeight.Text);
-            //使用一张假图像显示结果
+        void InitRenderSettings() {
+            // 设置相机
+            var lookFrom = new Vector3d(double.Parse(CameraPosXTextBox.Text), double.Parse(CameraPosYTextBox.Text), double.Parse(CameraPosZTextBox.Text));
+            var lookAt = new Vector3d(uCameraViewXSlider.Value, uCameraViewYSlider.Value, uCameraViewZSlider.Value);
+            lookAt = lookFrom + lookAt.Normalized();
             GobVar.renderWidth = int.Parse(RenderWidth.Text);
             GobVar.renderHeight = int.Parse(RenderHeight.Text);
-            GobVar.wBitmap1 = RenderDispter.CreateWriteableBitMap(int.Parse(RenderWidth.Text), int.Parse(RenderHeight.Text));
-            this.MainImage.Source = GobVar.wBitmap1;
+            GobVar.mCamera = new(GobVar.renderWidth, GobVar.renderHeight, uFovSlider.Value, lookFrom, lookAt, new Vector3d(0, 1, 0));
+
+            // 设置天空盒
             var _bcakColor1 = renderDetails._backColor1;
             var _bcakColor2 = renderDetails._backColor2;
-            // 设置天空盒
             Sphere _BackObj = new Sphere(new(0, 0, 0), 10000);
             switch (renderDetails._backColorType) {
                 case 0: {
@@ -214,7 +209,25 @@ namespace PowerBear_Render_WPF_Ver {
                     }
             }
             GobVar.skyObject = _BackObj;
+            GobVar._BackColor = new(_bcakColor1.R / 255d, _bcakColor1.G / 255d, _bcakColor1.B / 255d);
+        }
+        void BeforeRender() { // 在DoRender之前，进行一次预处理
+            timertimer.Start();
+            GC.Collect();
+            //GC.WaitForFullGCComplete();
+            //设定参数 在这里进行 一些预先的设置
+            this.renderDetails.BitMapSize = RenderWidth.Text + "*" + RenderHeight.Text;
+            this.renderDetails.Refush();
+            GobVar.AllowPreview = cbAllowPreview.IsChecked == true ? true : false;
+            timertimer.Interval = slHzPreview.Value;
 
+            this.MainImage.Width = int.Parse(RenderWidth.Text);
+            this.MainImage.Height = int.Parse(RenderHeight.Text);
+            //使用一张假图像显示结果
+            GobVar.renderWidth = int.Parse(RenderWidth.Text);
+            GobVar.renderHeight = int.Parse(RenderHeight.Text);
+            GobVar.wBitmap1 = RenderDispter.CreateWriteableBitMap(int.Parse(RenderWidth.Text), int.Parse(RenderHeight.Text));
+            this.MainImage.Source = GobVar.wBitmap1;
             GobVar.InitRender(); // 小熊渲染管线
         }
         public void DoRender() {
@@ -224,10 +237,7 @@ namespace PowerBear_Render_WPF_Ver {
                 // 开始渲染
                 if (backgroundWorker.IsBusy) { backgroundWorker.CancelAsync(); } else {
                     //启动渲染线程
-                    var lookFrom = new Vector3d(double.Parse(CameraPosXTextBox.Text), double.Parse(CameraPosYTextBox.Text), double.Parse(CameraPosZTextBox.Text));
-                    var lookAt = new Vector3d(uCameraViewXSlider.Value, uCameraViewYSlider.Value, uCameraViewZSlider.Value);
-                    lookAt = lookFrom + lookAt.Normalized();
-                    Camera mCamera = new(GobVar.renderWidth, GobVar.renderHeight, uFovSlider.Value, lookFrom, lookAt, new Vector3d(0, 1, 0));
+                    InitRenderSettings();
                     // 设定CPU显示UI
                     var t = 1;
                     switch (CPUs_Combox.SelectedIndex) {
@@ -245,14 +255,16 @@ namespace PowerBear_Render_WPF_Ver {
                     renderDetails.UICpus = $"{t * 2}C{t * 2 * 2}T";
 
                     renderDetails.Refush();
-                    backgroundWorker.RunWorkerAsync(new ToRenderDispter() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = mCamera, cpus = t, hitObjs = GobVar.fnWorld });
+
+                    GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = t, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = backgroundWorker };
+                    backgroundWorker.RunWorkerAsync(GobVar.RenderDispData);
                 }
             }
             catch (Exception ex) {
                 System.Windows.MessageBox.Show("不能进行渲染，可能填写数字的地方有误：\n" + ex.Message);
             }
         }
-        //开始渲染部分
+        //开始渲染部分（UI信号）
         private void Button_Click(object sender, RoutedEventArgs e) {
             GobVar.stopAtRenderColor = false;
             DoRender();
@@ -310,6 +322,11 @@ namespace PowerBear_Render_WPF_Ver {
         private void Button_Click_RenderPreview(object sender, RoutedEventArgs e) {
             GobVar.AllowPreview = true;
             GobVar.Render_Preview();
+        }
+
+        private void Button_Click_PushNetWork(object sender, RoutedEventArgs e) {
+            InitRenderSettings();
+            PbIO.JsonEncode();
         }
     }
 }
