@@ -16,6 +16,7 @@ using System.ComponentModel;
 using PowerBear_Render_WPF_Ver.Materials;
 using PowerBear_Render_WPF_Ver.Textures;
 using PowerBear_Render_WPF_Ver.CameraObj;
+using System.Xml;
 
 namespace PowerBear_Render_WPF_Ver.DAO {
     public class PbIO {
@@ -69,20 +70,17 @@ namespace PowerBear_Render_WPF_Ver.DAO {
         }
 
         // 序列化场景的物体
-        public static void JsonEncode() {
+        public static NetworkJsonData JsonEncode() {
             string xml_fnObjects = "", xml_Camera = "", xml_SkyBox = "";
 
-            var res = JsonSerializer.Serialize(GobVar.fnObjects);
-            Console.WriteLine(res);
-
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(BindingList<NormalObject>), new Type[] { typeof(Sphere), typeof(Metal), typeof(Solid_Color) });
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(BindingList<NormalObject>), new Type[] { typeof(HitTable), typeof(Material) });
 
             // 序列化 fnObjects 为 XML
             using MemoryStream mms = new();
             xmlSerializer.Serialize(mms, GobVar.fnObjects);
             mms.Position = 0;
             using StreamReader ssr = new(mms);
-            Console.WriteLine(ssr.ReadToEnd());
+            Console.WriteLine(xml_fnObjects = ssr.ReadToEnd());
 
             // 序列化 Camera 参数为 XML
             xmlSerializer = new(typeof(Camera));
@@ -90,7 +88,7 @@ namespace PowerBear_Render_WPF_Ver.DAO {
             xmlSerializer.Serialize(mss2, GobVar.mCamera);
             mss2.Position = 0;
             using StreamReader ssr2 = new(mss2);
-            Console.WriteLine(ssr2.ReadToEnd());
+            Console.WriteLine(xml_Camera = ssr2.ReadToEnd());
 
             // 序列化 天空盒 为 XML
             xmlSerializer = new(typeof(Sphere), new Type[] { typeof(Material), typeof(Texture) });
@@ -98,10 +96,37 @@ namespace PowerBear_Render_WPF_Ver.DAO {
             xmlSerializer.Serialize(mss3, GobVar.skyObject);
             mss3.Position = 0;
             using StreamReader ssr3 = new(mss3);
-            Console.WriteLine(ssr3.ReadToEnd());
+            Console.WriteLine(xml_SkyBox = ssr3.ReadToEnd());
 
             //序列化 线程参数 为 XML
 
+
+
+            NetworkJsonData jsonData = new NetworkJsonData() { xml_fnObjects = xml_fnObjects, xml_sky_box = xml_SkyBox, xml_camera = xml_Camera };
+
+            return jsonData;
+        }
+
+        public static object? XmlDeserialize(string xml, Type type, Type[]? otherType = null) {
+            try {
+                using (StringReader sr = new StringReader(xml)) {
+                    XmlSerializer serializer = new XmlSerializer(type, otherType);
+                    return serializer.Deserialize(sr);
+                }
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+
+        public static void SaveBitmp(string path, string fileName, ImageSource se) {
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+            var saveActualPath = path + "\\" + fileName;
+            using (FileStream stream = new FileStream(saveActualPath, FileMode.Create)) {
+                PngBitmapEncoder pngBitmapEncoder = new PngBitmapEncoder();
+                pngBitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)se));
+                pngBitmapEncoder.Save(stream);
+            }
         }
     }
 }

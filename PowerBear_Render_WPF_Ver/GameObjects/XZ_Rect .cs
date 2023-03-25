@@ -26,6 +26,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public XZ_Rect(double _x0, double _x1, double _z0, double _z1, double _k, Material mat) {
             this.x0 = _x0; this.x1 = _x1; this.z0 = _z0; this.z1 = _z1; this.k = _k; this.mat = mat;
         }
+        public XZ_Rect() { }
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
             hitResult = new HitResult();
             var t = (k - ray.origin.y()) / ray.direction.y();

@@ -1,0 +1,389 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="PowerBear_Render_WPF_Ver.CameraObj.Camera" Collapsed="true">
+    <Position X="33.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAgAAEAAAAEAAAQAQQAAAAAAAAACAAAAAAAAQAAAAEA=</HashCode>
+      <FileName>CameraObj\Camera.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.DAO.CppFunction" Collapsed="true">
+    <Position X="35.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAASAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DAO\CppFunction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.DAO.NetworkJsonData" Collapsed="true">
+    <Position X="33.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAABAAAAAA=</HashCode>
+      <FileName>DAO\NetworkJsonData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.DAO.PbIO" Collapsed="true">
+    <Position X="37" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAABAAAAAQAAAAAAAAABABAgAAAIAACA=</HashCode>
+      <FileName>DAO\PbIO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.DAO.ToRenderDispterData" Collapsed="true">
+    <Position X="38.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAYAAAAAAAAAAQAQAAAAAAAAAwAAAIAAAAAAAAAAMA=</HashCode>
+      <FileName>DAO\ToRenderDispter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.Box">
+    <Position X="17.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAgABAAAAABAAAIAAAAAAAAAAAABACAAAAAAABA=</HashCode>
+      <FileName>GameObjects\Box.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.DielectricSphere" Collapsed="true">
+    <Position X="22" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAEAgACAAAAAAAAAIAAAAAQAAgAAAAAAAQAAAAABA=</HashCode>
+      <FileName>GameObjects\DielectricSphere.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.HitTable" Collapsed="true">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAAACAAAAAAIAAAAAAAAAAAAAAAAAIAYAABA=</HashCode>
+      <FileName>GameObjects\HitTable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.NormalObject" Collapsed="true">
+    <Position X="6.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAQAgAAAAAAAAAAAIAAAAgAAAAAAAAAAIAIABAABA=</HashCode>
+      <FileName>GameObjects\NormalObject.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.ObjModel">
+    <Position X="13" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABEAgAAAACAAAgAAIAAAAABAEQAIQAAAAAAAAAABA=</HashCode>
+      <FileName>GameObjects\ObjModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.Rotate_Y">
+    <Position X="15.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAgABAAAAAAABEIAAEABAAAAAEAAAAAAAABAAAA=</HashCode>
+      <FileName>GameObjects\Rotate_Y.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.Sphere">
+    <Position X="19.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAEAgACAAAIAAAAAIAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>GameObjects\Sphere.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.Translate" Collapsed="true">
+    <Position X="24.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAgAAAAAAAAAAAIAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameObjects\Translate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.Triangle" Collapsed="true">
+    <Position X="28.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAgACAAAAAAAAAIAAAQIAAAAAAAAAAAAAAAAABE=</HashCode>
+      <FileName>GameObjects\Triangle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.XZ_Rect" Collapsed="true">
+    <Position X="1.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAgAAAAAAAAAAAIAAAAAAABAAQCggAAAAAAAABA=</HashCode>
+      <FileName>GameObjects\XZ_Rect .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.YZ_Rect" Collapsed="true">
+    <Position X="8.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAgAAAAAAAAAAAIAAAAAAAAgAQAggQAAAAAAABA=</HashCode>
+      <FileName>GameObjects\XZ_Rect .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GameObjects.XY_Rect" Collapsed="true">
+    <Position X="10.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAgAAAAAAAAAAAIAAAAAAABgAACAgQAAAAAAABA=</HashCode>
+      <FileName>GameObjects\XZ_Rect .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Lights.DiffuseLightMat" Collapsed="true">
+    <Position X="5.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAEAAAABACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Lights\DiffuseLightMat.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Lights.PointLight_Phong" Collapsed="true">
+    <Position X="35.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAACAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Lights\PointLight_Phong.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Materials.Dielectric" Collapsed="true">
+    <Position X="7.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAQBAAAAAAAAAABAIAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Materials\Dielectric .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Materials.Lambertian" Collapsed="true">
+    <Position X="9.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Materials\Lambertian .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Materials.Material" Collapsed="true">
+    <Position X="5.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAABAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Materials\Material .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Materials.Metal" Collapsed="true">
+    <Position X="0.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAEAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Materials\Metal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Materials.PaperMat" Collapsed="true">
+    <Position X="35.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Materials\PaperMat.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Materials.SkyMat" Collapsed="true">
+    <Position X="3" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Materials\SkyMat.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Pages.AboutWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="35.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Pages\About.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.PbMath.Matrix3x3d" Collapsed="true">
+    <Position X="40.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>PbMath\Matrix3d.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.PbMath.PbColorRGB" Collapsed="true">
+    <Position X="3.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PbMath\PbColor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.PbMath.PbMath" Collapsed="true">
+    <Position X="38.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>PbMath\PbMath.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.PbMath.PbRandom" Collapsed="true">
+    <Position X="40.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>PbMath\PbRandom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.PbMath.Perlin" Collapsed="true">
+    <Position X="33.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SAAAAAAAAAQAAAAAAIIAIAAAAAAAEAAQAAAIQAAAAAA=</HashCode>
+      <FileName>PbMath\Perlin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.PbMath.Vector3d" Collapsed="true">
+    <Position X="3.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAEBAACAAAAEaAUCAABgCQAABIACBADgAYAAAAA=</HashCode>
+      <FileName>PbMath\Vector3d.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Render.AABB" Collapsed="true">
+    <Position X="33.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAgAAAAAIAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Render\AABB.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Render.BaseRenderDispter" Collapsed="true">
+    <Position X="0.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAFAAAAAAAAAQAAAAAAgAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Render\BaseRenderDispter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Render.BVH_XYZ_Compare" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="40.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Render\BVH_Node.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Render.BVH_Node" Collapsed="true">
+    <Position X="26.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAIAAgAABAAIAAAAACAAAAAAgAA=</HashCode>
+      <FileName>Render\BVH_Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Render.BVH_Tree" Collapsed="true">
+    <Position X="31" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAEAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Render\BVH_Tree.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Render.Hittable_List" Collapsed="true">
+    <Position X="4" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAgAAAAAAAAAAAIAAAAAAQAAAAAAAAAAAABAABA=</HashCode>
+      <FileName>Render\Hittable_List .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Render.Ray" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="37" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAIAAAAAAAAAAAAACAAAAAAAQAAAAAABA=</HashCode>
+      <FileName>Render\Ray.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Render.RenderDispter" Collapsed="true">
+    <Position X="0.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAIBAAAAACAAQWAQAIAKAARgAwAgAIAJIADAAQAAEA=</HashCode>
+      <FileName>Render\RenderDispter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Textures.CheckerTexture" Collapsed="true">
+    <Position X="0.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAgAACAAAA=</HashCode>
+      <FileName>Textures\CheckerTexture .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Textures.ImageTexture" Collapsed="true">
+    <Position X="3" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAQAAAAAACAAAAAAiAAAAgAAAAAAA=</HashCode>
+      <FileName>Textures\ImageTexture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Textures.LinerColor" Collapsed="true">
+    <Position X="5.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAgAAAAAAA=</HashCode>
+      <FileName>Textures\LinerColor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Textures.NoiseTexture" Collapsed="true">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAiAAAAAAA=</HashCode>
+      <FileName>Textures\NoiseTexture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Textures.Solid_Color" Collapsed="true">
+    <Position X="9.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAgAAAAAAA=</HashCode>
+      <FileName>Textures\Solid_Color.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.Textures.Texture" Collapsed="true">
+    <Position X="5.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Textures\Texture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.AddObjectWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="37" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FBABACBAgAAAEAAAAAAQAAAAAIAQUgABABRAEAAQAAA=</HashCode>
+      <FileName>AddObject.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.App" Collapsed="true">
+    <Position X="38.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.GobVar" Collapsed="true">
+    <Position X="37" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAoFBAACQAIAAIgCAAQBIAAAICBICBIIAACAAAABAI=</HashCode>
+      <FileName>GobVar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.MainWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="38.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQgAAAAEBARCCBACBQBABAAAgAAQRCAAAAEQAAQ=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PowerBear_Render_WPF_Ver.UI_Manager" Collapsed="true">
+    <Position X="40.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI_Manager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="PowerBear_Render_WPF_Ver.GameObjects.HitResult" Collapsed="true">
+    <Position X="33.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAEAAAgAAAAAAAABAFZAAAAAAAA=</HashCode>
+      <FileName>GameObjects\HitTable.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PowerBear_Render_WPF_Ver.GameObjects.ObjData" Collapsed="true">
+    <Position X="35.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAIAAAAAQAAAAAAA=</HashCode>
+      <FileName>GameObjects\ObjModel.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="PowerBear_Render_WPF_Ver.Render.OutRenderPixel" Collapsed="true">
+    <Position X="37" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Render\BaseRenderDispter.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>

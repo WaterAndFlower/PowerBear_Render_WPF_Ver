@@ -12,6 +12,7 @@ namespace PowerBear_Render_WPF_Ver.Textures {
     /// </summary>
     [XmlInclude(typeof(Solid_Color))]
     [XmlInclude(typeof(LinerColor))]
+    [XmlInclude(typeof(ImageTexture))]
     public abstract class Texture {
         /// <summary>
         /// 返回纹理的颜色值。p是击中点在空间中的坐标。

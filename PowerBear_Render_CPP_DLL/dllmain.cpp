@@ -22,3 +22,13 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);// 取消opencv调试信息提示
 	return TRUE;
 }
+
+//  ..\PowerBear_Render_WPF_Ver\bin\Release\net6.0-windows\publish\win-x64\
+//  ..\PowerBear_Render_WPF_Ver\bin\Debug\net6.0-windows
+//  ..\PowerBear_Render_WPF_Ver\bin\Release\net6.0-windows
+//  $(SolutionDir)\PowerBear_Render_WPF_Ver\bin\$(Configuration)\net6.0-windows\
+
+//  .\x64\Publish
+
+// 打包时候必须注意，要将 C++ 的运行时的 DLL 也要打包进入到文件夹内，这样才能使得用户成功运行，防止缺少dll文件
+// WPF 调试 C++ 的DLL 需要在WPF里面开启 调试外部代码 即可

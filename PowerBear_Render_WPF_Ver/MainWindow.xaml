@@ -62,7 +62,7 @@
                             <Label  Foreground="White" Content="高度："></Label>
                             <TextBox Grid.Column="1" x:Name="RenderHeight"  Text="500"/>
                         </Grid>
-                        <Button Margin="10 10 10 0" Click="Button_Click" Background="#FF00AA31">
+                        <Button Margin="10 10 10 0" Click="Button_Click_StartRender" Background="#FF00AA31">
                             <TextBlock Foreground="White" FontWeight="Bold">开始渲染</TextBlock>
                         </Button>
                         <CheckBox x:Name="cbAllowPreview" Margin="10 10 10 0" Content="渲染时显示过程" Foreground="White" IsChecked="True"></CheckBox>
@@ -243,7 +243,7 @@
                         <Button Click="Button_Click_AddObject">新增Object</Button>
                         <Button Foreground="Red" Click="Button_Click_RemoveObject">删除（选中项）</Button>
                         <Label FontSize="14" Content="动画（实验功能）" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
-                        <Button>
+                        <Button Click="Button_Click_RenderAnimation">
                             渲染动画
                         </Button>
                         <TextBlock TextWrapping="Wrap" Foreground="White">渲染，当前选中的物体，旋转360度，在30s内。文件将保存在软件目录下Out/Animation内。</TextBlock>
@@ -296,10 +296,10 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <Label FontSize="14" Content="Remote Server IP" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
-                        <TextBox>http:\\192.168.0.1:1219</TextBox>
+                        <TextBox x:Name="uRemoteURL">http://localhost:1219</TextBox>
                         <Label FontSize="14" Content="Function" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <Button Click="Button_Click_PushNetWork">推送渲染任务</Button>
-                        <Button>拉取渲染任务</Button>
+                        <Button Click="Button_Click_GetRenderWork">拉取渲染任务</Button>
                         <Button>同步服务器中数据</Button>
                     </StackPanel>
                 </ScrollViewer>

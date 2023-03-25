@@ -17,6 +17,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public bool has_box;
         public AABB? bbox;
         Matrix3x3d Roate, RoateT;
+        public Rotate_Y() { }
         public Rotate_Y(HitTable ptr, double angle) {
             this.ptr = ptr;
             this.angle = angle;

@@ -48,11 +48,11 @@ namespace PowerBear_Render_WPF_Ver.CameraObj {
         public double aspect_radio;
         public double forceLength = 1.0d;
 
-        double viewport_height = 2.0d;
-        double viewport_width;
+        public double viewport_height = 2.0d;
+        public double viewport_width;
         public Vector3d origin = new(0d, 0d, 0d);
-        Vector3d upper_left_corner; //画面左上角
-        Vector3d horizontal;
-        Vector3d vertical;
+        public Vector3d upper_left_corner; //画面左上角
+        public Vector3d horizontal;
+        public Vector3d vertical;
     }
 }

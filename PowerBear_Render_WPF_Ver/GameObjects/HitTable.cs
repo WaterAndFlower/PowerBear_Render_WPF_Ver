@@ -34,9 +34,13 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     [XmlInclude(typeof(Translate))]
     [XmlInclude(typeof(Triangle))]
     [XmlInclude(typeof(Sphere))]
+    [XmlInclude(typeof(Rotate_Y))]
+    [XmlInclude(typeof(Box))]
+    [XmlInclude(typeof(XZ_Rect))]
     public abstract class HitTable : ICloneable {
         public string objName { get; set; } = "未命名";
         public bool needRender { get; set; } = true;
+        public int _GUID { get; set; } = 0; // 资源唯一ID符号
         /// <summary>
         /// 光线求交点
         /// </summary>

@@ -119,12 +119,17 @@ namespace PowerBear_Render_WPF_Ver {
         }
 
         private void Button_Click_ObjModel(object sender, RoutedEventArgs e) {
+            // 有一个BUG尚代解决
             var mat = GetUsrMat();
-            var newObj = new NormalObject(new ObjModel(ObjPath, mat));
-            newObj.objName = "未命名Obj物体";
-
-            GobVar.fnObjects.Add(newObj);
-            GobVar.Render_Preview();
+            try {
+                var newObj = new NormalObject(new ObjModel(ObjPath, mat));
+                newObj.objName = "未命名Obj物体";
+                GobVar.fnObjects.Add(newObj);
+                GobVar.Render_Preview();
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         double ByteColorToDouble(Byte col) {

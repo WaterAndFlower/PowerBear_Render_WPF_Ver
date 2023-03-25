@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace PowerBear_Render_WPF_Ver.Textures {
     public class ImageTexture : Texture {
+        public ImageTexture() { }
         public ImageTexture(string path, double scale = 1.0d) {
             try {
                 var img = new BitmapImage(new Uri(path));
@@ -34,6 +35,8 @@ namespace PowerBear_Render_WPF_Ver.Textures {
             return scale * GetRGB(u, v);
         }
         Vector3d GetRGB(double u, double v) { //左上角是（0，0）右下角是（height-1，width-1）
+            if (colors == null) return new Vector3d(1, 1, 1);
+
             int x = (int)(height * v), y = (int)(width * u);
             int index = x * width * 4 + y * 4;
             if (index < 0) index = 0;
@@ -42,7 +45,7 @@ namespace PowerBear_Render_WPF_Ver.Textures {
             var color_scale = 1.0 / 255.0;
             return new Vector3d(r * color_scale, g * color_scale, b * color_scale);
         }
-        public Byte[] colors; // height*width*4
+        public Byte[]? colors; // height*width*4
         int width, height; // BGRA
         public double scale = 1.0d;
     }

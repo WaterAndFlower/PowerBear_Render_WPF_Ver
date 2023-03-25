@@ -13,6 +13,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +30,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml;
+using System.Xml.Serialization;
 using Color = System.Drawing.Color;
 using sDrawing = System.Drawing;
 using sysColor = System.Windows.Media.Color;
@@ -77,12 +81,11 @@ namespace PowerBear_Render_WPF_Ver {
 
             //https://blog.csdn.net/q465162770/article/details/103406564
             //https://blog.csdn.net/qq_40313232/article/details/124987701
-            backgroundWorker = new BackgroundWorker();
-            backgroundWorker.WorkerSupportsCancellation = true;
-            backgroundWorker.WorkerReportsProgress = true;
-            backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
-            backgroundWorker.DoWork += new DoWorkEventHandler(RunThread);
-            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AfterRender);
+            GobVar.backgroundWorker.WorkerSupportsCancellation = true;
+            GobVar.backgroundWorker.WorkerReportsProgress = true;
+            GobVar.backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
+            GobVar.backgroundWorker.DoWork += new DoWorkEventHandler(RunThread);
+            GobVar.backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AfterRender);
 
             uObjectsListBox.ItemsSource = GobVar.fnObjects;
             InitRenderSettings();
@@ -106,9 +109,8 @@ namespace PowerBear_Render_WPF_Ver {
         }
         private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
         }
-        //--多线程部分--
-        BackgroundWorker backgroundWorker;
-        //！！！渲染主线程！！！
+
+        //！！！渲染主线程！！！，脱离UI线程的部分
         public void RunThread(object sender, DoWorkEventArgs e) {
 
             var data = (ToRenderDispterData)e.Argument;
@@ -158,7 +160,7 @@ namespace PowerBear_Render_WPF_Ver {
             timertimer.Stop();
 
             // 渲染完毕，将数据保存到Tmp文件夹中【渲染完毕处理】
-            GobVar.SaveBitmp(GobVar.appStartupPath, $"/Tmp/Read.png", MainImage.Source);
+            PbIO.SaveBitmp(GobVar.appStartupPath + @"/Tmp", @"/Read.png", MainImage.Source);
             try {
                 var mwidth = GobVar.wBitmap1.PixelWidth;
                 var mheight = GobVar.wBitmap1.PixelHeight;
@@ -235,29 +237,11 @@ namespace PowerBear_Render_WPF_Ver {
                 BeforeRender();
 
                 // 开始渲染
-                if (backgroundWorker.IsBusy) { backgroundWorker.CancelAsync(); } else {
-                    //启动渲染线程
-                    InitRenderSettings();
+                if (GobVar.backgroundWorker.IsBusy) { GobVar.backgroundWorker.CancelAsync(); } else {
                     // 设定CPU显示UI
-                    var t = 1;
-                    switch (CPUs_Combox.SelectedIndex) {
-                        case 0:
-                        t = 1;
-                        renderDetails.UICpus = "1 Core";
-                        break;
-                        case 1:
-                        t = 2;
-                        break;
-                        case 2:
-                        t = 4;
-                        break;
-                    }
-                    renderDetails.UICpus = $"{t * 2}C{t * 2 * 2}T";
-
+                    renderDetails.UICpus = $"{GobVar.RenderDispData.cpus * 2}C{GobVar.RenderDispData.cpus * 4}T";
                     renderDetails.Refush();
-
-                    GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = t, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = backgroundWorker };
-                    backgroundWorker.RunWorkerAsync(GobVar.RenderDispData);
+                    GobVar.backgroundWorker.RunWorkerAsync(GobVar.RenderDispData);
                 }
             }
             catch (Exception ex) {
@@ -265,7 +249,22 @@ namespace PowerBear_Render_WPF_Ver {
             }
         }
         //开始渲染部分（UI信号）
-        private void Button_Click(object sender, RoutedEventArgs e) {
+        private void Button_Click_StartRender(object sender, RoutedEventArgs e) {
+            InitRenderSettings();
+            var t = 1;
+            switch (CPUs_Combox.SelectedIndex) {
+                case 0:
+                t = 1;
+                renderDetails.UICpus = "1 Core";
+                break;
+                case 1:
+                t = 2;
+                break;
+                case 2:
+                t = 4;
+                break;
+            }
+            GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = t, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight };
             GobVar.stopAtRenderColor = false;
             DoRender();
         }
@@ -274,7 +273,7 @@ namespace PowerBear_Render_WPF_Ver {
             String appStartupPath = System.IO.Directory.GetCurrentDirectory() + @"\Out";
             var saveName = appStartupPath + $"\\saveData{DateTime.Now.ToString("yy-MM-dd hh\\mm\\ss")}.png";
 
-            GobVar.SaveBitmp(appStartupPath, $"\\saveData{DateTime.Now.ToString("yy-MM-dd hh\\mm\\ss")}.png", MainImage.Source);
+            PbIO.SaveBitmp(appStartupPath, $"\\saveData{DateTime.Now.ToString("yy-MM-dd hh\\mm\\ss")}.png", MainImage.Source);
 
             var btnRes = System.Windows.MessageBox.Show(saveName + "\n\n点击YES打开目录", "保存成功", MessageBoxButton.YesNo);
             if (btnRes.Equals(MessageBoxResult.Yes)) {
@@ -324,9 +323,94 @@ namespace PowerBear_Render_WPF_Ver {
             GobVar.Render_Preview();
         }
 
-        private void Button_Click_PushNetWork(object sender, RoutedEventArgs e) {
+        private async void Button_Click_PushNetWork(object sender, RoutedEventArgs e) {
             InitRenderSettings();
-            PbIO.JsonEncode();
+            try {
+                Console.Write("开始尝试发送消息，Loading");
+                var dataJson = PbIO.JsonEncode();
+                using HttpClient httpClient = new();
+                var httpRes = await httpClient.PostAsJsonAsync(uRemoteURL.Text + @"/SendRenderData", dataJson);
+                Console.WriteLine(httpRes.ToString());
+                Console.Write("网络发送成功");
+
+                GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = 8, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight / 2 - 1 };
+                GobVar.stopAtRenderColor = false;
+                DoRender();
+            }
+            catch (Exception ex) {
+                System.Windows.MessageBox.Show(ex.Message + '\n' + ex.InnerException?.Message);
+            }
+        }
+
+        private async void Button_Click_GetRenderWork(object sender, RoutedEventArgs e) {
+            var mbt = System.Windows.MessageBox.Show("拉取网络中的数据，将清空当前文件的数据，确定吗？", "警告", MessageBoxButton.OKCancel);
+            if (mbt == MessageBoxResult.Cancel) { return; }
+
+            try {
+                using HttpClient httpClient = new();
+                var httpRes = await httpClient.GetFromJsonAsync<NetworkJsonData>(uRemoteURL.Text + @"/GetRenderData");
+
+                if (httpRes == null) { throw new Exception("ERROR，网络数据流未能取得数据。"); }
+
+                var _fnObjs = PbIO.XmlDeserialize(httpRes.xml_fnObjects, typeof(BindingList<NormalObject>)) as BindingList<NormalObject>;
+                if (_fnObjs != null) {
+                    GobVar.fnObjects.Clear();
+                    foreach (var item in _fnObjs) GobVar.fnObjects.Add(item);
+                }
+
+                var _GobvarCamera = PbIO.XmlDeserialize(httpRes.xml_camera, typeof(Camera)) as Camera;
+                if (_GobvarCamera != null) {
+                    GobVar.mCamera = _GobvarCamera;
+                }
+
+                var _GobvarSkyBox = PbIO.XmlDeserialize(httpRes.xml_sky_box, typeof(Sphere), new Type[] { typeof(Material), typeof(Texture) }) as Sphere;
+                if (_GobvarSkyBox != null) {
+                    GobVar.skyObject = _GobvarSkyBox;
+                }
+
+                GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = 8, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = GobVar.backgroundWorker, startRow = GobVar.renderHeight / 2, endRow = GobVar.renderHeight };
+                GobVar.stopAtRenderColor = false;
+                DoRender();
+            }
+            catch (Exception ex) {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
+        /// <summary>
+        /// 渲染一段简单动画的函数过程
+        /// </summary>
+        private async void Button_Click_RenderAnimation(object sender, RoutedEventArgs e) {
+            Console.WriteLine("开始渲染动画");
+            for (int i = 0; i < 900; i++) {//30FPS 30s
+                Console.WriteLine($"开始渲染第 {i} 帧画面");
+                Console.WriteLine($"是否BUSY {GobVar.backgroundWorker.IsBusy}");
+                bool turnDown = false;
+                await Task.Run(() => {
+                    while (GobVar.backgroundWorker.IsBusy && !GobVar.backgroundWorker.CancellationPending) {
+                        if (GobVar.backgroundWorker.CancellationPending) {
+                            turnDown = true;
+                            return;
+                        }
+                    } // 加锁，等待函数运行完成到下一帧
+                });
+                if (turnDown) { break; }
+                try {
+                    Button_Click_StartRender(sender, e);
+                    GobVar.fnObjects[uObjectsListBox.SelectedIndex].angleY += 1.2d;
+                    await Task.Run(() => {
+                        while (GobVar.backgroundWorker.IsBusy && !GobVar.backgroundWorker.CancellationPending) {
+                            if (GobVar.backgroundWorker.CancellationPending) {
+                                turnDown = true;
+                                return;
+                            }
+                        } // 加锁，等待渲染完毕
+                    });
+                    Console.WriteLine("画面保存");
+                    var appStartupPath = System.IO.Directory.GetCurrentDirectory() + @"\AnimatOut";
+                    PbIO.SaveBitmp(appStartupPath, $"{i.ToString("D4")}.png", MainImage.Source);// 保存
+                }
+                catch (Exception ex) { Console.WriteLine(ex.Message); return; }
+            }
         }
     }
 }

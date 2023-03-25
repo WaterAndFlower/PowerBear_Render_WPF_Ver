@@ -6,6 +6,8 @@ using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.Materials {
     [XmlInclude(typeof(SkyMat))]
+    [XmlInclude(typeof(Metal))]
+    [XmlInclude(typeof(Lambertian))]
     public abstract class Material {
         /// <summary>
         /// 计算光线打在这个材质上，会发生什么反射。并且计算当前打入的颜色是什么值
@@ -21,6 +23,6 @@ namespace PowerBear_Render_WPF_Ver.Materials {
         public virtual Vector3d Emit(double u, double v, Vector3d p) {
             return Vector3d.Zero;
         }
-        public Texture mTexture { get; set; } = new Solid_Color(1, 1, 1);
+        public Texture mTexture = new Solid_Color(1, 1, 1);
     }
 }

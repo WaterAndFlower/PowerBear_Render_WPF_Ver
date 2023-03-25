@@ -37,7 +37,7 @@ namespace PowerBear_Render_WPF_Ver {
         public static HitTable skyObject = new Sphere(new(0, 0, 0), 10000, new SkyMat(new Solid_Color(0.4d, 0.1d, 0.3d)));
         public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
         public static Hittable_List worldObjects = new(); // 世界场景数组，渲染器渲染这个
-
+        public static BackgroundWorker backgroundWorker = new BackgroundWorker();// 切换背后的渲染管线
         // ======场景物体=======
         public static Camera mCamera = new();
         static BindingList<NormalObject> _fnObjects = new();
@@ -73,10 +73,17 @@ namespace PowerBear_Render_WPF_Ver {
         public static void AppRunInit() { //在App.xaml.cs里面
             //byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
             //GobVar.doDeNoise(data, 4, 0);
-            var result = GobVar.TestString();
-            Console.WriteLine(result);
+            try {
+                var result = GobVar.TestString();
+                Console.WriteLine(result);
+                Console.WriteLine("和C++的DLL通讯成功");
+            }
+            catch (Exception e) {
+                Console.WriteLine("和C++的DLL链接失败");
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.InnerException?.Message);
+            }
 
-            Console.WriteLine("和C++的DLL通讯成功");
 
             // 初始的一些小场景 和 材质 之类的玩意
             /*
@@ -119,24 +126,33 @@ namespace PowerBear_Render_WPF_Ver {
             //fnObjects.Add(modelYiyiObj);
 
             HitTable sphere = new Sphere(Vector3d.Zero, 5, new Metal(new(0.5d, 0.5d, 0.5d), 0.1));
+            sphere._GUID = 3;
             NormalObject sphereObj = new(sphere);
             sphereObj.offset = new(5.5, 0, 0);
             sphereObj.objName = "小球体_Metal";
             fnObjects.Add(sphereObj);
 
             HitTable sphere2 = new DielectricSphere(Vector3d.Zero, 5, new Dielectric(1.5d));
+            sphere2._GUID = 1;
             NormalObject sphereObj2 = new(sphere2);
             sphereObj2.offset = new(-5.5, 0, 0);
             sphereObj2.objName = "小球体_Glass";
             fnObjects.Add(sphereObj2);
 
-            PbIO.JsonEncode();
+            //HitTable modelGirl = new ObjModel("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\BlenderProject\\大场景\\单独琵琶和女生.obj", new Lambertian(0.5d, 0.5d, 0.5d));
+
+            //NormalObject modelGirlObj = new(modelGirl);
+            //modelGirlObj.objName = "抱着琵琶女孩";
+            //fnObjects.Add(modelGirlObj);
+
+            // PbIO.JsonEncode();
         }
         /// <summary>
         /// 出发了，像素级渲染，根据条件进行判断
         /// </summary>
         public static void Render_Preview() {
             if (MainWindow.Instance.renderDetails.uAllowRenderPreview == false) return;
+            GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = 8, sample_depth = 0, sample_pixel_level = 0, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight };
             GobVar.stopAtRenderColor = true;
             MainWindow.Instance.DoRender();
         }
@@ -161,22 +177,13 @@ namespace PowerBear_Render_WPF_Ver {
             bt.WritePixels(new Int32Rect(0, 0, (int)bt.Width, (int)bt.Height), pixelColorBytes, bt.BackBufferStride, 0);
         }
 
-        public static void SaveBitmp(string path, string fileName, ImageSource se) {
-            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
-            var saveActualPath = path + "\\" + fileName;
-            using (FileStream stream = new FileStream(saveActualPath, FileMode.Create)) {
-                PngBitmapEncoder pngBitmapEncoder = new PngBitmapEncoder();
-                pngBitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)se));
-                pngBitmapEncoder.Save(stream);
-            }
-        }
         /// <summary>
         /// 测试C++部分的DLL文件是否链接成功了
         /// </summary>
         [DllImport("PowerBear_Render_CPP_DLL")]
         public extern static int TestDLL(int a, int b);
 
-        [DllImport("PowerBear_Render_CPP_DLL")]
+        [DllImport("PowerBear_Render_CPP_DLL", EntryPoint = "TestString")]
         public extern static char TestString();
 
 

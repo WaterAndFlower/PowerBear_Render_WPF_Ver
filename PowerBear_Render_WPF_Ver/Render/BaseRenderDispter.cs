@@ -14,9 +14,12 @@ namespace PowerBear_Render_WPF_Ver.Render {
     public abstract class BaseRenderDispter {
         public ToRenderDispterData _parm;
         public BaseRenderDispter(ToRenderDispterData parm) { this._parm = parm; }
-        public virtual void BeforeRender() { throw new NotImplementedException(); }
-        public abstract void DoRender();
-        public virtual void AfterRender() { throw new NotImplementedException(); }
+        public virtual void BeforeRender() { }
+        public abstract void DoRender(); // 实现的时候，BeforeRender，AfterRender调用
+        public virtual void AfterRender() { }
+        public virtual RenderDispResult Render() {
+            throw new NotImplementedException();
+        }
         public virtual OutRenderPixel GetResult() {
             throw new NotImplementedException();
         }

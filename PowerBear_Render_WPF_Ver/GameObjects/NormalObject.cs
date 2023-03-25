@@ -25,9 +25,11 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         HitTable actualObj;
 
         public override void BeforeRendering() {
+            var __GUID = srcObj._GUID;
             actualObj = srcObj.Clone() as HitTable;
             actualObj = new Rotate_Y(actualObj, angleY);
             actualObj = new Translate(actualObj, offset);
+            actualObj._GUID = __GUID;
         }
 
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {

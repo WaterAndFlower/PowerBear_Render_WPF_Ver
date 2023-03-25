@@ -34,6 +34,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         public int sampleDepth = 1; //采样深度次数
         public Camera mCamera;
         public int cpus = 1; // 使用cpu核心数
+        public int startRow = 1, endRow = 500;
 
         BVH_Tree worldBvh;
         int sample_pixel_count = 1; // MSAA_LVEL=0
@@ -48,6 +49,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
             sampleDepth = parm.sample_depth;
             mCamera = parm.mCamera;
             cpus = parm.cpus;
+            startRow = parm.startRow; endRow = parm.endRow;
+
             switch (parm.sample_pixel_level) {
                 case 0: {
                         sample_pixel_count = 1;
@@ -59,6 +62,10 @@ namespace PowerBear_Render_WPF_Ver.Render {
                     }
                 case 2: {
                         sample_pixel_count = 50;
+                        break;
+                    }
+                case 3: {
+                        sample_pixel_count = 100;
                         break;
                     }
             }
@@ -169,7 +176,10 @@ namespace PowerBear_Render_WPF_Ver.Render {
         Vector3d Ray_Color_Preview(Ray ray, HitTable world) { //投射光线
             HitResult hitResult;
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
-                return new Vector3d(1, 0, 0);
+                if (hitResult.hitObj != null) {
+                    return new Vector3d(1, hitResult.hitObj._GUID * 0.4d, hitResult.hitObj._GUID * 0.8d); // RGB
+                }
+                return new Vector3d(1, 0, 0); // RGB
             } else {
                 return new Vector3d(0, 0, 0);
             }
@@ -199,6 +209,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
 
             PreviewRender();
 
+            this.BeforeRender();
+
             if (GobVar.stopAtRenderColor == true) return; // 当只需要渲染像素时候，其他不渲染
 
             try {
@@ -221,7 +233,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
 
                 var start = DateTime.Now;
                 //多线程运行
-                Parallel.For(1, this.height + 1, options, i => {
+                Parallel.For(startRow, endRow + 1, options, i => {
                     Parallel.For(1, this.width + 1, options, j => {
                         Vector3d colorRes = new(0, 0, 0); // 每个线程单独一个颜色值
                         colorRes.e[0] = colorRes.e[1] = colorRes.e[2] = 0d;
@@ -267,6 +279,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
             catch (Exception ex) {
                 MessageBox.Show("渲染过程中出现错误\n" + ex.Message);
             }
+            this.AfterRender();
         }
         //---- End Of Render ----
         public static WriteableBitmap CreateWriteableBitMap(int width, int height) {

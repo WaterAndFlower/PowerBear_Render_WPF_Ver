@@ -18,6 +18,8 @@ namespace PowerBear_Render_WPF_Ver.DAO {
         public int sample_pixel_level = 1;
         public int sample_depth = 10;
         public Camera mCamera;
+        public int startRow = 1;//[1,500] sample 1
+        public int endRow = -1;//sample 500
         [XmlIgnore]
         public BackgroundWorker _BackWorker;
     }

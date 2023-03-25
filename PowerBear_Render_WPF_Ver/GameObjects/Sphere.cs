@@ -50,6 +50,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             var out_normal = (hitResult.p - center) / radius;
             hitResult.Set_Face_Normal(ray, out_normal);
             hitResult.mat = this.mat;
+            hitResult.hitObj = this;
             //保存UV 到 HitResult
             Sphere.Get_Sphere_UV(out_normal, out hitResult.u, out hitResult.v);
             return true;
@@ -74,7 +75,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         }
 
         public override object Clone() {
-            return new Sphere(this.center, this.radius, this.mat);
+            var res = new Sphere(this.center, this.radius, this.mat);
+            res._GUID = this._GUID;
+            return res;
         }
     }
 }

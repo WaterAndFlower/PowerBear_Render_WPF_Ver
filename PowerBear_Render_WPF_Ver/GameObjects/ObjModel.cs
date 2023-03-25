@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
     public struct ObjData {
@@ -19,7 +20,9 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// Obj格式模型解析，使用右手坐标系，导出时候，选择向上方向是y，向前是-z。
     /// </summary>
     public class ObjModel : HitTable {
+        [XmlIgnore]
         public BVH_Tree mBVH;
+
         public List<HitTable> mTriangle = new List<HitTable>();
         public List<Vector3d> vertexsPos = new();
         public List<Vector3d> vertexsNormal = new();
@@ -30,8 +33,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public Material mat = new Lambertian(0.5d, 0.5d, 0.5d);//此物体的材质
 
         // public Hittable_List tList = new Hittable_List(); // 由于Tree算法有点问题，这个是调试，最后记得注释掉
-
-        void ObjBuild(string path) {
+        void ObjBuild(string objPath) {
             //使得下标都是从1开始
             vertexsPos.Add(Vector3d.Zero);
             vertexsNormal.Add(Vector3d.Zero);
@@ -39,7 +41,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             faceData.Add(new());
             //从文件IO流进行读入
             try {
-                using StreamReader sr = new StreamReader(path);
+                using StreamReader sr = new StreamReader(objPath);
                 var line = sr.ReadLine();
                 while (line != null) {
                     if (line.StartsWith("v ")) { // 读入顶点
@@ -77,6 +79,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             catch (Exception e) {
                 Console.WriteLine("创建Obj格式模型出错了\n" + objName + "：\n" + e.Message);
                 MessageBox.Show($"读取Obj格式文件出错\n{e.Message}\nOBJ名称：{objName}");
+                throw new Exception("模型创建失败");
             }
         }
         public ObjModel(string path, Material mat) {
@@ -86,7 +89,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public ObjModel(string path) {
             ObjBuild(path);
         }
-        ObjModel() { }
+        public ObjModel() { }
 
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
 
@@ -102,7 +105,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             //按照比例混合U和V
             hitResult.u = hitResult.u * vertexsUV[faceData[recObj.p1Index].TexIdex].Item1 + hitResult.v * vertexsUV[faceData[recObj.p2Index].TexIdex].Item1 + (1 - hitResult.u - hitResult.v) * vertexsUV[faceData[recObj.p0Index].TexIdex].Item1;
 
-            hitResult.v = hitResult.u * vertexsUV[faceData[recObj.p1Index].TexIdex].Item2 + hitResult.v * vertexsUV[faceData[recObj.p2Index].TexIdex].Item2 + (1 - hitResult.u - hitResult.v) * vertexsUV[faceData[recObj.p0Index].TexIdex].Item2; ;
+            hitResult.v = hitResult.u * vertexsUV[faceData[recObj.p1Index].TexIdex].Item2 + hitResult.v * vertexsUV[faceData[recObj.p2Index].TexIdex].Item2 + (1 - hitResult.u - hitResult.v) * vertexsUV[faceData[recObj.p0Index].TexIdex].Item2;
 
             hitResult.Set_Face_Normal(ray, resOutNormal);
             hitResult.mat = this.mat;
