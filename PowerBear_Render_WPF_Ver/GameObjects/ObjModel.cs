@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
-    public struct ObjData {
+    public struct ObjData { // OBJ格式的索引编号，FACE编号
         public int vertIdex, TexIdex, NorIdex;
         public ObjData(int v, int tex, int nor) { vertIdex = v; TexIdex = tex; NorIdex = nor; }
     }
@@ -28,7 +28,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public List<Vector3d> vertexsNormal = new();
         public List<Tuple<double, double>> vertexsUV = new();
         public List<ObjData> faceData = new();
-        public string objName = "";
+        public new string objName = "";
         // Obj模型的材质，可以带贴图玩玩
         public Material mat = new Lambertian(0.5d, 0.5d, 0.5d);//此物体的材质
 
@@ -98,7 +98,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             var tp = mBVH.Hit(ray, t_min, t_max, out hitResult);
 
             if (tp == false) { return false; }
-            // 从三角形局部坐标，转为整个Obj的UV
+            // 从三角形局部坐标，转为整个Obj的UV（使用三角形重心表示法，利用u*P0+v*P1+(1-u-v)*P2）
             var recObj = hitResult.hitObj as Triangle;//都是三角面
             // 根据读入Obj的顶点法线，线性插值，法线方向
             var resOutNormal = hitResult.u * vertexsNormal[faceData[recObj.p1Index].NorIdex] + hitResult.v * vertexsNormal[faceData[recObj.p2Index].NorIdex] + (1 - hitResult.u - hitResult.v) * vertexsNormal[faceData[recObj.p0Index].NorIdex];

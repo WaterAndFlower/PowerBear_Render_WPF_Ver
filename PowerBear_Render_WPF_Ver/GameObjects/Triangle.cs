@@ -28,10 +28,10 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             var f = 1 / a;
             var s = ray.origin - pointPos[0];
             var u = f * s.Dot(q);
-            if (u < 0.0d) return false;
+            if (u < -0.0003d) return false;
             var r = s.Cross(e1);
             var v = f * ray.direction.Dot(r);
-            if (v < 0.0d || u + v > 1.0d) return false;
+            if (v < -0.0003d || u < -0.0003d || u + v > 1.00003d || u + v < -0.00003d) return false;
             var t = f * e2.Dot(r);
             if (!(t >= t_min && t <= t_max)) return false;
             //判断为击中，开始设定HitRes
@@ -52,7 +52,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             double ymax = Math.Max(pointPos[0].y(), Math.Max(pointPos[1].y(), pointPos[2].y()));
             double zmax = Math.Max(pointPos[0].z(), Math.Max(pointPos[1].z(), pointPos[2].z()));
 
-            output_box = new AABB(new Vector3d(xmin, ymin, zmin), new Vector3d(xmax, ymax, zmax));
+            output_box = new AABB(new Vector3d(xmin - 0.0001d, ymin - 0.0001d, zmin - 0.0001d), new Vector3d(xmax + 0.0001d, ymax + 0.0001d, zmax + 0.0001d));
             return true;
         }
         public override object Clone() {

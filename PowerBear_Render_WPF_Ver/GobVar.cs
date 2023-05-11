@@ -71,6 +71,7 @@ namespace PowerBear_Render_WPF_Ver {
         }
         //======Gobal Functions======
         public static void AppRunInit() { //在App.xaml.cs里面
+            
             //byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
             //GobVar.doDeNoise(data, 4, 0);
             try {
@@ -146,15 +147,20 @@ namespace PowerBear_Render_WPF_Ver {
             //fnObjects.Add(modelGirlObj);
 
             // PbIO.JsonEncode();
+            // 0 8 -15
+            //ObjModelMtl objModelMtl = new ObjModelMtl("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\FLY_MMD\\Fly_MIKU.obj");
+            //NormalObject objModelMtlObj = new(objModelMtl);
+            //objModelMtlObj.objName = "初音未来";
+            //fnObjects.Add(objModelMtlObj);
         }
         /// <summary>
         /// 出发了，像素级渲染，根据条件进行判断
         /// </summary>
         public static void Render_Preview() {
-            if (MainWindow.Instance.renderDetails.uAllowRenderPreview == false) return;
+            if (MainWindow.Instance?.renderDetails.uAllowRenderPreview == false) return;
             GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = 8, sample_depth = 0, sample_pixel_level = 0, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight };
             GobVar.stopAtRenderColor = true;
-            MainWindow.Instance.DoRender();
+            MainWindow.Instance?.DoRender();
         }
         /// <summary>
         /// 将数组中的数据写入到Bitmap贴图里面

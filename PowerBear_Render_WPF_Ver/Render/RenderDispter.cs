@@ -228,8 +228,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 int pixelsCount = 0;
 
                 // =====Debug=====
-                Ray ray = new Ray(new Vector3d(x: 0, y: 1, z: 5), new Vector3d(x: 0d, y: 0, z: -1));
-                Ray_Color(ray, worldBvh, 50);
+                //Ray ray = new Ray(new Vector3d(x: 0, y: 1, z: 5), new Vector3d(x: 0d, y: 0, z: -1));
+                //Ray_Color(ray, worldBvh, 50);
 
                 var start = DateTime.Now;
                 //多线程运行

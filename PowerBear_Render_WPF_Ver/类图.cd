@@ -52,7 +52,7 @@
   <Class Name="PowerBear_Render_WPF_Ver.GameObjects.HitTable" Collapsed="true">
     <Position X="16.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgAgAAAACAAAAAAIAAAAAAAAAAAAAAAAAIAYAABA=</HashCode>
+      <HashCode>AAAAgAgAAAACAAAAAAIAAAAAAAAAAAIAAAAAIAYAABA=</HashCode>
       <FileName>GameObjects\HitTable.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -199,7 +199,7 @@
       <FileName>PbMath\PbColor.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="PowerBear_Render_WPF_Ver.PbMath.PbMath" Collapsed="true">
+  <Class Name="PowerBear_Render_WPF_Ver.PbMath.PbMath">
     <Position X="38.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAACAAAA=</HashCode>
@@ -237,7 +237,7 @@
   <Class Name="PowerBear_Render_WPF_Ver.Render.BaseRenderDispter" Collapsed="true">
     <Position X="0.5" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAFAAAAAAAAAQAAAAAAgAAAAEAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAFAAAAAAAAAQAAAAAAgAAAAFAAAAAAAAA=</HashCode>
       <FileName>Render\BaseRenderDispter.cs</FileName>
     </TypeIdentifier>
   </Class>

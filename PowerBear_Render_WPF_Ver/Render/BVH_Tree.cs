@@ -35,6 +35,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
         public BVH_Tree(IEnumerable<HitTable> src_objects) {
             Stopwatch sw = new();
+
             sw.Start();
             BVH_Node = new BVH_Node(src_objects, 0, src_objects.Count());
             Console.BackgroundColor = ConsoleColor.Green;
@@ -44,6 +45,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
             hitResult = new HitResult();
+
             if (BVH_Node != null) {
                 var res = BVH_Node.Hit(ray, t_min, t_max, out hitResult);
                 return res;

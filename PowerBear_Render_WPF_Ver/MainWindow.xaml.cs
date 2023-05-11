@@ -319,7 +319,8 @@ namespace PowerBear_Render_WPF_Ver {
         }
 
         private void Button_Click_RenderPreview(object sender, RoutedEventArgs e) {
-            GobVar.AllowPreview = true;
+            GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = 8, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight};
+            GobVar.stopAtRenderColor = false;
             GobVar.Render_Preview();
         }
 
