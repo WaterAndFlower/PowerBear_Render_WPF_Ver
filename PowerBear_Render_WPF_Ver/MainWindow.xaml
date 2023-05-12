@@ -128,7 +128,7 @@
                         <Border Margin="0 5 0 0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label Foreground="White" HorizontalAlignment="Left">FOV</Label>
-                                <Slider x:Name="uFovSlider" Width="170" VerticalAlignment="Center" Minimum="20" Maximum="200" Value="93"/>
+                                <Slider x:Name="uFovSlider" Width="170" VerticalAlignment="Center" Minimum="10" Maximum="200" Value="93"/>
                                 <Label Foreground="White" HorizontalAlignment="Left" Content="{Binding ElementName=uFovSlider,Path=Value}"/>
                             </StackPanel>
                         </Border>

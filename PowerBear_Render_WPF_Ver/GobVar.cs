@@ -148,10 +148,10 @@ namespace PowerBear_Render_WPF_Ver {
 
             // PbIO.JsonEncode();
             // 0 8 -15
-            //ObjModelMtl objModelMtl = new ObjModelMtl("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\FLY_MMD\\Fly_MIKU.obj");
-            //NormalObject objModelMtlObj = new(objModelMtl);
-            //objModelMtlObj.objName = "初音未来";
-            //fnObjects.Add(objModelMtlObj);
+            ObjModelMtl objModelMtl = new ObjModelMtl("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\FLY_MMD\\Fly_MIKU.obj");
+            NormalObject objModelMtlObj = new(objModelMtl);
+            objModelMtlObj.objName = "初音未来";
+            fnObjects.Add(objModelMtlObj);
         }
         /// <summary>
         /// 出发了，像素级渲染，根据条件进行判断
