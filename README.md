@@ -30,9 +30,17 @@
 使用C#和C++混合编写。软件无需Runtime的支持，默认打包已经设定为带Runtime打包。
 # 效果图
 ![Alt text](Docs/Images/%E8%8A%AD%E8%95%BE%E8%88%9E%E5%A5%B3%E5%AD%A9%E4%B8%AD%E9%97%B4%E5%9B%BE.png)
+
+
 渲染一张人物模型，这个模型带多个材质，本项目实现了多个材质槽系统。
+
+
 ![Alt text](Docs/Images/%E5%96%89%E5%A4%B4.png)
+
+
 渲染一张Blender标志性的模型，猴头，放地面上。
+
+
 ![Alt text](Docs/Images/%E5%B0%8F%E7%90%83%E4%BB%AC%E7%9A%84%E6%99%9A%E9%9C%9E.png)
 从左到右是：玻璃材质、地球材质、金属材质。
 # 下载和安装指南
@@ -42,6 +50,21 @@
 
 然后，设定运行时和目标，在VisualStudio上完成项目代码的编译和构建。
 
+# 核心亮点
+
+相比于传统的渲染器，本项目所使用的资源很小，兼容性广阔。
+
+并且本项目从零手写，考虑到平常大部分使用需求并没有那么高，所以本项目内置了很多预设，可以方便用户一键出图，一键渲染动画，一键NPR卡通化渲染。
+
+本项目基本实现了基本的渲染算法，更多优化思路和新的功能正在研究中。
 
 ---
 本项目的文档正在编写中，有关于本项目的所有提交历史记录，请见commit记录。这是我编写这个软件的，所有心路。
+
+# 开源组件使用申明
+1. Windows Presentation Foundation（WPF）：Licensed Under MIT；
+2. .NET Runtime：Licensed Under MIT；
+3. OpenCV4：Licensed Under BSD；
+4. Asp.Net Core：Licensed Under MIT；
+
+本软件渲染部分实现只使用了C#和C++自带的一些STL库。
