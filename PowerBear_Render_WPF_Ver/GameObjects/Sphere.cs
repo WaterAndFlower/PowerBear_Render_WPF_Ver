@@ -75,7 +75,8 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         }
 
         public override object Clone() {
-            var res = new Sphere(this.center, this.radius, this.mat);
+            //var res = new Sphere(this.center, this.radius, this.mat);
+            var res = this;
             res._GUID = this._GUID;
             return res;
         }

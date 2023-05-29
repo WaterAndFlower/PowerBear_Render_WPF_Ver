@@ -15,11 +15,12 @@
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="13*"></ColumnDefinition>
-            <ColumnDefinition Width="37*"></ColumnDefinition>
+            <ColumnDefinition Width="45*"></ColumnDefinition>
+            <ColumnDefinition Width="163*"/>
+            <ColumnDefinition Width="592*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0">
+        <Grid Grid.Column="0" Grid.ColumnSpan="2">
 
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -32,7 +33,7 @@
                 <TextBlock FontSize="50" HorizontalAlignment="Center" Foreground="White">新增</TextBlock>
             </StackPanel>
         </Grid>
-        <ScrollViewer Grid.Column="1">
+        <ScrollViewer Grid.Column="2">
             <StackPanel>
                 <StackPanel.Resources>
                     <Style TargetType="Label">
@@ -158,6 +159,14 @@
                     <TextBox TextWrapping="Wrap" Width="400" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding ObjPath}"></TextBox>
                 </StackPanel>
                 <Button Click="Button_Click_ObjModel">添加</Button>
+                <!--添加一个Obj_XML材质的模型-->
+                <Label FontSize="14" Content="添加Object文件模型(带MTL文件)" Foreground="White" FontWeight="Bold" Background="#FF8E8E8E" />
+                <TextBlock Margin="3" Foreground="#FFB47B00">说明：使用这种方式来导入文件后，将使用Obj模型自动的Mtl文件来创建材质。</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <Label>文件路径:</Label>
+                    <TextBox TextWrapping="Wrap" Width="400" VerticalAlignment="Center" Margin="0 0 10 0" Text="{Binding ObjMtlPath}"></TextBox>
+                </StackPanel>
+                <Button Click="Button_Click_ObjMtlModel" >添加</Button>
             </StackPanel>
         </ScrollViewer>
     </Grid>

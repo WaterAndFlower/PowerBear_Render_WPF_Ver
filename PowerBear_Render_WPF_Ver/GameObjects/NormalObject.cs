@@ -35,7 +35,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
             return actualObj.Hit(ray, t_min, t_max, out hitResult);
         }
-
+        
         public override bool Bounding_Box(out AABB? output_box) {
             return actualObj.Bounding_Box(out output_box);
         }

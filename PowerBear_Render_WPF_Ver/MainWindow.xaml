@@ -279,6 +279,8 @@
                         <Label FontSize="14" Content="屏幕处理 与 NPR非真实渲染" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <CheckBox Foreground="White" IsChecked="{Binding _AllowDoDeNoise}">OpenCV屏幕降噪</CheckBox>
                         <CheckBox Foreground="White" IsChecked="{Binding _AllowPhongModel}">卡通渲染（卡通光照+描边算法）</CheckBox>
+                        <Label FontSize="14" Content="渲染管线" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
+                        
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

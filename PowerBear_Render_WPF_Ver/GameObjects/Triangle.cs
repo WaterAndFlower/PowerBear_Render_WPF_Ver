@@ -56,6 +56,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             return true;
         }
         public override object Clone() {
+            return this;
             return new Triangle(this.pointPos[0], this.pointPos[1], this.pointPos[2], this.mat);
         }
     }

@@ -189,6 +189,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             return mBVH.Bounding_Box(out output_box);
         }
         public override object Clone() {
+            return this;
             var res = new ObjModelMtl();
             foreach (var item in mTriangle) res.mTriangle.Add(item);
             foreach (var item in vertexsPos) res.vertexsPos.Add(item);

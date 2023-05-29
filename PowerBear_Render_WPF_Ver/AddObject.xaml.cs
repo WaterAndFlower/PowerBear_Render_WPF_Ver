@@ -44,6 +44,7 @@ namespace PowerBear_Render_WPF_Ver {
         public double PanelY_Pos { get; set; } = 0;
         // ==== new ObjModel ====
         public string ObjPath { get; set; } = new("");
+        public string ObjMtlPath { get; set; } = new("");
         public AddObjectWindow() {
             InitializeComponent();
             this.DataContext = this;
@@ -132,8 +133,18 @@ namespace PowerBear_Render_WPF_Ver {
             }
         }
 
+        private void Button_Click_ObjMtlModel(object sender, RoutedEventArgs e) {
+            ObjModelMtl objModelMtl = new ObjModelMtl(ObjMtlPath);
+            NormalObject objModelMtlObj = new(objModelMtl);
+            objModelMtlObj.objName = "未命名Obj物体（Mtl材质）";
+            GobVar.fnObjects.Add(objModelMtlObj);
+            GobVar.Render_Preview();
+        }
+
         double ByteColorToDouble(Byte col) {
             return col / 255d;
         }
+
+
     }
 }
