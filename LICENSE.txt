@@ -672,3 +672,12 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
+
+
+
+
+本项目的附加LICENSE
+
+除了以上GPL3.0的附加条件以外。请注意本项目在Readme.md上的开源声明，它
+同样具有相应的法律效应。
