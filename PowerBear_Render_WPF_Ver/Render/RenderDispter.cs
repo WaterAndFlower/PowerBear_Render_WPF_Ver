@@ -112,7 +112,11 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 Ray scattered;
                 Vector3d atten;
                 if (hitResult.mat.Scatter(ray, hitResult, out atten, out scattered)) {
-                    return atten * 1.2d;
+                    if (depth == GobVar.Render_Depth) {
+                        return atten * 1d;
+                    } else {
+                        return atten * GobVar.MulSkyColor;
+                    }
                 }
             }
             return GobVar._BackColor;
@@ -154,7 +158,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
                     Vector3d viewDir = (ray.direction).Normalized();
                     Vector3d specular = HighColor * LightColor * Math.Pow(PbMath.PbMath.ClampRangeDouble(reflectDir.Dot(viewDir), 0, 1d), 18);
 
-                    return ambient + diffuse + specular;
+                    return GobVar.MulSkyColor * ambient + diffuse + specular;
                     //return emitColor + attenuation * Ray_Color(scattered, world, depth - 1);
                 } else {
                     return emitColor; // 返回自发光的颜色
@@ -166,7 +170,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 Ray scattered;
                 Vector3d atten;
                 if (hitResult.mat.Scatter(ray, hitResult, out atten, out scattered)) {
-                    return atten * 1d;
+                    return atten * 1;
                 }
             }
             return GobVar._BackColor;
@@ -247,8 +251,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
                             var u = (1.0d * j + uRandom) / width;
                             var v = (1.0d * i + vRandom) / height;
                             Ray ray = camera.GetRay(u, v);
-                            colorRes += Ray_Color(ray, worldBvh, GobVar.Render_Depth);
-                            //colorRes += Ray_Color_Phong(ray, worldBvh, GobVar.Render_Depth);
+                            //colorRes += Ray_Color(ray, worldBvh, GobVar.Render_Depth);
+                            colorRes += Ray_Color_Phong(ray, worldBvh, GobVar.Render_Depth);
                         }
 
                         // DONE

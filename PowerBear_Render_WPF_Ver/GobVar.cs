@@ -34,10 +34,11 @@ namespace PowerBear_Render_WPF_Ver {
         public static BindingList<PointLight_Phong> fnLights { get; set; } = new(); //存放的是Phong模型的光照
         public static bool stopAtRenderColor { get; set; } = false; //只进行像素着色器渲染，不渲染真正颜色
         //======Deault Objects======
-        public static HitTable skyObject = new Sphere(new(0, 0, 0), 10000, new SkyMat(new Solid_Color(0.4d, 0.1d, 0.3d)));
+        public static HitTable skyObject { get; set; } = new Sphere(new(0, 0, 0), 10000, new SkyMat(new Solid_Color(0.4d, 0.1d, 0.3d)));
         public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
         public static Hittable_List worldObjects = new(); // 世界场景数组，渲染器渲染这个
         public static BackgroundWorker backgroundWorker = new BackgroundWorker();// 切换背后的渲染管线
+        public static double MulSkyColor = 1.3d;
         // ======场景物体=======
         public static Camera mCamera = new();
         static BindingList<NormalObject> _fnObjects = new();
@@ -149,9 +150,9 @@ namespace PowerBear_Render_WPF_Ver {
             // PbIO.JsonEncode();
             // 0 8 -15
             // C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\FLY_MMD\\Fly_MIKU.obj
+            //C:\\Users\\PowerBear\\Desktop\\Sample\\FLY_MMD\\Fly_MIKU.obj
 
-
-            ObjModelMtl objModelMtl = new ObjModelMtl("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\FLY_MMD\\Fly_MIKU.obj");
+            ObjModelMtl objModelMtl = new ObjModelMtl("D:\\MMD\\Models\\OBJ\\YYB式桜ミクv1.00\\OBJ\\Rabbit.obj");
             NormalObject objModelMtlObj = new(objModelMtl);
             objModelMtlObj.objName = "初音未来";
             fnObjects.Add(objModelMtlObj);

@@ -6,7 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:PowerBear_Render_WPF_Ver"
         mc:Ignorable="d"
-        Title="小熊渲染器" Height="554" Width="1067">
+        Title="小熊渲染器" Height="579" Width="1096">
     <!--软件整体Grid-->
     <Grid Background="#FF1F1F1F" x:Name="MainGrid">
 
@@ -124,7 +124,13 @@
                                 <TextBox Text="{Binding _backImgPath}"></TextBox>
                             </TabItem>
                         </TabControl>
-
+                        <Border Margin="0 5 0 0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Label Foreground="White" HorizontalAlignment="Left">MUL</Label>
+                                <Slider x:Name="uMulSlider" Width="170" VerticalAlignment="Center" Minimum="0.2" Maximum="5" Value="1.2"/>
+                                <Label Foreground="White" HorizontalAlignment="Left" Content="{Binding ElementName=uMulSlider,Path=Value}"/>
+                            </StackPanel>
+                        </Border>
                         <Border Margin="0 5 0 0">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label Foreground="White" HorizontalAlignment="Left">FOV</Label>
@@ -280,7 +286,7 @@
                         <CheckBox Foreground="White" IsChecked="{Binding _AllowDoDeNoise}">OpenCV屏幕降噪</CheckBox>
                         <CheckBox Foreground="White" IsChecked="{Binding _AllowPhongModel}">卡通渲染（卡通光照+描边算法）</CheckBox>
                         <Label FontSize="14" Content="渲染管线" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
-                        
+
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

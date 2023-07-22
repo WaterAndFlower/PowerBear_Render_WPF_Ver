@@ -183,6 +183,7 @@ namespace PowerBear_Render_WPF_Ver {
             //Task.Delay(1000);
             // MainImage.Source = new BitmapImage(new Uri(GobVar.appStartupPath + "/Tmp/Write.png"));
         }
+        // 读取面板上的值来做一些操作
         void InitRenderSettings() {
             // 设置相机
             var lookFrom = new Vector3d(double.Parse(CameraPosXTextBox.Text), double.Parse(CameraPosYTextBox.Text), double.Parse(CameraPosZTextBox.Text));
@@ -212,6 +213,8 @@ namespace PowerBear_Render_WPF_Ver {
             }
             GobVar.skyObject = _BackObj;
             GobVar._BackColor = new(_bcakColor1.R / 255d, _bcakColor1.G / 255d, _bcakColor1.B / 255d);
+            // 设置光线乘法倍数
+            GobVar.MulSkyColor = uMulSlider.Value;
         }
         void BeforeRender() { // 在DoRender之前，进行一次预处理
             timertimer.Start();
@@ -319,6 +322,7 @@ namespace PowerBear_Render_WPF_Ver {
         }
 
         private void Button_Click_RenderPreview(object sender, RoutedEventArgs e) {
+            InitRenderSettings();
             GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = 8, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight};
             GobVar.stopAtRenderColor = false;
             GobVar.Render_Preview();

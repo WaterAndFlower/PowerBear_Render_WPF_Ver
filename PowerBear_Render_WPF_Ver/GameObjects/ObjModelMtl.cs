@@ -135,7 +135,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
                         var res = line.Split(' ');
                         for (int i = 1; i <= 3; i++) {
                             var temp = res[i];
-                            var index = temp.Split('/');
+                            var index = temp.Split(separator: '/');
                             faceData.Add(new ObjData(int.Parse(index[0]), int.Parse(index[1]), int.Parse(index[2])));
                         }
                         var triangleObject = new Triangle(vertexsPos[faceData[stIndex].vertIdex], vertexsPos[faceData[stIndex + 1].vertIdex], vertexsPos[faceData[stIndex + 2].vertIdex], stIndex, stIndex + 1, stIndex + 2);
