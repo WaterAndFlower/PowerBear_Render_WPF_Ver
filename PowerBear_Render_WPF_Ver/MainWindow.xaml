@@ -285,6 +285,10 @@
                         <Label FontSize="14" Content="屏幕处理 与 NPR非真实渲染" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <CheckBox Foreground="White" IsChecked="{Binding _AllowDoDeNoise}">OpenCV屏幕降噪</CheckBox>
                         <CheckBox Foreground="White" IsChecked="{Binding _AllowPhongModel}">卡通渲染（卡通光照+描边算法）</CheckBox>
+                        <ComboBox x:Name="uRenderWayBox" SelectedIndex="{Binding _RenderWay}">
+                            <ComboBoxItem IsSelected="True">光线追踪管线</ComboBoxItem>
+                            <ComboBoxItem>卡通渲染管线</ComboBoxItem>
+                        </ComboBox>
                         <Label FontSize="14" Content="渲染管线" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
 
                     </StackPanel>

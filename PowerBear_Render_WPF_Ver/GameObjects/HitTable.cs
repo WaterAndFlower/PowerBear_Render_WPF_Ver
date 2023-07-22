@@ -35,8 +35,10 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     [XmlInclude(typeof(Triangle))]
     [XmlInclude(typeof(Sphere))]
     [XmlInclude(typeof(Rotate_Y))]
+    [XmlInclude(typeof(ObjModelMtl))]
     [XmlInclude(typeof(Box))]
     [XmlInclude(typeof(XZ_Rect))]
+    //[XmlInclude(typeof(ObjModelMtl))]
     public abstract class HitTable : ICloneable {
         public string objName { get; set; } = "未命名";
         public bool needRender { get; set; } = true;

@@ -26,6 +26,8 @@ using PowerBear_Render_WPF_Ver.DAO;
 namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
     /// 多线程类 规定（1，1）图像左上角（height，width）图像右下角
+    /// 【注】渲染管线的设置和调用在MainWindow.cs里，搜索RayColor即可
+    /// Button_Click_StartRender方法里
     /// </summary>
     public class RenderDispter : BaseRenderDispter {
         //====Public Var====
@@ -208,14 +210,17 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
         //CUDA：https://blog.csdn.net/theadore2017/article/details/110919384
         //利用GPU进行并行运算
-        public override void DoRender() {
+        public override void DoRender(IRayColor RayColor) {
+
             worldBvh = new(GobVar.fnWorld);
 
             PreviewRender();
 
-            this.BeforeRender();
-
             if (GobVar.stopAtRenderColor == true) return; // 当只需要渲染像素时候，其他不渲染
+
+            if (RayColor == null) return;
+            // 做RayColor的前期处理
+            RayColor.BeforeRender();
 
             try {
                 Camera camera = mCamera;
@@ -251,8 +256,8 @@ namespace PowerBear_Render_WPF_Ver.Render {
                             var u = (1.0d * j + uRandom) / width;
                             var v = (1.0d * i + vRandom) / height;
                             Ray ray = camera.GetRay(u, v);
-                            //colorRes += Ray_Color(ray, worldBvh, GobVar.Render_Depth);
-                            colorRes += Ray_Color_Phong(ray, worldBvh, GobVar.Render_Depth);
+
+                            colorRes += RayColor.Ray_Color(ray, worldBvh, GobVar.Render_Depth);
                         }
 
                         // DONE
@@ -283,7 +288,9 @@ namespace PowerBear_Render_WPF_Ver.Render {
             catch (Exception ex) {
                 MessageBox.Show("渲染过程中出现错误\n" + ex.Message);
             }
-            this.AfterRender();
+
+            // 做Ray_Color的后期处理
+            RayColor.AfterRender();
         }
         //---- End Of Render ----
         public static WriteableBitmap CreateWriteableBitMap(int width, int height) {

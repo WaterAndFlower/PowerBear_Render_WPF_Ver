@@ -5,6 +5,7 @@ using PowerBear_Render_WPF_Ver.Materials;
 using PowerBear_Render_WPF_Ver.Pages;
 using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
+using PowerBear_Render_WPF_Ver.Render_RayColor;
 using PowerBear_Render_WPF_Ver.Textures;
 using System;
 using System.Collections.Generic;
@@ -54,8 +55,9 @@ namespace PowerBear_Render_WPF_Ver {
             public sysColor _backColor2 { get; set; } = sysColor.FromRgb(255, 255, 255);
             public int _backColorType { get; set; } = 0;//0 单 1 双 2 HDRI
             public string _backImgPath { get; set; } = "C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\HDRI\\sky_hdri.png";
-            public bool _AllowDoDeNoise { get; set; } = false;
-            public bool _AllowPhongModel { get; set; } = false;
+            public bool _AllowDoDeNoise { get; set; } = false;// OpenCV降噪
+            public bool _AllowPhongModel { get; set; } = false;// OpenCV描边
+            public int _RenderWay { get; set; } = 0;// 0:光线追踪 1:Phong
             public void Refush() {
                 MainWindow.Instance.LabelRenderSize.Content = BitMapSize;
                 MainWindow.Instance.CpusLabel.Content = UICpus;
@@ -117,7 +119,7 @@ namespace PowerBear_Render_WPF_Ver {
 
             BaseRenderDispter renderDsp = new RenderDispter(data);
 
-            renderDsp.DoRender();
+            renderDsp.DoRender(data.RayColor);
             e.Result = renderDsp;
 
 
@@ -215,6 +217,8 @@ namespace PowerBear_Render_WPF_Ver {
             GobVar._BackColor = new(_bcakColor1.R / 255d, _bcakColor1.G / 255d, _bcakColor1.B / 255d);
             // 设置光线乘法倍数
             GobVar.MulSkyColor = uMulSlider.Value;
+            // 设置渲染器管线
+            GobVar.RenderWay = renderDetails._RenderWay;
         }
         void BeforeRender() { // 在DoRender之前，进行一次预处理
             timertimer.Start();
@@ -251,7 +255,12 @@ namespace PowerBear_Render_WPF_Ver {
                 System.Windows.MessageBox.Show("不能进行渲染，可能填写数字的地方有误：\n" + ex.Message);
             }
         }
-        //开始渲染部分（UI信号）
+        //Start Render 开始渲染部分（UI信号）
+        /// <summary>
+        /// 为啥要在很多的地方不停设置参数值，以后这些东西要进行一些重构了
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click_StartRender(object sender, RoutedEventArgs e) {
             InitRenderSettings();
             var t = 1;
@@ -268,6 +277,13 @@ namespace PowerBear_Render_WPF_Ver {
                 break;
             }
             GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = t, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight };
+
+            // 设定渲染RayColor实现
+            if (GobVar.RenderWay == 0)
+                GobVar.RenderDispData.RayColor = new Ray_Color_PBR();
+            if (GobVar.RenderWay == 1)
+                GobVar.RenderDispData.RayColor = new Ray_Color_NPR();
+
             GobVar.stopAtRenderColor = false;
             DoRender();
         }
@@ -323,7 +339,7 @@ namespace PowerBear_Render_WPF_Ver {
 
         private void Button_Click_RenderPreview(object sender, RoutedEventArgs e) {
             InitRenderSettings();
-            GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = 8, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight};
+            GobVar.RenderDispData = new ToRenderDispterData() { width = GobVar.renderWidth, height = GobVar.renderHeight, mCamera = GobVar.mCamera, cpus = 8, sample_depth = 0, sample_pixel_level = MSAA_Combox.SelectedIndex, _BackWorker = GobVar.backgroundWorker, startRow = 1, endRow = GobVar.renderHeight };
             GobVar.stopAtRenderColor = false;
             GobVar.Render_Preview();
         }

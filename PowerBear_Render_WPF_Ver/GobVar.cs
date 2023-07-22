@@ -33,6 +33,7 @@ namespace PowerBear_Render_WPF_Ver {
         public static Hittable_List fnWorld = new Hittable_List(); // fnWorld = fnObjects + fnLights
         public static BindingList<PointLight_Phong> fnLights { get; set; } = new(); //存放的是Phong模型的光照
         public static bool stopAtRenderColor { get; set; } = false; //只进行像素着色器渲染，不渲染真正颜色
+        public static int RenderWay { get; set; }// 渲染管线方法组
         //======Deault Objects======
         public static HitTable skyObject { get; set; } = new Sphere(new(0, 0, 0), 10000, new SkyMat(new Solid_Color(0.4d, 0.1d, 0.3d)));
         public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
@@ -152,7 +153,7 @@ namespace PowerBear_Render_WPF_Ver {
             // C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\FLY_MMD\\Fly_MIKU.obj
             //C:\\Users\\PowerBear\\Desktop\\Sample\\FLY_MMD\\Fly_MIKU.obj
 
-            ObjModelMtl objModelMtl = new ObjModelMtl("D:\\MMD\\Models\\OBJ\\YYB式桜ミクv1.00\\OBJ\\Rabbit.obj");
+            ObjModelMtl objModelMtl = new ObjModelMtl("C:\\Users\\PowerBear\\Desktop\\Sample\\小黄鸭\\duck.obj");
             NormalObject objModelMtlObj = new(objModelMtl);
             objModelMtlObj.objName = "初音未来";
             fnObjects.Add(objModelMtlObj);

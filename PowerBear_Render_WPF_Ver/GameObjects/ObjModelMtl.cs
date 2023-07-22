@@ -12,22 +12,34 @@ using System.Windows;
 using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
+    [XmlType("ObjModelXML")]
     public class ObjModelMtl : HitTable {
+        public string ObjStr = "";// 做网络传输用
+
         [XmlIgnore]
         public BVH_Tree? mBVH; // 为了XML序列化后退出
-
+        [XmlIgnore]
         public List<HitTable> mTriangle = new List<HitTable>();
+        [XmlIgnore]
         public List<Vector3d> vertexsPos = new();
+        [XmlIgnore]
         public List<Vector3d> vertexsNormal = new();
+        [XmlIgnore]
         public List<Tuple<double, double>> vertexsUV = new();
+        [XmlIgnore]
         public List<ObjData> faceData = new();
+
         public string objPath = ""; // obj模型文件的路径
         public string mtlPath = ""; // mtl材质纹理文件的路径
+
+        [XmlIgnore]
         public Dictionary<String, Material> matNames = new();// "材质名字"，"索引编号"
         String basedPath = ""; // 本模型文件的主要文件夹
 
         public ObjModelMtl() { }
         public ObjModelMtl(string objPath, string? mtlPath = null) {
+            using StreamReader sr = new StreamReader(objPath);
+            ObjStr = sr.ReadToEnd();
             // 无论怎么说，都应该先获得材质数组的信息
             var resPath = Path.GetDirectoryName(objPath);
             try {
@@ -35,7 +47,8 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
                 basedPath = resPath;
                 Console.WriteLine("ObjModelMtl: READ文件根目录" + basedPath);
                 // 以objPath文件里面保存的mtl贴图信息为准
-                using StreamReader sr = new StreamReader(objPath);
+                sr.DiscardBufferedData();
+                sr.BaseStream.Seek(0, SeekOrigin.Begin);
                 var line = sr.ReadLine();
                 while (line != null) {
                     if (line.StartsWith("mtllib ")) {

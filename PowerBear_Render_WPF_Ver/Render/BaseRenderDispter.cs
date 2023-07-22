@@ -10,12 +10,13 @@ namespace PowerBear_Render_WPF_Ver.Render {
         public int width, height;
         public List<Byte[]> res_list_pixels_BGRA;
     }
-
+    /// <summary>
+    /// 多线程渲染方式实现抽象类
+    /// </summary>
     public abstract class BaseRenderDispter {
         public ToRenderDispterData _parm;
         public BaseRenderDispter(ToRenderDispterData parm) { this._parm = parm; }
-        public virtual void BeforeRender() { }
-        public abstract void DoRender(); // 实现的时候，BeforeRender，AfterRender调用
+        public abstract void DoRender(IRayColor RayColor); // 可替换的Ray_Color函数，切换渲染方式
         public virtual void AfterRender() { }
         public virtual RenderDispResult Render() {
             throw new NotImplementedException();
