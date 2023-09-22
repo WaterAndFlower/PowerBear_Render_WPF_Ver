@@ -18,7 +18,7 @@ namespace PowerBear_Render_WPF_Ver.Render_RayColor {
         }
 
 
-        public Vector3d Ray_Color(Ray ray, HitTable world, int depth) {
+        public Vector3d Ray_Color(Ray ray, HitAble world, int depth) {
             HitResult hitResult;
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
                 // 在这里实现算法部分

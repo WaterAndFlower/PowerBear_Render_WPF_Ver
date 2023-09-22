@@ -283,6 +283,8 @@ namespace PowerBear_Render_WPF_Ver {
                 GobVar.RenderDispData.RayColor = new Ray_Color_PBR();
             if (GobVar.RenderWay == 1)
                 GobVar.RenderDispData.RayColor = new Ray_Color_NPR();
+            if (GobVar.RenderWay == 2)
+                GobVar.RenderDispData.RayColor = new Ray_Color_ZYR();
 
             GobVar.stopAtRenderColor = false;
             DoRender();

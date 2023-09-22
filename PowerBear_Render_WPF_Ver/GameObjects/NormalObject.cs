@@ -13,20 +13,20 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// 一个通用的Object类型，可以执行Transform的变换操作
     /// </summary>
     [Serializable]
-    public class NormalObject : HitTable, ISerializable {
-        public HitTable srcObj { get; set; }
+    public class NormalObject : HitAble, ISerializable {
+        public HitAble srcObj { get; set; }
         public Vector3d offset { get; set; } = new Vector3d(0, 0, 0);
         public double angleY { get; set; } = 0;
         public NormalObject() { }
-        public NormalObject(HitTable srcObj) {
+        public NormalObject(HitAble srcObj) {
             this.srcObj = srcObj;
         }
 
-        HitTable actualObj;
+        HitAble actualObj;
 
         public override void BeforeRendering() {
             var __GUID = srcObj._GUID;
-            actualObj = srcObj.Clone() as HitTable;
+            actualObj = srcObj.Clone() as HitAble;
             actualObj = new Rotate_Y(actualObj, angleY);
             actualObj = new Translate(actualObj, offset);
             actualObj._GUID = __GUID;
@@ -41,7 +41,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         }
 
         public override object Clone() {
-            return new NormalObject((HitTable)srcObj.Clone());
+            return new NormalObject((HitAble)srcObj.Clone());
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) {

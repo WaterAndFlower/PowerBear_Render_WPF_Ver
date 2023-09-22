@@ -19,11 +19,11 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// <summary>
     /// Obj格式模型解析，使用右手坐标系，导出时候，选择向上方向是y，向前是-z。
     /// </summary>
-    public class ObjModel : HitTable {
+    public class ObjModel : HitAble {
         [XmlIgnore]
         public BVH_Tree mBVH;
 
-        public List<HitTable> mTriangle = new List<HitTable>();
+        public List<HitAble> mTriangle = new List<HitAble>();
         public List<Vector3d> vertexsPos = new();
         public List<Vector3d> vertexsNormal = new();
         public List<Tuple<double, double>> vertexsUV = new();

@@ -10,7 +10,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
     /// <summary>
     ///  对BVH的一个封装
     /// </summary>
-    public class BVH_Tree : HitTable {
+    public class BVH_Tree : HitAble {
         BVH_Node? BVH_Node { get; set; }
         public BVH_Tree(Hittable_List hittable_List) {
             Stopwatch sw = new();
@@ -24,7 +24,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         /// <summary>
         /// 区间[start,end)
         /// </summary>
-        public BVH_Tree(IEnumerable<HitTable> src_objects, int start, int end) {
+        public BVH_Tree(IEnumerable<HitAble> src_objects, int start, int end) {
             Stopwatch sw = new();
             sw.Start();
             BVH_Node = new BVH_Node(src_objects, start, end);
@@ -33,7 +33,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
             Console.BackgroundColor = ConsoleColor.Black;
             sw.Stop();
         }
-        public BVH_Tree(IEnumerable<HitTable> src_objects) {
+        public BVH_Tree(IEnumerable<HitAble> src_objects) {
             Stopwatch sw = new();
 
             sw.Start();

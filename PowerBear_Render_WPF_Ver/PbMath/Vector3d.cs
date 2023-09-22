@@ -24,6 +24,7 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
         public double Dot(Vector3d b) { // 向量点积
             return e[0] * b.e[0] + e[1] * b.e[1] + e[2] * b.e[2];
         }
+
         /// <summary>
         /// 左手坐标系下的叉乘
         /// </summary>
@@ -55,10 +56,12 @@ namespace PowerBear_Render_WPF_Ver.PbMath {
             Vector3d res = new Vector3d(a.x(), a.y(), a.z());
             res.e[0] += b.e[0]; res.e[1] += b.e[1]; res.e[2] += b.e[2]; return res;
         }
+
         public static Vector3d operator *(Vector3d a, double value) {
             Vector3d res = new Vector3d(a.x(), a.y(), a.z());
             res.e[0] *= value; res.e[1] *= value; res.e[2] *= value; return res;
         }
+
         public static Vector3d operator *(double value, Vector3d a) {
             return a * value;
         }

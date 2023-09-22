@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
-    public class Box : HitTable {
+    public class Box : HitAble {
         public Vector3d pointMin, pointMax;
         public Hittable_List sides;
         private Material mat = new Lambertian();

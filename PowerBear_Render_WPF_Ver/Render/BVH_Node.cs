@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace PowerBear_Render_WPF_Ver.Render {
     //=======BVH包围盒子，划分空间方法=========
-    class BVH_XYZ_Compare : IComparer<HitTable> {
+    class BVH_XYZ_Compare : IComparer<HitAble> {
         int axis;
         public BVH_XYZ_Compare(int axis) {
             this.axis = axis;
         }
-        public int Compare(HitTable? x, HitTable? y) {
+        public int Compare(HitAble? x, HitAble? y) {
             return BVH_Node.Box_Compare(x, y, axis) == true ? 1 : 0;
         }
     }
     //=======BVH主要=======
-    public class BVH_Node : HitTable {
-        public HitTable? left;
-        public HitTable? right;
+    public class BVH_Node : HitAble {
+        public HitAble? left;
+        public HitAble? right;
         public AABB? box;
-        public static bool Box_Compare(HitTable a, HitTable b, int axis) {
+        public static bool Box_Compare(HitAble a, HitAble b, int axis) {
             AABB? box_a = new AABB(), box_b = new AABB();
             if (!a.Bounding_Box(out box_a) || !b.Bounding_Box(out box_b)) {
                 Console.WriteLine("出错了！没有一个包围盒子，构建BVH失败。");
@@ -35,11 +35,11 @@ namespace PowerBear_Render_WPF_Ver.Render {
         /// <summary>
         /// 建造节点和建树，区间[start,end)，必须保证，所有物体都要有一个包围盒子。
         /// </summary>
-        public BVH_Node(IEnumerable<HitTable> src_objects, int start, int end) {
+        public BVH_Node(IEnumerable<HitAble> src_objects, int start, int end) {
             BuildTree(src_objects, start, end);
         }
-        void BuildTree(IEnumerable<HitTable> src_objects, int start, int end) {
-            var objs = src_objects as List<HitTable>;
+        void BuildTree(IEnumerable<HitAble> src_objects, int start, int end) {
+            var objs = src_objects as List<HitAble>;
             if (end - start <= 0 || objs == null) { box = null; Console.WriteLine($"BVH 无法建造，{start} -> {end}，范围不包含物体"); return; }
 
             int axis = PbMath.PbRandom.Random_int(0, 2); //0：在x轴上排序，1：在y轴上排序，2：在z轴上排序

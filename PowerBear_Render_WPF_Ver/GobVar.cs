@@ -3,8 +3,6 @@ using PowerBear_Render_WPF_Ver.PbMath;
 using PowerBear_Render_WPF_Ver.Render;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
-using System.Windows.Media;
 using PowerBear_Render_WPF_Ver.GameObjects;
 using PowerBear_Render_WPF_Ver.Lights;
 using PowerBear_Render_WPF_Ver.Textures;
@@ -35,7 +32,7 @@ namespace PowerBear_Render_WPF_Ver {
         public static bool stopAtRenderColor { get; set; } = false; //只进行像素着色器渲染，不渲染真正颜色
         public static int RenderWay { get; set; }// 渲染管线方法组
         //======Deault Objects======
-        public static HitTable skyObject { get; set; } = new Sphere(new(0, 0, 0), 10000, new SkyMat(new Solid_Color(0.4d, 0.1d, 0.3d)));
+        public static HitAble skyObject { get; set; } = new Sphere(new(0, 0, 0), 10000, new SkyMat(new Solid_Color(0.4d, 0.1d, 0.3d)));
         public static Lambertian DeaultMat = new Lambertian(new Vector3d(0.5, y: 0.5, 0.5));
         public static Hittable_List worldObjects = new(); // 世界场景数组，渲染器渲染这个
         public static BackgroundWorker backgroundWorker = new BackgroundWorker();// 切换背后的渲染管线
@@ -73,7 +70,7 @@ namespace PowerBear_Render_WPF_Ver {
         }
         //======Gobal Functions======
         public static void AppRunInit() { //在App.xaml.cs里面
-            
+
             //byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
             //GobVar.doDeNoise(data, 4, 0);
             try {
@@ -128,19 +125,21 @@ namespace PowerBear_Render_WPF_Ver {
             //modelYiyiObj.objName = "依依";
             //fnObjects.Add(modelYiyiObj);
 
-            HitTable sphere = new Sphere(Vector3d.Zero, 5, new Metal(new(0.5d, 0.5d, 0.5d), 0.1));
+            HitAble sphere = new Sphere(Vector3d.Zero, 5, new Metal(new(0.5d, 0.5d, 0.5d), 0.1));
             sphere._GUID = 3;
             NormalObject sphereObj = new(sphere);
-            sphereObj.offset = new(5.5, 0, 0);
+            sphereObj.offset = new(0, 0, 0);
             sphereObj.objName = "小球体_Metal";
             fnObjects.Add(sphereObj);
+            sphereObj.needRender = true;
 
-            HitTable sphere2 = new DielectricSphere(Vector3d.Zero, 5, new Dielectric(1.5d));
+            HitAble sphere2 = new DielectricSphere(Vector3d.Zero, 5, new Dielectric(1.5d));
             sphere2._GUID = 1;
             NormalObject sphereObj2 = new(sphere2);
             sphereObj2.offset = new(-5.5, 0, 0);
             sphereObj2.objName = "小球体_Glass";
             fnObjects.Add(sphereObj2);
+            sphereObj2.needRender = false;
 
             //HitTable modelGirl = new ObjModel("C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\BlenderProject\\大场景\\单独琵琶和女生.obj", new Lambertian(0.5d, 0.5d, 0.5d));
 
@@ -153,10 +152,12 @@ namespace PowerBear_Render_WPF_Ver {
             // C:\\Users\\PowerBear\\Desktop\\Doc\\大创渲染器\\中间过程演示\\Model\\FLY_MMD\\Fly_MIKU.obj
             //C:\\Users\\PowerBear\\Desktop\\Sample\\FLY_MMD\\Fly_MIKU.obj
 
+            /*
             ObjModelMtl objModelMtl = new ObjModelMtl("C:\\Users\\PowerBear\\Desktop\\Sample\\小黄鸭\\duck.obj");
             NormalObject objModelMtlObj = new(objModelMtl);
-            objModelMtlObj.objName = "初音未来";
+            objModelMtlObj.objName = "Duck";
             fnObjects.Add(objModelMtlObj);
+            */
         }
         /// <summary>
         /// 出发了，像素级渲染，根据条件进行判断

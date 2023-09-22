@@ -11,7 +11,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// <summary>
     /// 一个XZ的平面
     /// </summary>
-    public class XZ_Rect : HitTable {
+    public class XZ_Rect : HitAble {
         public Material mat;
         double x0, x1, z0, z1, k;//k是在y方向上的维度
         /// <summary>
@@ -57,7 +57,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// <summary>
     /// 一个YZ平面
     /// </summary>
-    public class YZ_Rect : HitTable {
+    public class YZ_Rect : HitAble {
         public Material mat;
         double y0, y1, z0, z1, k;//k是在y方向上的维度
         /// <summary>
@@ -101,7 +101,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// <summary>
     /// XY平面
     /// </summary>
-    public class XY_Rect : HitTable {
+    public class XY_Rect : HitAble {
         public Material mat;
         double x0, x1, y0, y1, k;//k是在y方向上的维度
         /// <summary>

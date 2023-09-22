@@ -73,7 +73,7 @@ namespace PowerBear_Render_WPF_Ver.DAO {
         public static NetworkJsonData JsonEncode() {
             string xml_fnObjects = "", xml_Camera = "", xml_SkyBox = "";
 
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(BindingList<NormalObject>), new Type[] { typeof(HitTable), typeof(Material) });
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(BindingList<NormalObject>), new Type[] { typeof(HitAble), typeof(Material) });
 
             // 序列化 fnObjects 为 XML
             using MemoryStream mms = new();

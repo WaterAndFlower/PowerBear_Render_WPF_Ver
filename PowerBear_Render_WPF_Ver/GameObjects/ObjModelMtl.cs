@@ -13,13 +13,13 @@ using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
     [XmlType("ObjModelXML")]
-    public class ObjModelMtl : HitTable {
+    public class ObjModelMtl : HitAble {
         public string ObjStr = "";// 做网络传输用
 
         [XmlIgnore]
         public BVH_Tree? mBVH; // 为了XML序列化后退出
         [XmlIgnore]
-        public List<HitTable> mTriangle = new List<HitTable>();
+        public List<HitAble> mTriangle = new List<HitAble>();
         [XmlIgnore]
         public List<Vector3d> vertexsPos = new();
         [XmlIgnore]

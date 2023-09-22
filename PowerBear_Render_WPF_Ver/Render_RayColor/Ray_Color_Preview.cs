@@ -5,7 +5,7 @@ using System;
 
 namespace PowerBear_Render_WPF_Ver.Render_RayColor {
     public class Ray_Color_Preview : IRayColor {
-        public Vector3d Ray_Color(Ray ray, HitTable world, int depth) {
+        public Vector3d Ray_Color(Ray ray, HitAble world, int depth) {
             throw new NotImplementedException();
         }
     }

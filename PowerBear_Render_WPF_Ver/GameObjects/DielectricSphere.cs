@@ -8,7 +8,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// <summary>
     /// 一个通透的玻璃小球，封装了两个Sphere，一个半径为正数，一个半径为负数
     /// </summary>
-    public class DielectricSphere : HitTable {
+    public class DielectricSphere : HitAble {
         public Vector3d center = new Vector3d();
         public double radius;
         public Dielectric mat = new Dielectric(1.5);

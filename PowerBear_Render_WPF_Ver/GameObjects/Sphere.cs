@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 namespace PowerBear_Render_WPF_Ver.GameObjects {
     [XmlType("SphereXML")]
-    public class Sphere : HitTable {
+    public class Sphere : HitAble {
         public Sphere() { }
         public Sphere(Vector3d center, double radius) {
             this.center = center;
@@ -51,6 +51,16 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
             hitResult.Set_Face_Normal(ray, out_normal);
             hitResult.mat = this.mat;
             hitResult.hitObj = this;
+
+            // 计算Tangent
+            Vector3d top_Point = center + new Vector3d(0, radius, 0);
+            hitResult.tangent = Vector3d.Cross(out_normal, top_Point);
+            if (Math.Abs(hitResult.tangent.Length()) < 0.000001) {
+                hitResult.tangent = Vector3d.Random(0, 1);
+            } else {
+                hitResult.tangent = hitResult.tangent.Normalized();
+            }
+
             //保存UV 到 HitResult
             Sphere.Get_Sphere_UV(out_normal, out hitResult.u, out hitResult.v);
             return true;

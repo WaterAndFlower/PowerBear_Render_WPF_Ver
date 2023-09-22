@@ -144,7 +144,7 @@
                                 <Label Foreground="White">x:</Label>
                                 <TextBox x:Name="CameraPosXTextBox" Width="30" Margin="3 0 0 0">0</TextBox>
                                 <Label Foreground="White">y:</Label>
-                                <TextBox x:Name="CameraPosYTextBox" Width="30" Margin="3 0 0 0">5</TextBox>
+                                <TextBox x:Name="CameraPosYTextBox" Width="30" Margin="3 0 0 0">0.6</TextBox>
                                 <Label Foreground="White">z:</Label>
                                 <TextBox x:Name="CameraPosZTextBox" Width="30" Margin="3 0 0 0">10</TextBox>
                             </StackPanel>
@@ -285,11 +285,13 @@
                         <Label FontSize="14" Content="屏幕处理 与 NPR非真实渲染" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <CheckBox Foreground="White" IsChecked="{Binding _AllowDoDeNoise}">OpenCV屏幕降噪</CheckBox>
                         <CheckBox Foreground="White" IsChecked="{Binding _AllowPhongModel}">卡通渲染（卡通光照+描边算法）</CheckBox>
+
+                        <Label FontSize="14" Content="渲染管线" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
                         <ComboBox x:Name="uRenderWayBox" SelectedIndex="{Binding _RenderWay}">
                             <ComboBoxItem IsSelected="True">光线追踪管线</ComboBoxItem>
                             <ComboBoxItem>卡通渲染管线</ComboBoxItem>
+                            <ComboBoxItem>Cuttom Debug Pipline</ComboBoxItem>
                         </ComboBox>
-                        <Label FontSize="14" Content="渲染管线" Foreground="White" FontWeight="Bold" Background="#FF274E40" />
 
                     </StackPanel>
                 </ScrollViewer>

@@ -94,7 +94,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
                 return (-b - Math.Sqrt(discriminant)) / (2.0 * a); //2a分之-b+-开跟 b平方 - 4ac
             }
         }
-        Vector3d Ray_Color(Ray ray, HitTable world, int depth) { //投射光线
+        Vector3d Ray_Color(Ray ray, HitAble world, int depth) { //投射光线
             HitResult hitResult;
             if (depth <= 0) return new Vector3d(x: 0, 0, 0);
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
@@ -140,7 +140,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         /// <summary>
         /// 采用裴详凤算法，一个Phong模型的光照计算
         /// </summary>
-        Vector3d Ray_Color_Phong(Ray ray, HitTable world, int depth) {
+        Vector3d Ray_Color_Phong(Ray ray, HitAble world, int depth) {
             HitResult hitResult;
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
                 // 在这里实现算法部分
@@ -179,7 +179,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         }
 
         // 像素化着色器，用于先看看图像的大体位置
-        Vector3d Ray_Color_Preview(Ray ray, HitTable world) { //投射光线
+        Vector3d Ray_Color_Preview(Ray ray, HitAble world) { //投射光线
             HitResult hitResult;
             if (world.Hit(ray, 0.0000001d, 0x3f3f3f3f, out hitResult)) {
                 if (hitResult.hitObj != null) {

@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PowerBear_Render_WPF_Ver.Render {
-    public class Hittable_List : HitTable {
+    public class Hittable_List : HitAble {
         public Hittable_List() { }
-        public Hittable_List(HitTable obj) { objects.Add(obj); }
-        public List<HitTable> objects = new List<HitTable>();
-        public void Add(HitTable obj) { objects.Add(obj); }
+        public Hittable_List(HitAble obj) { objects.Add(obj); }
+        public List<HitAble> objects = new List<HitAble>();
+        public void Add(HitAble obj) { objects.Add(obj); }
         public void Clear() { objects.Clear(); }
         public override bool Hit(Ray ray, double t_min, double t_max, out HitResult hitResult) {
             HitResult temp_rec = new HitResult();

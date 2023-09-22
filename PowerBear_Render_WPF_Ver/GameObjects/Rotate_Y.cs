@@ -7,8 +7,8 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
     /// <summary>
     /// 绕着世界坐标轴的O点进行旋转，如果想要旋转正确，建议先在O点旋转完成，再去平移
     /// </summary>
-    public class Rotate_Y : HitTable {
-        public HitTable ptr { get; set; }
+    public class Rotate_Y : HitAble {
+        public HitAble ptr { get; set; }
         public double angle { get; set; }
         public double radians { get; set; }
         public double sin_theta { get; set; }
@@ -18,7 +18,7 @@ namespace PowerBear_Render_WPF_Ver.GameObjects {
         public AABB? bbox;
         Matrix3x3d Roate, RoateT;
         public Rotate_Y() { }
-        public Rotate_Y(HitTable ptr, double angle) {
+        public Rotate_Y(HitAble ptr, double angle) {
             this.ptr = ptr;
             this.angle = angle;
             this.radians = PbMath.PbMath.Degress_To_Radians(angle);

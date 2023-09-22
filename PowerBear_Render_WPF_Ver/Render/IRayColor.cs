@@ -10,7 +10,7 @@ namespace PowerBear_Render_WPF_Ver.Render {
         /// <param name="world">场景</param>
         /// <param name="depth">光线碰撞次数</param>
         /// <returns></returns>
-        public abstract Vector3d Ray_Color(Ray ray, HitTable world, int depth);
+        public abstract Vector3d Ray_Color(Ray ray, HitAble world, int depth);
 
         // 在渲染之前或者之后进行一些操作
 
